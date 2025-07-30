@@ -24,7 +24,7 @@ function Navbar({ user, currentPage }) {
 
             {/* Right: Auth Conditional */}
             <div className="flex items-center gap-4 text-sm">
-                {user?.id ? <LoginNavbar user={user} /> : <GuestNavbar />}
+                {user?.id ? <GuestNavbar /> : <LoginNavbar user={user} /> }
             </div>
         </nav>
     );

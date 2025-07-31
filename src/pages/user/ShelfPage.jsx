@@ -1,4 +1,5 @@
 function Shelf() {
+  const [activeTab, setActiveTab] = useState("readlist");
   return (
     <div className="flex h-[888px] w-full flex-col items-center justify-center">
       <div className="bg-paper-elevation-6 flex h-full w-full justify-center">

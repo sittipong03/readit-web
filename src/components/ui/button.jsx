@@ -1,29 +1,26 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { cn } from "@/lib/utils"; // สมมติว่าคุณมีฟังก์ชัน cn จาก shadcn/ui
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-90",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-90",
   {
     variants: {
-      // รูปแบบหลักของปุ่ม
       variant: {
         contained: "",
         outlined: "border bg-transparent",
         text: "bg-transparent",
-        ghost: "", // คล้ายกับ mixed แต่ไม่มีเส้นขอบ
+        ghost: "", 
         mixed: "border",
         link: "bg-transparent underline-offset-4 hover:underline",
       },
-      // ขนาดของปุ่ม
       size: {
-        small: "h-7 px-3 text-sm [&_svg]:size-3",
-        medium: "h-9 px-4 text-base [&_svg]:size-4",
-        large: "h-11 px-6 text-lg [&_svg]:size-5",
-        icon: "h-10 w-10",
+        small: "h-[28px] px-3 button-small [&_svg]:size-3 ",
+        medium: "h-[36px] px-4 button-medium [&_svg]:size-4 ",
+        large: "h-[44px] px-6 button-large [&_svg]:size-5 ",
+        icon: "h-9 w-9",
       },
-      // ธีมสี (เราจะใช้ compoundVariants ในการกำหนดสไตล์)
       color: {
         primary: "",
         secondary: "",
@@ -35,7 +32,6 @@ const buttonVariants = cva(
         neutral: "",
       },
     },
-    // รูปแบบผสม: เพิ่มสไตล์ disabled เข้าไปในแต่ละ variant
     compoundVariants: [
       // --- Primary Color ---
       {

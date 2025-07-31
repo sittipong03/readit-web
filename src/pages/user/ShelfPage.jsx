@@ -1,118 +1,11 @@
-import BookCard from "@/src/components/BookCard";
 import { useState } from "react";
 
 function Shelf() {
   const [activeTab, setActiveTab] = useState("readlist");
-  const books = [
-    {
-      id: 1,
-      title: "The Great Gatsby",
-      author: "F. Scott Fitzgerald",
-      cover: "/api/placeholder/180/240",
-      status: "reading",
-      rating: 4.2,
-      reviews: 125,
-      userRating: 4.5,
-    },
-    {
-      id: 2,
-      title: "To Kill a Mockingbird",
-      author: "Harper Lee",
-      cover: "/api/placeholder/180/240",
-      status: "read",
-      rating: 4.5,
-      reviews: 89,
-      userRating: 5.0,
-    },
-    {
-      id: 3,
-      title: "1984",
-      author: "George Orwell",
-      cover: "/api/placeholder/180/240",
-      status: "favorite",
-      rating: 4.8,
-      reviews: 234,
-      userRating: 4.8,
-    },
-    {
-      id: 4,
-      title: "Pride and Prejudice",
-      author: "Jane Austen",
-      cover: "/api/placeholder/180/240",
-      status: "reading",
-      rating: 4.3,
-      reviews: 156,
-      userRating: 4.0,
-    },
-    {
-      id: 5,
-      title: "The Catcher in the Rye",
-      author: "J.D. Salinger",
-      cover: "/api/placeholder/180/240",
-      status: "read",
-      rating: 3.9,
-      reviews: 78,
-      userRating: 3.5,
-    },
-    {
-      id: 6,
-      title: "Lord of the Flies",
-      author: "William Golding",
-      cover: "/api/placeholder/180/240",
-      status: "favorite",
-      rating: 4.1,
-      reviews: 92,
-      userRating: 4.5,
-    },
-    {
-      id: 7,
-      title: "Harry Potter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      cover: "/api/placeholder/180/240",
-      status: "reading",
-      rating: 4.7,
-      reviews: 312,
-      userRating: 5.0,
-    },
-    {
-      id: 8,
-      title: "The Hobbit",
-      author: "J.R.R. Tolkien",
-      cover: "/api/placeholder/180/240",
-      status: "read",
-      rating: 4.6,
-      reviews: 198,
-      userRating: 4.2,
-    },
-    {
-      id: 9,
-      title: "Dune",
-      author: "Frank Herbert",
-      cover: "/api/placeholder/180/240",
-      status: "favorite",
-      rating: 4.4,
-      reviews: 167,
-      userRating: 4.8,
-    },
-    {
-      id: 10,
-      title: "Brave New World",
-      author: "Aldous Huxley",
-      cover: "/api/placeholder/180/240",
-      status: "wishlist",
-      rating: 4.0,
-      reviews: 143,
-      userRating: null,
-    },
-  ];
 
   const renderContent = () => {
     switch (activeTab) {
       case "readlist":
-        const readingBooks = books.filter((book) => book.status === "reading");
-        const wishlistBooks = books.filter(
-          (book) => book.status === "wishlist",
-        );
         return (
           <div className="flex h-full w-[900px] flex-col justify-between">
             <div className="flex h-[36px] w-full items-center justify-between">
@@ -125,29 +18,14 @@ function Shelf() {
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
               <div className="flex h-[360px] flex-col items-center justify-between">
-                <div className="w-[852px]">
-                  <div className="border-white-hover flex h-[44px] w-full items-center border-b-2 pb-2">
-                    <p className="subtitle-2">
-                      Reading ({readingBooks.length}/3)
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-4">
-                    {readingBooks.map((book) => (
-                      <BookCard key={book.id} book={book} />
-                    ))}
-                  </div>
+                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
+                  <p className="subtitle-2">Reading (0/3)</p>
                 </div>
-                <div className="w-[852px]">
-                  <div className="flex h-[128px] w-full items-center"></div>
-                  <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
-                    <p className="subtitle-2">Wishlists</p>
-                  </div>
-                  <div className="flex flex-wrap gap-4">
-                    {wishlistBooks.map((book) => (
-                      <BookCard key={book.id} book={book} />
-                    ))}
-                  </div>
+                <div className="flex h-[128px] w-[852px] items-center"></div>
+                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
+                  <p className="subtitle-2">Wishlists</p>
                 </div>
+                <div className="flex h-[128px] w-[852px] items-center"></div>
               </div>
             </div>
           </div>
@@ -173,7 +51,7 @@ function Shelf() {
               </div>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
-              <div className="flex h-[360px] flex-col items-center justify-between">
+              {/* <div className="flex h-[360px] flex-col items-center justify-between">
                 <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
                   <p className="subtitle-2">Reading (0/3)</p>
                 </div>
@@ -182,7 +60,7 @@ function Shelf() {
                   <p className="subtitle-2">Favorites</p>
                 </div>
                 <div className="flex h-[128px] w-[852px] items-center"></div>
-              </div>
+              </div> */}
             </div>
           </div>
         );

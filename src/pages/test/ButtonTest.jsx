@@ -1,5 +1,5 @@
 import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 
 function ButtonTest() {

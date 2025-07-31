@@ -20,7 +20,6 @@ import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
-import BookCard from "../components/BookCard";
 
 const routerGuest = createBrowserRouter([
   {
@@ -61,7 +60,6 @@ const routerUser = createBrowserRouter([
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
       { path: "/payment", element: <PaymentSuccess /> },
-      { path: "/bookcard", element: <BookCard /> },
     ],
   },
 ]);

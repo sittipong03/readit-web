@@ -68,7 +68,8 @@ const routerUser = createBrowserRouter ([
 
 
 function AppRouter() {
-      const user = 1
+      // const user = 1
+      const user = 8
       // const user = useUserStore(state => state.user) // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
       const finalRouter = user == 1 ? routerUser : routerGuest //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา 
 

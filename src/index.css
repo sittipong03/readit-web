@@ -624,12 +624,8 @@
       --color-secondary-hover: rgb(from var(--Secondary-500) r g b / 16%);
       --color-secondary-selected: rgb(from var(--Secondary-500) r g b / 20%);
       --color-secondary-focus: rgb(from var(--Secondary-500) r g b / 30%);
-      --color-secondary-focusVisible: rgb(
-        from var(--Secondary-500) r g b / 28%
-      );
-      --color-secondary-outlinedBorder: rgb(
-        from var(--Secondary-500) r g b / 20%
-      );
+      --color-secondary-focusVisible: rgb(from var(--Secondary-500) r g b / 28%);
+      --color-secondary-outlinedBorder: rgb(from var(--Secondary-500) r g b / 20%);
 
       --color-tertiary-main: var(--Tertiary-400);
       --color-tertiary-dark: var(--Tertiary-300);
@@ -642,9 +638,7 @@
       --color-tertiary-selected: rgb(from var(--Tertiary-500) r g b / 16%);
       --color-tertiary-focus: rgb(from var(--Tertiary-500) r g b / 20%);
       --color-tertiary-focusVisible: rgb(from var(--Tertiary-500) r g b / 30%);
-      --color-tertiary-outlinedBorder: rgb(
-        from var(--Tertiary-500) r g b / 50%
-      );
+      --color-tertiary-outlinedBorder: rgb(from var(--Tertiary-500) r g b / 50%);
 
       --color-action-active: #ffffff8f;
       --color-action-active-icon: #ffffffcc;
@@ -762,58 +756,108 @@
   .display-1 {
     @apply font-display text-displayLarge leading-displayLarge tracking-displayLarge font-serif;
   }
+
   .display-2 {
     @apply font-display text-displayMedium leading-displayMedium tracking-displayMedium font-serif;
   }
+
   .display-3 {
     @apply font-display text-displaySmall leading-displaySmall tracking-displaySmall font-serif;
   }
+
   .h1 {
     @apply font-display text-displayLarge leading-displayLarge tracking-displayLarge font-sans;
   }
+
   .h2 {
     @apply font-display text-displayMedium leading-displayMedium tracking-displayMedium font-sans;
   }
+
   .h3 {
     @apply font-display text-displaySmall leading-displaySmall tracking-displaySmall font-sans;
   }
+
   .h4 {
     @apply font-header text-headlineLarge leading-headlineLarge tracking-headlineLarge font-sans;
   }
+
   .h5 {
     @apply font-header text-headlineMedium leading-headlineMedium tracking-headlineMedium font-sans;
   }
+
   .h6 {
     @apply font-header text-headlineSmall leading-headlineSmall tracking-headlineSmall font-sans;
   }
+
   .subtitle-1 {
     @apply font-subtitle text-titleLarge leading-titleLarge tracking-titleLarge font-sans;
   }
+
   .subtitle-2 {
     @apply font-subtitle text-titleMedium leading-titleMedium tracking-titleMedium font-sans;
   }
+
   .subtitle-3 {
     @apply font-subtitle text-titleSmall leading-titleSmall tracking-titleSmall font-sans;
   }
+
   .subtitle-4 {
     @apply font-subtitle text-titleXSmall leading-titleXSmall tracking-titleXSmall font-sans;
   }
+
   .body-1 {
     @apply font-regular text-bodyLarge leading-bodyLarge tracking-bodyLarge font-sans;
   }
+
   .body-2 {
     @apply font-regular text-bodyMedium leading-bodyMedium tracking-bodyMedium font-sans;
   }
+
   .body-3 {
     @apply font-regular text-bodySmall leading-bodySmall tracking-bodySmall font-sans;
   }
+
   .overline {
     @apply font-overline text-bodySmall leading-bodyMedium tracking-bodySmall font-sans uppercase;
   }
+
   .caption {
     @apply font-regular text-bodySmall leading-bodyMedium tracking-bodySmall font-sans;
   }
+
   .label-medium {
     @apply font-subtitle text-bodyMedium leading-labelSmall tracking-labelSmall font-sans;
+  }
+
+  .button-large {
+    font-size: 15px;
+    @apply leading-labelLarge font-button tracking-labelLarge;
+  }
+
+  .button-medium {
+    font-size: 14px;
+    @apply leading-labelLarge font-button tracking-labelLarge;
+  }
+
+  .button-small {
+    font-size: 13px;
+    @apply leading-labelLarge font-button tracking-labelLarge;
+  }
+
+  .value {
+    @apply text-bodyLarge leading-bodyLarge font-regular tracking-bodyLarge font-sans;
+  }
+
+  .helper {
+    @apply text-bodySmall leading-labelSmall font-regular tracking-labelSmall font-sans;
+  }
+
+  .table-header {
+    @apply text-titleXSmall leading-titleXSmall font-header tracking-titleXSmall font-sans;
+  }
+
+  .list-subheader {
+    line-height: 48px;
+    @apply text-bodyMedium font-button tracking-bodyMedium font-sans;
   }
 }

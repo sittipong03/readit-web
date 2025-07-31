@@ -19,7 +19,8 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentPage from "../pages/user/PaymentPage";
+import PaymentSuccessPage from "../pages/user/PaymentSuccessPage";
 
 const routerGuest = createBrowserRouter ([
   {
@@ -60,7 +61,8 @@ const routerUser = createBrowserRouter ([
       { path: '/shelf', element: <ShelfPage /> },
       { path: '/cart', element: <CartPage /> },
       { path: '/checkout', element: <CheckOutPage /> },
-      {path: '/payment', element: <PaymentSuccess/>}
+      {path: '/payment', element: <PaymentPage/>},
+      {path: '/paymentsuccess', element: <PaymentSuccessPage/>},
     ],
   },
 

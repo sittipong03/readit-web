@@ -8,7 +8,7 @@ import * as authApi from "../../api/authApi.js"
 
 // import component
 import { WarningIcon, HidePasswordIcon } from "@/src/icons/Index"
-import { Button } from "@/src/components/ui/button"
+import { Button } from "../../../components/ui/button"
 import useUserStore from "../../stores/userStore.js"
 
 

@@ -1,6 +1,9 @@
 function Book() {
   return (
-    <div>Book</div>
-  )
+    <div>
+      Book
+      <Button>Magically find your books</Button>
+    </div>
+  );
 }
-export default Book
+export default Book;

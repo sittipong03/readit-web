@@ -1,28 +1,30 @@
-import { FacebookLogo, Discord } from "../icons/Index"
+import { FacebookLogo, Discord } from "../icons/Index";
 
 function Footer() {
   return (
-    <footer className='flex justify-between m-5 bg-[#13120f] p-5'>
-        <div className='w-1/2 mb-5 text-[#cfc6aa]'>
-          <h3 className='text-2xl font-bold text-[#cfc6aa] mb-4'>Relearn solution</h3>
-          <p>Wanason Building 12th floor A, Room</p>
-          <p>📞 083-795-1555</p>
-          <p>✉️ relearn.acc@gmail.com</p>
-          <div className='flex gap-3 mt-5'>
-            <p>Term of service</p>
-            <p>Privacy Notice</p>
-            <p>Cookie preference</p>
-          </div>
+    <footer className="flex justify-between bg-[#13120f] p-5">
+      <div className="mb-5 w-1/2 text-[#cfc6aa]">
+        <h3 className="mb-4 text-2xl font-bold text-[#cfc6aa]">
+          Relearn solution
+        </h3>
+        <p>Wanason Building 12th floor A, Room</p>
+        <p>📞 083-795-1555</p>
+        <p>✉️ relearn.acc@gmail.com</p>
+        <div className="mt-5 flex gap-3">
+          <p>Term of service</p>
+          <p>Privacy Notice</p>
+          <p>Cookie preference</p>
         </div>
-        <div className="w-1/2 flex flex-col items-end text-[#cfc6aa]">
-          <h2 className='text-2xl mb-5 font-bold'>Readit</h2>
-          <div className="flex">
-            <FacebookLogo className="w-7" />
-            <Discord className="w-7" />
-          </div>
-          <p>Version 0.1.0 © 2025  Readit. All Rights Reserved</p>
+      </div>
+      <div className="flex w-1/2 flex-col items-end text-[#cfc6aa]">
+        <h2 className="mb-5 text-2xl font-bold">Readit</h2>
+        <div className="flex">
+          <FacebookLogo className="w-7" />
+          <Discord className="w-7" />
         </div>
-      </footer>
-  )
+        <p>Version 0.1.0 © 2025 Readit. All Rights Reserved</p>
+      </div>
+    </footer>
+  );
 }
-export default Footer
+export default Footer;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "@/src/components/ui/button";
 
 const tabs = ["User Details", "Bank Account"];
 
@@ -13,15 +14,15 @@ export default function ProfileSettings() {
       <div className="flex flex-col space-y-6 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div className="flex items-center space-x-6">
           {/* Avatar */}
-          <div className="text-displayLarge font-display-1 flex h-24 w-24 items-center justify-center rounded-full bg-neutral-900 text-white">
-            UM
+          <div className="text-displayLarge bg-black-main text-white-main font-display-1 flex h-24 w-24 items-center justify-center rounded-full bg-neutral-900 text-white">
+            CC
           </div>
 
           {/* Change Photo */}
           <div>
-            <button className="bg-secondary-main text-body-2 rounded-full px-4 py-2 text-white">
+            <Button color="secondary" className="w-fit">
               Change Profile Photo
-            </button>
+            </Button>
             <p className="text-body-1 text-text-secondary mt-2">
               Upload a file from your device.
             </p>
@@ -48,7 +49,7 @@ export default function ProfileSettings() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`text-subtitle-2 font-button pb-2 ${
+            className={`text-subtitle-2 font-button cursor-pointer pb-2 ${
               activeTab === tab
                 ? "border-primary-main text-primary-main border-b-2"
                 : "text-text-primary border-b-2 border-transparent"
@@ -78,7 +79,7 @@ export default function ProfileSettings() {
               <div className="flex items-center space-x-2">
                 {/* Home Icon */}
                 <svg
-                  className="text-text-primary h-6 w-6"
+                  className="text-text-primary h-7 w-7"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -218,17 +219,16 @@ export default function ProfileSettings() {
       </form>
       {/* Actions */}
       <div className="mt-8 flex items-center justify-between">
-        <button className="border-error-main text-error-main text-body-2 rounded-2xl border px-6 py-2">
+        <Button variant="outlined" color="error">
           Delete My Account
-        </button>
+        </Button>
 
         <div className="space-x-4">
-          <button className="text-text-primary text-body-2 rounded-2xl border px-6 py-2">
+          <Button variant="outlined" color="neutral">
             Discard Changes
-          </button>
-          <button className="bg-primary-main text-body-2 rounded-2xl border px-6 py-2 text-white">
-            Save
-          </button>
+          </Button>
+
+          <Button>Save</Button>
         </div>
       </div>
     </div>

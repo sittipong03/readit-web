@@ -16,6 +16,7 @@ import ReviewPage from "../pages/ReviewPage";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import UserProfilePage from "../pages/user/UserProfilePage";
+import RegisterBookTag from "../pages/user/RegisterBookTag";
 import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
@@ -58,6 +59,7 @@ const routerUser = createBrowserRouter([
       { path: "/home", element: <HomePage /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/userproflie", element: <UserProfilePage /> },
+      { path: "/RegisterBookTag", element: <RegisterBookTag /> },
       { path: "/setting", element: <SettingPage /> },
       { path: "/shelf", element: <ShelfPage /> },
       { path: "/cart", element: <CartPage /> },

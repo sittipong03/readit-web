@@ -631,12 +631,8 @@
       --color-secondary-hover: rgb(from var(--Secondary-500) r g b / 16%);
       --color-secondary-selected: rgb(from var(--Secondary-500) r g b / 20%);
       --color-secondary-focus: rgb(from var(--Secondary-500) r g b / 30%);
-      --color-secondary-focusVisible: rgb(
-        from var(--Secondary-500) r g b / 28%
-      );
-      --color-secondary-outlinedBorder: rgb(
-        from var(--Secondary-500) r g b / 20%
-      );
+      --color-secondary-focusVisible: rgb(from var(--Secondary-500) r g b / 28%);
+      --color-secondary-outlinedBorder: rgb(from var(--Secondary-500) r g b / 20%);
 
       --color-tertiary-main: var(--Tertiary-500);
       --color-tertiary-dark: var(--Tertiary-300);
@@ -649,9 +645,7 @@
       --color-tertiary-selected: rgb(from var(--Tertiary-500) r g b / 16%);
       --color-tertiary-focus: rgb(from var(--Tertiary-500) r g b / 20%);
       --color-tertiary-focusVisible: rgb(from var(--Tertiary-500) r g b / 30%);
-      --color-tertiary-outlinedBorder: rgb(
-        from var(--Tertiary-500) r g b / 50%
-      );
+      --color-tertiary-outlinedBorder: rgb(from var(--Tertiary-500) r g b / 50%);
 
       --color-action-active: #ffffff8f;
       --color-action-active-icon: #ffffffcc;
@@ -769,59 +763,105 @@
   .display-1 {
     @apply font-serif font-display text-displayLarge leading-displayLarge tracking-displayLarge;
   }
+
   .display-2 {
     @apply font-serif font-display text-displayMedium leading-displayMedium tracking-displayMedium;
   }
+
   .display-3 {
     @apply font-serif font-display text-displaySmall leading-displaySmall tracking-displaySmall;
   }
+
   .h1 {
     @apply font-sans font-display text-displayLarge leading-displayLarge tracking-displayLarge;
   }
+
   .h2 {
     @apply font-sans font-display text-displayMedium leading-displayMedium tracking-displayMedium;
   }
+
   .h3 {
     @apply font-sans font-display text-displaySmall leading-displaySmall tracking-displaySmall;
   }
+
   .h4 {
     @apply font-sans font-header text-headlineLarge leading-headlineLarge tracking-headlineLarge;
   }
+
   .h5 {
     @apply font-sans font-header text-headlineMedium leading-headlineMedium tracking-headlineMedium;
   }
+
   .h6 {
     @apply font-sans font-header text-headlineSmall leading-headlineSmall tracking-headlineSmall;
   }
+
   .subtitle-1 {
     @apply font-sans font-subtitle text-titleLarge leading-titleLarge tracking-titleLarge;
   }
+
   .subtitle-2 {
     @apply font-sans font-subtitle text-titleMedium leading-titleMedium tracking-titleMedium;
   }
+
   .subtitle-3 {
     @apply font-sans font-subtitle text-titleSmall leading-titleSmall tracking-titleSmall;
   }
+
   .subtitle-4 {
     @apply font-sans font-subtitle text-titleXSmall leading-titleXSmall tracking-titleXSmall;
   }
+
   .body-1 {
     @apply font-sans font-regular text-bodyLarge leading-bodyLarge tracking-bodyLarge;
   }
+
   .body-2 {
     @apply font-sans font-regular text-bodyMedium leading-bodyMedium tracking-bodyMedium;
   }
+
   .body-3 {
     @apply font-sans font-regular text-bodySmall leading-bodySmall tracking-bodySmall;
   }
+
   .overline {
     @apply font-sans uppercase font-overline text-bodySmall leading-bodyMedium tracking-bodySmall;
   }
+
   .caption {
     @apply font-sans font-regular text-bodySmall leading-bodyMedium tracking-bodySmall;
   }
+
   .label-medium {
     @apply font-sans font-subtitle text-bodyMedium leading-labelSmall tracking-labelSmall;
+  }
+  .label-small {
+    @apply font-regular text-bodySmall leading-labelSmall tracking-labelSmall font-sans;
+  }
+  .button-large {
+    font-size: 15px;
+    @apply leading-labelLarge font-button tracking-labelLarge font-sans;
+  }
+  .button-medium {
+    font-size: 14px;
+    @apply leading-labelLarge font-button tracking-labelLarge font-sans;
+  }
+  .button-small {
+    font-size: 13px;
+    @apply leading-labelLarge font-button tracking-labelLarge font-sans;
+  }
+  .value {
+    @apply text-bodyLarge leading-bodyLarge font-regular tracking-bodyLarge font-sans;
+  }
+  .helper {
+    @apply text-bodySmall leading-labelSmall font-regular tracking-labelSmall font-sans;
+  }
+  .table-header {
+    @apply text-titleXSmall leading-titleXSmall font-header tracking-titleXSmall font-sans;
+  }
+  .list-subheader {
+    line-height: 48px;
+    @apply text-bodyMedium font-button tracking-bodyMedium font-sans;
   }
   .label-small {
     @apply font-regular text-bodySmall leading-labelSmall tracking-labelSmall font-sans;

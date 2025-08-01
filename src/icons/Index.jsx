@@ -279,3 +279,37 @@ export function PersonwithNothing(props) {
     </svg>
   )
 }
+
+export function WarningIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M19.5 12a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0zm1.5 0a9 9 0 11-18 0 9 9 0 0118 0zm-9.75 1.5V8.25h1.5v5.25h-1.5zm0 2.25v-1.5h1.5v1.5h-1.5z"
+        fill="currentColor" // <-- เปลี่ยนเป็น "currentColor"
+      />
+    </svg>
+  )
+}
+
+export function HidePasswordIcon(props) {
+  return (
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <g data-name="Layer 2">
+        <path fill="none" data-name="invisible box" d="M0 0H48V48H0z" />
+        <g data-name="icons Q2">
+          <path
+            fill="currentColor" // <-- เพิ่มบรรทัดนี้
+            d="M45.3 22.1C43.2 19.5 35.4 11 24 11a23.4 23.4 0 00-3.8.3l19.7 19.8a30.1 30.1 0 005.4-5.2 3 3 0 000-3.8zM41.1 38.3L29.4 26.6A5.9 5.9 0 0124 30a6 6 0 01-6-6 5.9 5.9 0 013.4-5.4L9.7 6.9a2 2 0 00-2.8 2.8l4.8 4.8a31.4 31.4 0 00-9 7.6 3 3 0 000 3.8C4.8 28.5 12.6 37 24 37a25.2 25.2 0 008.5-1.6l5.8 5.7a2 2 0 102.8-2.8z"
+          />
+        </g>
+      </g>
+    </svg>
+  )
+}

@@ -5,8 +5,4 @@ export default {
     extend: {},
   },
   plugins: [],
-<<<<<<< Updated upstream
 };
-=======
-};
->>>>>>> Stashed changes

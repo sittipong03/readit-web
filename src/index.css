@@ -766,61 +766,61 @@
 
 @layer components {
   .display-1 {
-    @apply font-display text-displayLarge leading-displayLarge tracking-displayLarge font-serif;
+    @apply font-serif font-display text-displayLarge leading-displayLarge tracking-displayLarge;
   }
   .display-2 {
-    @apply font-display text-displayMedium leading-displayMedium tracking-displayMedium font-serif;
+    @apply font-serif font-display text-displayMedium leading-displayMedium tracking-displayMedium;
   }
   .display-3 {
-    @apply font-display text-displaySmall leading-displaySmall tracking-displaySmall font-serif;
+    @apply font-serif font-display text-displaySmall leading-displaySmall tracking-displaySmall;
   }
   .h1 {
-    @apply font-display text-displayLarge leading-displayLarge tracking-displayLarge font-sans;
+    @apply font-sans font-display text-displayLarge leading-displayLarge tracking-displayLarge;
   }
   .h2 {
-    @apply font-display text-displayMedium leading-displayMedium tracking-displayMedium font-sans;
+    @apply font-sans font-display text-displayMedium leading-displayMedium tracking-displayMedium;
   }
   .h3 {
-    @apply font-display text-displaySmall leading-displaySmall tracking-displaySmall font-sans;
+    @apply font-sans font-display text-displaySmall leading-displaySmall tracking-displaySmall;
   }
   .h4 {
-    @apply font-header text-headlineLarge leading-headlineLarge tracking-headlineLarge font-sans;
+    @apply font-sans font-header text-headlineLarge leading-headlineLarge tracking-headlineLarge;
   }
   .h5 {
-    @apply font-header text-headlineMedium leading-headlineMedium tracking-headlineMedium font-sans;
+    @apply font-sans font-header text-headlineMedium leading-headlineMedium tracking-headlineMedium;
   }
   .h6 {
-    @apply font-header text-headlineSmall leading-headlineSmall tracking-headlineSmall font-sans;
+    @apply font-sans font-header text-headlineSmall leading-headlineSmall tracking-headlineSmall;
   }
   .subtitle-1 {
-    @apply font-subtitle text-titleLarge leading-titleLarge tracking-titleLarge font-sans;
+    @apply font-sans font-subtitle text-titleLarge leading-titleLarge tracking-titleLarge;
   }
   .subtitle-2 {
-    @apply font-subtitle text-titleMedium leading-titleMedium tracking-titleMedium font-sans;
+    @apply font-sans font-subtitle text-titleMedium leading-titleMedium tracking-titleMedium;
   }
   .subtitle-3 {
-    @apply font-subtitle text-titleSmall leading-titleSmall tracking-titleSmall font-sans;
+    @apply font-sans font-subtitle text-titleSmall leading-titleSmall tracking-titleSmall;
   }
   .subtitle-4 {
-    @apply font-subtitle text-titleXSmall leading-titleXSmall tracking-titleXSmall font-sans;
+    @apply font-sans font-subtitle text-titleXSmall leading-titleXSmall tracking-titleXSmall;
   }
   .body-1 {
-    @apply font-regular text-bodyLarge leading-bodyLarge tracking-bodyLarge font-sans;
+    @apply font-sans font-regular text-bodyLarge leading-bodyLarge tracking-bodyLarge;
   }
   .body-2 {
-    @apply font-regular text-bodyMedium leading-bodyMedium tracking-bodyMedium font-sans;
+    @apply font-sans font-regular text-bodyMedium leading-bodyMedium tracking-bodyMedium;
   }
   .body-3 {
-    @apply font-regular text-bodySmall leading-bodySmall tracking-bodySmall font-sans;
+    @apply font-sans font-regular text-bodySmall leading-bodySmall tracking-bodySmall;
   }
   .overline {
-    @apply font-overline text-bodySmall leading-bodyMedium tracking-bodySmall font-sans uppercase;
+    @apply font-sans uppercase font-overline text-bodySmall leading-bodyMedium tracking-bodySmall;
   }
   .caption {
-    @apply font-regular text-bodySmall leading-bodyMedium tracking-bodySmall font-sans;
+    @apply font-sans font-regular text-bodySmall leading-bodyMedium tracking-bodySmall;
   }
   .label-medium {
-    @apply font-subtitle text-bodyMedium leading-labelSmall tracking-labelSmall font-sans;
+    @apply font-sans font-subtitle text-bodyMedium leading-labelSmall tracking-labelSmall;
   }
   .label-small {
     @apply font-regular text-bodySmall leading-labelSmall tracking-labelSmall font-sans;

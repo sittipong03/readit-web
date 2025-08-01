@@ -72,6 +72,8 @@ const routerUser = createBrowserRouter([
 
 function AppRouter() {
       const role = useUserStore(state => state.role) // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
+      // test pull push 
+      console.log(role)
       const finalRouter = role === "USER" ? routerUser : role === "ADMIN" ? routerUser : routerGuest //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา 
 
   return (

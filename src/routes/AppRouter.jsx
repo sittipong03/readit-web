@@ -15,6 +15,7 @@ import ReviewPage from "../pages/ReviewPage";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import UserProfilePage from "../pages/user/UserProfilePage";
+import RegisterBookTag from "../pages/user/RegisterBookTag";
 import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
@@ -57,6 +58,7 @@ const routerUser = createBrowserRouter([
       { path: "/home", element: <HomePage /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/userproflie", element: <UserProfilePage /> },
+      { path: "/RegisterBookTag", element: <RegisterBookTag /> },
       { path: "/setting", element: <SettingPage /> },
       { path: "/shelf", element: <ShelfPage /> },
       { path: "/cart", element: <CartPage /> },
@@ -70,7 +72,7 @@ const routerUser = createBrowserRouter([
 function AppRouter() {
       const user = 1
       // const user = useUserStore(state => state.user) // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
-      const finalRouter = user == 1 ? routerGuest : routerUser//  เลือก เส้นทางตามตัวแปร user ที่เข้ามา 
+      const finalRouter = user == 0 ? routerGuest : routerUser//  เลือก เส้นทางตามตัวแปร user ที่เข้ามา 
 
   return (
     <Suspense fallback={<p>Loading</p>}>

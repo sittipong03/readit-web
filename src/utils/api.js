@@ -3,7 +3,7 @@ import axios from "axios";
 // ไฟล์นี้จะสร้าง axios instance เพื่อกำหนดและ แปะ token header ไว้เลย
 
 const axiosInstance = axios.create({
-    baseURL: process.env.READIT_API || 'http://localhost:6500/api' || 'http://localhost:8899/api',
+    baseURL:'http://localhost:6500/api' || 'http://localhost:8899/api',
     timeout: 20000,
     headers: {
         'Content-Type': 'application/json',

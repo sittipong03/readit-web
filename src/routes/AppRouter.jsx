@@ -41,6 +41,8 @@ const routerGuest = createBrowserRouter([
       { path: "/review", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/Register", element: <RegisterPage /> },
+      { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component
+      { path: "/shelf", element: <ShelfPage /> }, // Example route for ShelfPage component
     ],
   },
 ]);
@@ -62,14 +64,14 @@ const routerUser = createBrowserRouter([
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
       { path: "/payment", element: <PaymentSuccess /> },
-      { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component
     ],
   },
 ]);
 
 function AppRouter() {
-      const role = useUserStore(state => state.role) // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
-      const finalRouter = role === "USER" ? routerUser : role === "ADMIN" ? routerUser : routerGuest //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา 
+  const role = useUserStore((state) => state.role); // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
+  const finalRouter =
+    role === "USER" ? routerUser : role === "ADMIN" ? routerUser : routerGuest; //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา
 
   return (
     <Suspense fallback={<p>Loading</p>}>

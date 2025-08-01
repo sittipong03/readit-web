@@ -1,7 +1,62 @@
+import BookCard from "@/src/components/BookCard";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 function Shelf() {
+  const books = [
+    {
+      id: 1,
+      title: "The Wedding Crasher",
+      author: "Christina Escudéz",
+      coverImage:
+        "https://i.harperapps.com/hcanz/covers/9780062909893/y648.jpg",
+      rating: 3.2,
+      totalRatings: 12,
+      userRating: null,
+      hasUserReview: false,
+    },
+    {
+      id: 2,
+      title: "The Seven Husbands of Evelyn Hugo",
+      author: "Taylor Jenkins Reid",
+      coverImage:
+        "https://www.asiabooks.com/media/catalog/product/cache/a5ac216be58c0cbce1cb04612ece96dc/9/7/9781398515697.jpg",
+      rating: 4.2,
+      totalRatings: 20,
+      userRating: 4.5,
+      hasUserReview: true,
+    },
+    {
+      id: 3,
+      title: "Atomic Habits",
+      author: "James Clear",
+      coverImage:
+        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg",
+      rating: 4.8,
+      totalRatings: 150,
+      userRating: 5.0,
+      hasUserReview: true,
+    },
+    {
+      id: 4,
+      title: "The Midnight Library",
+      author: "Matt Haig",
+      coverImage:
+        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1602190253i/52578297.jpg",
+      rating: 4.1,
+      totalRatings: 85,
+      userRating: null,
+      hasUserReview: false,
+    },
+  ];
+
   const [activeTab, setActiveTab] = useState("readlist");
+  const [readBooks, setReadBooks] = useState(books);
+  const navigate = useNavigate();
+
+  const hdlBackToFeed = () => {
+    navigate("/home");
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -51,16 +106,29 @@ function Shelf() {
               </div>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
-              {/* <div className="flex h-[360px] flex-col items-center justify-between">
-                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
-                  <p className="subtitle-2">Reading (0/3)</p>
+              <div className="grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {readBooks.map((book) => (
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                    // onReviewClick={(bookId) => handleViewReview(bookId)}
+                  />
+                ))}
+              </div>
+
+              {/* ถ้าไม่มีหนังสือ */}
+              {readBooks.length === 0 && (
+                <div className="flex h-full flex-col items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-text-disabled mb-2 text-lg">
+                      No books read yet
+                    </p>
+                    <p className="text-text-secondary text-sm">
+                      Start adding books you've finished reading!
+                    </p>
+                  </div>
                 </div>
-                <div className="flex h-[128px] w-[852px] items-center"></div>
-                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
-                  <p className="subtitle-2">Favorites</p>
-                </div>
-                <div className="flex h-[128px] w-[852px] items-center"></div>
-              </div> */}
+              )}
             </div>
           </div>
         );
@@ -101,8 +169,13 @@ function Shelf() {
               <div>
                 <p className="h6 text-text-primary">Your Shelves</p>
               </div>
-              <div className="bg-primary-soft text-primary-main border-primary-main font-button line-height-labalMedium border- rounded-full border-1 px-4 py-2">
-                <button>Back to my feed</button>
+              <div>
+                <button
+                  onClick={hdlBackToFeed}
+                  className="bg-primary-soft text-primary-main border-primary-main font-button line-height-labalMedium cursor-pointer rounded-full border-1 px-4 py-2"
+                >
+                  Back to my feed
+                </button>
               </div>
             </div>
             <div className="flex h-[668px] w-full justify-between">

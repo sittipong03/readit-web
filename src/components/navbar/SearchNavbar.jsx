@@ -1,17 +1,16 @@
-import { BookOpen, Bell, ShoppingCart, Bookmark } from 'lucide-react';
+import { InputX } from "@/components/ui/inputX";
 
 function SearchNavbar() {
   return (
-    <div className="relative">
-      <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-        <BookOpen size={16} />
-      </span>
-      <input
-        type="text"
+    <div className="grid w-full max-w-[220px] items-center gap-2">
+      <InputX
+        id="bookSearchNav"
+        type="email"
+        size="small"
         placeholder="Find books..."
-        className="bg-transparent border border-gray-600 text-white pl-10 pr-4 py-1.5 rounded-full placeholder-gray-400 focus:outline-none focus:border-orange-500 w-64"
+        leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
       />
     </div>
-  )
+  );
 }
-export default SearchNavbar
+export default SearchNavbar;

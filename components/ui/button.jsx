@@ -326,7 +326,7 @@ const buttonVariants = cva(
       {
         variant: "link",
         color: "neutral",
-        className: "text-text-primary disabled:text-text-disabled",
+        className: "px-0 text-text-primary disabled:text-text-disabled",
       },
     ],
     defaultVariants: {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import { Label } from "@/components/ui/label";
 
 const inputVariants = cva(
   // Base styles for the outer container (div) that wraps the input and adornments
@@ -113,11 +114,15 @@ const InputX = React.forwardRef(
       leadingComponent,
       trailingComponent,
       disabled,
+      label,
+      id,
       ...props
     },
     ref,
   ) => {
     const isFile = type === "file";
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
 
     // Determine horizontal padding for the wrapper based on adornments
     const horizontalPaddingClass = cn({
@@ -150,35 +155,49 @@ const InputX = React.forwardRef(
     const iconSizeClass =
       size === "small" ? "[&_svg]:size-4" : "[&_svg]:size-4.5";
 
+    const labelColorClass = cn({
+      "text-error-lighter": props["aria-invalid"] || color === "error", // Error color if aria-invalid
+      "text-text-disabled": disabled, // Disabled color
+      "text-text-primary": !props["aria-invalid"] && !disabled && color !== "error", // Default color
+    });
+
     return (
-      <div className={wrapperClasses}>
-        {leadingComponent && (
-          <div
-            className={cn(
-              "text-text-disabled/60 flex items-center justify-center pl-3",
-              iconSizeClass,
-            )}
-          >
-            {leadingComponent}
-          </div>
+      <div className="flex flex-col gap-2">
+        {label && (
+          <Label htmlFor={inputId} className={labelColorClass}>
+            {label}
+          </Label>
         )}
-        <input
-          type={type}
-          className={inputElementClasses}
-          ref={ref}
-          disabled={disabled} // Ensure HTML disabled attribute is set
-          {...props}
-        />
-        {trailingComponent && (
-          <div
-            className={cn(
-              "text-text-disabled/60 flex items-center justify-center pr-3",
-              iconSizeClass,
-            )}
-          >
-            {trailingComponent}
-          </div>
-        )}
+        <div className={wrapperClasses}>
+          {leadingComponent && (
+            <div
+              className={cn(
+                "text-text-disabled/50 flex items-center justify-center pl-3",
+                iconSizeClass,
+              )}
+            >
+              {leadingComponent}
+            </div>
+          )}
+          <input
+            id={inputId}
+            type={type}
+            className={inputElementClasses}
+            ref={ref}
+            disabled={disabled} 
+            {...props}
+          />
+          {trailingComponent && (
+            <div
+              className={cn(
+                "text-text-disabled/50 flex items-center justify-center pr-3",
+                iconSizeClass,
+              )}
+            >
+              {trailingComponent}
+            </div>
+          )}
+        </div>
       </div>
     );
   },

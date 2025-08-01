@@ -61,6 +61,7 @@ const routerUser = createBrowserRouter([
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
       { path: "/payment", element: <PaymentSuccess /> },
+      { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component
     ],
   },
 ]);

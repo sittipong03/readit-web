@@ -1,7 +1,6 @@
-import { Star } from "lucide-react";
-import React from "react";
+import { Star, Eye, Edit3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { StarIcon } from "./icons";
-import { Button } from "../.././components/ui/button";
 
 const BookCard = ({ book }) => {
   const bookData = book || {
@@ -14,45 +13,34 @@ const BookCard = ({ book }) => {
     userRating: null,
     hasUserReview: false,
   };
+
   return (
-    <div className="flex h-[360px] w-[852px] items-center justify-center p-4">
-      <div className="flex h-[278px] w-[182px] flex-col overflow-hidden rounded-xl border-1 p-2">
-        <div className="relative h-[162px] w-full p-4">
-          <StarIcon size={28} className="absolute top-3 left-3" />
-          <div className="shadow-card-3d h-[128px] w-[84px] overflow-hidden object-cover">
-            <img
-              src={bookData.coverImage}
-              alt={bookData.title}
-              className="h-full w-full object-cover"
-            />
-          </div>
+    <div className="h-[278px] w-[182px] rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="flex h-[162px] w-full items-center justify-center border-2">
+        <div className="h-[128px] w-[84px] border-1">
+          <img
+            src={bookData.coverImage}
+            alt={bookData.title}
+            className="h-full w-full object-cover"
+          />
         </div>
-        <div className="flex h-[116px] w-full flex-col justify-between p-2">
-          <div className="flex w-full flex-col gap-1">
-            <p className="subtitle-3">{bookData.title}</p>
-            <p className="body-2">{bookData.author}</p>
-            <div className="flex w-[121px] items-center justify-center gap-2">
-              <div className="flex items-center gap-2">
-                <StarIcon size={16} />
-                <p className="body-2">{bookData.rating}</p>
-                <p className="body-2">({bookData.totalRatings})</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <StarIcon size={16} color={"#3771E6"} />
-                <p className="body-2">{bookData.rating}</p>
-              </div>
+      </div>
+      <div className="h-[116px] w-full border-2">
+        <div>
+          <p className="subtitle-3">{bookData.title}</p>
+          <p className="body-2">{bookData.author}</p>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <StarIcon size={16} fill="color-warning-main" />
+              <p className="body-2">{bookData.rating}</p>
+              <p className="body-2">({bookData.totalRatings})</p>
             </div>
-            <div className="flex h-9 w-full items-center">
-              <Button
-                variant="outlined"
-                color="secondary"
-                size="small"
-                className={"w-full"}
-              >
-                View your review
-              </Button>
+            <div className="flex items-center gap-1">
+              <StarIcon size={16} fill="info-main" />
+              <p className="body-2">{bookData.userRating}</p>
             </div>
           </div>
+          <div></div>
         </div>
       </div>
     </div>

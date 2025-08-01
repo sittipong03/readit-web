@@ -25,6 +25,7 @@ import PasswordSetting from "../pages/user/setting/PasswordSetting";
 import PurchasesSetting from "../pages/user/setting/PurchaseSetting";
 import AffiliateSetting from "../pages/user/setting/AffiliateSetting";
 import EarningSetting from "../pages/user/setting/EarningSetting";
+import ButtonTest from "../pages/test/ButtonTest";
 
 const routerGuest = createBrowserRouter([
   {
@@ -44,11 +45,17 @@ const routerGuest = createBrowserRouter([
       { path: "/review", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/Register", element: <RegisterPage /> },
+      { path: "/ButtonTest", element: <ButtonTest /> },
     ],
   },
 ]);
 
 const routerUser = createBrowserRouter([
+  {
+    path: "*",
+    element: <Navigate to="/home" />,
+  },
+
   {
     element: <UserLayout />,
     children: [
@@ -67,10 +74,12 @@ const routerUser = createBrowserRouter([
           { path: "earning", element: <EarningSetting /> },
         ],
       },
+      { path: "/setting", element: <SettingPage /> },
       { path: "/shelf", element: <ShelfPage /> },
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
       { path: "/payment", element: <PaymentSuccess /> },
+      { path: "/ButtonTest", element: <ButtonTest /> },
     ],
   },
 ]);

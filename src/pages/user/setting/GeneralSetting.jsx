@@ -1,10 +1,130 @@
-import React, { useState } from "react";
-import { Button } from "@/src/components/ui/button";
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { getMyProfile, updateUserProfile } from "../../../api/userApi";
+import { getAddressData } from "../../../data/thailandAddressData.js";
 
 const tabs = ["User Details", "Bank Account"];
+const { provinces, getDataByProvince, getDataByDistrict } = getAddressData();
 
-export default function ProfileSettings() {
+export default function GeneralSettings() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
+
+  const [user, setUser] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    firstName: "",
+    lastName: "",
+    mobile: "",
+    address: "",
+    bankAccount: "",
+    bankName: "",
+  });
+  const [districts, setDistricts] = useState([]);
+  const [postalCodes, setPostalCodes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await getMyProfile();
+        const profile = response.data.result;
+        const userAddress = profile.userAddress?.[0] || {};
+        setUser(profile);
+
+        const newFormData = {
+          name: profile.name || "",
+          firstName: userAddress.receiverName?.split(" ")[0] || "",
+          lastName:
+            userAddress.receiverName?.split(" ").slice(1).join(" ") || "",
+          mobile: profile.mobile || "",
+          addressLine1: userAddress.addressLine1 || "",
+          province: userAddress.province || "",
+          city: userAddress.city || "",
+          postalCode: userAddress.postalCode || "",
+          bankAccount: profile.bankAccount || "",
+          bankName: profile.bankName || "",
+        };
+        setFormData(newFormData);
+
+        if (userAddress.province) {
+          setDistricts(getDataByProvince(userAddress.province));
+        }
+        if (userAddress.province && userAddress.city) {
+          setPostalCodes(
+            getDataByDistrict(userAddress.province, userAddress.city),
+          );
+        }
+      } catch (error) {
+        setError("ไม่สามารถโหลดข้อมูลได้");
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const handleProvinceChange = (e) => {
+    const selectedProvince = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      province: selectedProvince,
+      city: "",
+      postalCode: "",
+    }));
+    setDistricts(getDataByProvince(selectedProvince));
+    setPostalCodes([]);
+  };
+
+  const handleDistrictChange = (e) => {
+    const selectedDistrict = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      city: selectedDistrict,
+      postalCode: "",
+    }));
+    setPostalCodes(getDataByDistrict(formData.province, selectedDistrict));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) return;
+
+    try {
+      const dataToUpdate =
+        activeTab == "User Details"
+          ? {
+              name: formData.name,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              mobile: formData.mobile,
+              address: formData.addressLine1, // ส่ง addressLine1
+              province: formData.province,
+              city: formData.city,
+              postalCode: formData.postalCode,
+            }
+          : {
+              bankAccount: formData.bankAccount,
+              bankName: formData.bankName,
+            };
+      const response = await updateUserProfile(user.id, dataToUpdate);
+      alert("อัพเดทข้อมูลสำเร็จ");
+      setUser(response.data.user);
+    } catch (error) {
+      alert("อัพเดทข้อมูลไม่สำเร็จ");
+      console.error(error);
+    }
+  };
+
+  // if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="bg-paper-elevation-6 shadow-card-3d mx-auto max-w-4xl space-y-6 rounded-2xl p-6">
@@ -15,7 +135,7 @@ export default function ProfileSettings() {
         <div className="flex items-center space-x-6">
           {/* Avatar */}
           <div className="text-displayLarge bg-black-main text-white-main font-display-1 flex h-24 w-24 items-center justify-center rounded-full bg-neutral-900 text-white">
-            CC
+            {user?.name?.substring(0, 2).toUpperCase() || "CC"}
           </div>
 
           {/* Change Photo */}
@@ -38,6 +158,7 @@ export default function ProfileSettings() {
           <label className="text-subtitle-2 text-text-secondary">Email:</label>
           <input
             type="email"
+            value={user?.email || ""}
             readOnly
             className="text-body-2 text-text-primary focus:border-primary-main mt-1 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
           />
@@ -60,7 +181,7 @@ export default function ProfileSettings() {
         ))}
       </nav>
       {/* Form */}
-      <form className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {activeTab === "User Details" && (
           <>
             {/* Display Name */}
@@ -70,6 +191,9 @@ export default function ProfileSettings() {
               </label>
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
                 className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
               />
             </div>
@@ -96,6 +220,9 @@ export default function ProfileSettings() {
                   </label>
                   <input
                     type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
                   />
                 </div>
@@ -107,6 +234,9 @@ export default function ProfileSettings() {
                   </label>
                   <input
                     type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
                   />
                 </div>
@@ -128,6 +258,9 @@ export default function ProfileSettings() {
                   </label>
                   <input
                     type="tel"
+                    name="mobile"
+                    value={formData.mobile}
+                    onChange={handleInputChange}
                     className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
                   />
                 </div>
@@ -139,6 +272,9 @@ export default function ProfileSettings() {
                   </label>
                   <input
                     type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
                     placeholder="House number, street name, apartment etc..."
                     className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
                   />
@@ -149,18 +285,40 @@ export default function ProfileSettings() {
                   <label className="text-body-2 text-text-primary block">
                     City:
                   </label>
-                  <select className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none">
-                    <option>Please select...</option>
+                  <select
+                    name="province"
+                    value={formData.province}
+                    onChange={handleProvinceChange}
+                    className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
+                  >
+                    <option value="">Please select...</option>
+                    {provinces.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 {/* State / Province / Region */}
+
                 <div>
                   <label className="text-body-2 text-text-primary block">
-                    State / Province / Region:
+                    District:
                   </label>
-                  <select className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none">
-                    <option>Please select...</option>
+                  <select
+                    name="city"
+                    value={formData.city}
+                    onChange={handleDistrictChange}
+                    disabled={!formData.province}
+                    className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
+                  >
+                    <option value="">Please select...</option>
+                    {districts.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -169,8 +327,19 @@ export default function ProfileSettings() {
                   <label className="text-body-2 text-text-primary block">
                     Postal / Zip Code:
                   </label>
-                  <select className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none">
-                    <option>Please select...</option>
+                  <select
+                    name="postalCode"
+                    value={formData.postalCode}
+                    onChange={handleInputChange}
+                    disabled={!formData.city}
+                    className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
+                  >
+                    <option value="">Please select...</option>
+                    {postalCodes.map((z) => (
+                      <option key={z} value={z}>
+                        {z}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -200,6 +369,9 @@ export default function ProfileSettings() {
                 </label>
                 <input
                   type="text"
+                  name="bankAccount"
+                  value={formData.bankAccount}
+                  onChange={handleInputChange}
                   placeholder="Bank Account Number..."
                   className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
                 />
@@ -209,28 +381,35 @@ export default function ProfileSettings() {
                 <label className="text-body-2 text-text-primary block">
                   Bank:
                 </label>
-                <select className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none">
-                  <option>Please select...</option>
+                <select
+                  name="bankName"
+                  value={formData.bankName}
+                  onChange={handleInputChange}
+                  className="text-body-2 focus:border-primary-main mt-2 w-full rounded-full border border-neutral-300 px-4 py-2 focus:outline-none"
+                >
+                  <option value="">Please select...</option>
+                  <option value="KASIKORNBANK">Kasokorn Bank</option>
+                  <option value="SCB">Siam Commercial Bank</option>
                 </select>
               </div>
             </div>
           </div>
         )}
-      </form>
-      {/* Actions */}
-      <div className="mt-8 flex items-center justify-between">
-        <Button variant="outlined" color="error">
-          Delete My Account
-        </Button>
 
-        <div className="space-x-4">
-          <Button variant="outlined" color="neutral">
-            Discard Changes
+        <div className="mt-8 flex items-center justify-between">
+          <Button variant="outlined" color="error">
+            Delete My Account
           </Button>
 
-          <Button>Save</Button>
+          <div className="space-x-4">
+            <Button variant="outlined" color="neutral">
+              Discard Changes
+            </Button>
+
+            <Button type="submit">Save</Button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

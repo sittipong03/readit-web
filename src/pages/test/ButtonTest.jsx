@@ -21,7 +21,7 @@ function ButtonTest() {
           </Button>
         </div>
         <div className="flex flex-wrap gap-4">
-          <Button variant="contained">
+          <Button variant="contained" className="rounded-md">
             <SparklesIcon /> Test{" "}
           </Button>
           <Button variant="contained">
@@ -150,26 +150,30 @@ function ButtonTest() {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div className="flex flex-wrap justify-center gap-4">
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Picture</Label>
             <InputX
               id="pictureX"
+              label="Test"
               type="email"
               placeholder="Find books..."
-              className = "rounded-md"
+              className="rounded-md"
               leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
               trailingComponent={<span>.com</span>}
             />
           </div>
-          
+
           <div className="grid w-full max-w-sm items-center gap-2">
             <Label htmlFor="pictureX">Picture</Label>
-            <InputX id="pictureX" type="file" trailingComponent={<i class="fa-solid fa-file-image"></i>}/>
+            <InputX
+              id="pictureX"
+              type="file"
+              trailingComponent={<i class="fa-solid fa-file-image"></i>}
+            />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -178,8 +182,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -188,8 +192,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -197,8 +201,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -207,8 +211,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -217,8 +221,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -228,8 +232,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -238,8 +242,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -249,8 +253,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -259,8 +263,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -270,8 +274,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."
@@ -281,8 +285,8 @@ function ButtonTest() {
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
-            <Label htmlFor="pictureX">Email</Label>
             <InputX
+              label="Test"
               id="pictureX"
               type="email"
               placeholder="Find books..."

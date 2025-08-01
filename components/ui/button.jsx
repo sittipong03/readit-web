@@ -295,7 +295,7 @@ const buttonVariants = cva(
         className:
           "border-action-active bg-action-disabledBackground text-text-primary hover:bg-action-hover active:bg-action-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "neutral", className: "text-text-primary disabled:text-text-disabled" },
+      { variant: "link", color: "neutral", className: "px-0 text-text-primary disabled:text-text-disabled" },
     ],
     defaultVariants: {
       variant: "contained",

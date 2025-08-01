@@ -1,41 +1,101 @@
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { Link } from "react-router";
+import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
 import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { InputX } from "@/components/ui/inputX";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { ReaditLogo } from "@/src/assets/readit";
+
+const components = [
+  {
+    title: "Alert Dialog",
+    href: "",
+    description:
+      "A modal dialog that interrupts the user with important content and expects a response.",
+  },
+  {
+    title: "Hover Card",
+    href: "",
+    description:
+      "For sighted users to preview content available behind a link.",
+  },
+  {
+    title: "Progress",
+    href: "",
+    description:
+      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+  },
+  {
+    title: "Scroll-area",
+    href: "-area",
+    description: "Visually or semantically separates content.",
+  },
+  {
+    title: "Tabs",
+    href: "",
+    description:
+      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+  },
+  {
+    title: "Tooltip",
+    href: "",
+    description:
+      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+  },
+];
 
 //http://localhost:5173/buttontest
 
 function ButtonTest() {
   return (
     <div className="dark w-full">
-      <div className="bg-paper-elevation-6 flex min-h-screen flex-col items-center gap-16 p-8">
-        <div className="display-3 text-text-primary flex w-140 items-center gap-4 text-center">
-          Button Test
-          <Button variant="contained" asChild={true} color="tertiary">
+      <div className="bg-paper-elevation-6 flex min-h-screen flex-col items-center gap-10 p-8">
+        <div className="text-text-primary flex w-fit items-center gap-4 text-center">
+          <div className="display-3">DesignSystem Test</div>
+          <Button variant="outlined" asChild color="tertiary">
+            <a href="https://lucide.dev/icons/" target="_blank">
+              Lucide Icons
+              <i className="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </Button>
+          <Button variant="contained" asChild color="tertiary">
             <a href="https://fontawesome.com/search" target="_blank">
-              Font Awesome Link
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Font Awesome Icons
+              <i className="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
           </Button>
         </div>
+
+        <div className="h6 text-text-secondary">Buttons</div>
         <div className="flex flex-wrap gap-4">
           <Button variant="contained" className="rounded-md">
             <SparklesIcon /> Test{" "}
           </Button>
           <Button variant="contained">
-            <i class="fa-solid fa-sparkles"></i> Test{" "}
+            <i className="fa-solid fa-sparkles"></i> Test{" "}
           </Button>
 
           <Button variant="outlined" size="large">
-            <i class="fa-solid fa-house"></i> Test FontAwesome{" "}
+            <i className="fa-solid fa-house"></i> Test FontAwesome{" "}
           </Button>
           <Button variant="outlined">
-            <i class="fa-solid fa-house"></i> Test FontAwesome{" "}
+            <i className="fa-solid fa-house"></i> Test FontAwesome{" "}
           </Button>
           <Button variant="outlined" size="small">
-            <i class="fa-solid fa-house"></i> Test FontAwesome{" "}
+            <i className="fa-solid fa-house"></i> Test FontAwesome{" "}
           </Button>
           <Button variant="outlined">
             <SparklesIcon /> Test{" "}
@@ -150,6 +210,7 @@ function ButtonTest() {
           </Button>
         </div>
 
+        <div className="h6 text-text-secondary">Input</div>
         <div className="flex flex-wrap justify-center gap-4">
           <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
@@ -158,7 +219,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               className="rounded-md"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
               trailingComponent={<span>.com</span>}
             />
           </div>
@@ -168,7 +229,7 @@ function ButtonTest() {
             <InputX
               id="pictureX"
               type="file"
-              trailingComponent={<i class="fa-solid fa-file-image"></i>}
+              trailingComponent={<i className="fa-solid fa-file-image"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -178,7 +239,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               size="small"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -188,7 +249,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               variant="filled"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -197,7 +258,7 @@ function ButtonTest() {
               id="pictureX"
               type="email"
               placeholder="Find books..."
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -207,7 +268,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               variant="filled"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -217,7 +278,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               color="primary"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -228,7 +289,7 @@ function ButtonTest() {
               placeholder="Find books..."
               color="primary"
               variant="filled"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -238,7 +299,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               color="neutral"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -249,7 +310,7 @@ function ButtonTest() {
               placeholder="Find books..."
               color="neutral"
               variant="filled"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -259,7 +320,7 @@ function ButtonTest() {
               type="email"
               placeholder="Find books..."
               color="error"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -270,7 +331,7 @@ function ButtonTest() {
               placeholder="Find books..."
               color="error"
               variant="filled"
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -281,7 +342,7 @@ function ButtonTest() {
               placeholder="Find books..."
               color="primary"
               disabled
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -292,10 +353,110 @@ function ButtonTest() {
               placeholder="Find books..."
               variant="filled"
               disabled
-              leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
         </div>
+        <div className="h6 text-text-secondary">Navigation Menu</div>
+        <NavigationMenu viewport={false}>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/docs">Docs</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger
+                showIcon={false}
+                className={cn(
+                  buttonVariants({ variant: "outlined", color: "secondary" }),
+                  "w-9 px-0",
+                  "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible",
+                )}
+              >
+                <SparklesIcon />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[300px] gap-4">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">
+                        <div className="font-medium">Components</div>
+                        <div className="text-text-secondary body-2">
+                          Browse all components in the library.
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">
+                        <div className="font-medium">Documentation</div>
+                        <div className="text-text-secondary body-2">
+                          Learn how to use the library.
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">
+                        <div className="font-medium">Blog</div>
+                        <div className="text-text-secondary body-2">
+                          Read our latest blog posts.
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Simple</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[200px] gap-4">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">Components</Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">Documentation</Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">Blocks</Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>With Icon</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[200px] gap-4">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link href="#" className="flex-row items-center gap-2">
+                        <CircleHelpIcon />
+                        Backlog
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#" className="flex-row items-center gap-2">
+                        <CircleIcon />
+                        To Do
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#" className="flex-row items-center gap-2">
+                        <CircleCheckIcon />
+                        Done
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
     </div>
   );

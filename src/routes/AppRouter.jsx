@@ -21,7 +21,8 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentSuccess from "../pages/user/PaymentSuccessPage";
+import ButtonTest from "../pages/test/ButtonTest";
 
 const routerGuest = createBrowserRouter([
   {

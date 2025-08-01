@@ -21,8 +21,9 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentSuccess from "../pages/user/PaymentSuccessPage";
 import ButtonTest from "../pages/test/ButtonTest";
+import Home from "../pages/Home";
 
 const routerGuest = createBrowserRouter([
   {
@@ -37,7 +38,7 @@ const routerGuest = createBrowserRouter([
   {
     element: <GuestLayout />,
     children: [
-      { path: "/home", element: <HomePage /> },
+      { path: "/homepage", element: <HomePage /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/review", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
@@ -56,16 +57,15 @@ const routerUser = createBrowserRouter([
   {
     element: <UserLayout />,
     children: [
-      { path: "/home", element: <HomePage /> },
-      { path: "/book/:bookId", element: <BookPage /> },
-      { path: "/userproflie", element: <UserProfilePage /> },
-      { path: "/RegisterBookTag", element: <RegisterBookTag /> },
-      { path: "/setting", element: <SettingPage /> },
-      { path: "/shelf", element: <ShelfPage /> },
-      { path: "/cart", element: <CartPage /> },
-      { path: "/checkout", element: <CheckOutPage /> },
-      { path: "/payment", element: <PaymentSuccess /> },
-      { path: "/ButtonTest", element: <ButtonTest /> },
+      { path: '/home', element: <Home /> },
+      { path: '/homepage', element: <HomePage /> },
+      { path: '/book/:bookId', element: <BookPage /> },
+      { path: '/userproflie', element: <UserProfilePage /> },
+      { path: '/setting', element: <SettingPage /> },
+      { path: '/shelf', element: <ShelfPage /> },
+      { path: '/cart', element: <CartPage /> },
+      { path: '/checkout', element: <CheckOutPage /> },
+      {path: '/payment', element: <PaymentSuccess/>}
     ],
   },
 ]);

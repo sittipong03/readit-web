@@ -347,6 +347,9 @@
 
   --color-*: initial;
 
+  --color-divider: #00020912;
+  --color-divider-soft: #00020904;
+
   --color-text-primary: rgb(from var(--Neutral-950) r g b / 90%);
   --color-text-secondary: rgb(from var(--Neutral-950) r g b / 72%);
   --color-text-disabled: rgb(from var(--Neutral-950) r g b / 48%);
@@ -400,7 +403,7 @@
   --color-action-selected: #0002091f;
   --color-action-focus: #00020929;
   --color-action-disabled: #0002093d;
-  --color-action-disabledBackground: #0002090a;
+  --color-action-disabledBackground: var(--Neutral-400);
   --color-action-disabledBackground-100: var(--Neutral-800);
 
   --color-error-main: var(--Danger-500);
@@ -455,21 +458,21 @@
   --color-success-focusVisible: rgb(from var(--Success-500) r g b / 30%);
   --color-success-outlinedBorder: rgb(from var(--Success-500) r g b / 50%);
 
-  --color-black-main: #ffffffff;
-  --color-black-secondary: #ffffff99;
-  --color-black-hover: #ffffff1f;
-  --color-black-selected: #ffffff29;
-  --color-black-focus: #ffffff33;
-  --color-black-focusVisible: #ffffff4d;
-  --color-black-outlinedBorder: #ffffff80;
+  --color-white-main: #ffffffff;
+  --color-white-secondary: #ffffff99;
+  --color-white-hover: #ffffff1f;
+  --color-white-selected: #ffffff29;
+  --color-white-focus: #ffffff33;
+  --color-white-focusVisible: #ffffff4d;
+  --color-white-outlinedBorder: #ffffff80;
 
-  --color-white-main: #000209ff;
-  --color-white-secondary: #00020999;
-  --color-white-hover: #0002091f;
-  --color-white-selected: #00020929;
-  --color-white-focus: #00020933;
-  --color-white-focusVisible: #0002094d;
-  --color-white-outlinedBorder: #00020980;
+  --color-black-main: #000209ff;
+  --color-black-secondary: #000209d0;
+  --color-black-hover: #0002091f;
+  --color-black-selected: #00020929;
+  --color-black-focus: #00020933;
+  --color-black-focusVisible: #0002094d;
+  --color-black-outlinedBorder: #00020980;
 
   --color-lighting-dark: rgb(from var(--Secondary-900) r g b / 8%);
   --color-lighting-darker: rgb(from var(--Secondary-900) r g b / 12%);
@@ -593,6 +596,9 @@
 @layer theme {
   * {
     @variant dark {
+      --color-divider: #FFFFFF16;
+      --color-divider-soft: #FFFFFF08;
+
       --color-text-primary: rgb(from var(--Neutral-50) r g b / 90%);
       --color-text-secondary: rgb(from var(--Neutral-50) r g b / 72%);
       --color-text-disabled: rgb(from var(--Neutral-50) r g b / 36%);
@@ -627,7 +633,7 @@
       --color-secondary-focusVisible: rgb(from var(--Secondary-500) r g b / 28%);
       --color-secondary-outlinedBorder: rgb(from var(--Secondary-500) r g b / 20%);
 
-      --color-tertiary-main: var(--Tertiary-400);
+      --color-tertiary-main: var(--Tertiary-500);
       --color-tertiary-dark: var(--Tertiary-300);
       --color-tertiary-darker: var(--Tertiary-200);
       --color-tertiary-light: var(--Tertiary-700);
@@ -701,21 +707,21 @@
       --color-success-focusVisible: rgb(from var(--Success-500) r g b / 30%);
       --color-success-outlinedBorder: rgb(from var(--Success-500) r g b / 50%);
 
-      --color-black-main: #000000ff;
-      --color-black-secondary: #00000099;
-      --color-black-hover: #0000001f;
-      --color-black-selected: #00000029;
-      --color-black-focus: #00000033;
-      --color-black-focusVisible: #0000004d;
-      --color-black-outlinedBorder: #00000080;
+      --color-white-main: #000000ff;
+      --color-white-secondary: #00000099;
+      --color-white-hover: #0000001f;
+      --color-white-selected: #00000029;
+      --color-white-focus: #00000033;
+      --color-white-focusVisible: #0000004d;
+      --color-white-outlinedBorder: #00000080;
 
-      --color-white-main: #ffffffff;
-      --color-white-secondary: #ffffff99;
-      --color-white-hover: #ffffff1f;
-      --color-white-selected: #ffffff29;
-      --color-white-focus: #ffffff33;
-      --color-white-focusVisible: #ffffff4d;
-      --color-white-outlinedBorder: #ffffff80;
+      --color-black-main: #ffffffff;
+      --color-black-secondary: #ffffff99;
+      --color-black-hover: #ffffff1f;
+      --color-black-selected: #ffffff29;
+      --color-black-focus: #ffffff33;
+      --color-black-focusVisible: #ffffff4d;
+      --color-black-outlinedBorder: #ffffff80;
 
       --color-lighting-dark: rgb(from var(--Secondary-900) r g b / 20%);
       --color-lighting-darker: rgb(from var(--Secondary-900) r g b / 40%);
@@ -828,34 +834,30 @@
   .label-medium {
     @apply font-subtitle text-bodyMedium leading-labelSmall tracking-labelSmall font-sans;
   }
-
+  .label-small {
+    @apply font-regular text-bodySmall leading-labelSmall tracking-labelSmall font-sans;
+  }
   .button-large {
     font-size: 15px;
-    @apply leading-labelLarge font-button tracking-labelLarge;
+    @apply leading-labelLarge font-button tracking-labelLarge font-sans;
   }
-
   .button-medium {
     font-size: 14px;
-    @apply leading-labelLarge font-button tracking-labelLarge;
+    @apply leading-labelLarge font-button tracking-labelLarge font-sans;
   }
-
   .button-small {
     font-size: 13px;
-    @apply leading-labelLarge font-button tracking-labelLarge;
+    @apply leading-labelLarge font-button tracking-labelLarge font-sans;
   }
-
   .value {
     @apply text-bodyLarge leading-bodyLarge font-regular tracking-bodyLarge font-sans;
   }
-
   .helper {
     @apply text-bodySmall leading-labelSmall font-regular tracking-labelSmall font-sans;
   }
-
   .table-header {
     @apply text-titleXSmall leading-titleXSmall font-header tracking-titleXSmall font-sans;
   }
-
   .list-subheader {
     line-height: 48px;
     @apply text-bodyMedium font-button tracking-bodyMedium font-sans;

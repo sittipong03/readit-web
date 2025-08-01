@@ -157,6 +157,7 @@ function ButtonTest() {
               id="pictureX"
               type="email"
               placeholder="Find books..."
+              className = "rounded-md"
               leadingComponent={<i class="fa-solid fa-book-open-cover"></i>}
               trailingComponent={<span>.com</span>}
             />
@@ -164,7 +165,7 @@ function ButtonTest() {
           
           <div className="grid w-full max-w-sm items-center gap-2">
             <Label htmlFor="pictureX">Picture</Label>
-            <InputX id="pictureX" type="file" />
+            <InputX id="pictureX" type="file" trailingComponent={<i class="fa-solid fa-file-image"></i>}/>
           </div>
           <div className="grid w-full max-w-sm items-center gap-2">
             <Label htmlFor="pictureX">Email</Label>

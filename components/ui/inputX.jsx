@@ -4,9 +4,9 @@ import { cva } from "class-variance-authority";
 
 const inputVariants = cva(
   // Base styles for the outer container (div) that wraps the input and adornments
-  "inline-flex items-center rounded-full font-medium transition-[color] " +
+  "inline-flex items-center rounded-full font-medium cursor-pointer" +
     "focus-within:outline-none focus-within:ring-1 focus-within:ring-offset-0 " + // Styles when the input inside is focused
-    "aria-[invalid=true]:ring-error-main/20 aria-[invalid=true]:border-error-main ", // Styles for invalid state
+    "aria-[invalid=true]:ring-error-main/20 aria-[invalid=true]:border-error-main transition-all", // Styles for invalid state
 
   {
     variants: {
@@ -34,53 +34,54 @@ const inputVariants = cva(
         variant: "outlined",
         color: "primary",
         className:
-          "border-primary-outlinedBorder text-text-primary focus-within:ring-[var(--color-primary-focusVisible)]",
+          "border-primary-outlinedBorder text-text-primary focus-within:ring-[var(--color-primary-focusVisible)] hover:bg-primary-hover",
       },
       {
         variant: "filled",
         color: "primary",
         className:
-          "bg-primary-lighter text-text-primary focus-within:ring-[var(--color-primary-focusVisible)]",
+          "bg-primary-lighter text-text-primary focus-within:ring-[var(--color-primary-focusVisible)] hover:bg-primary-light",
       },
       // --- Secondary Color Variants ---
       {
         variant: "outlined",
         color: "secondary",
         className:
-          "border-secondary-outlinedBorder text-text-primary focus-within:ring-[var(--color-secondary-focusVisible)]",
+          "border-secondary-outlinedBorder text-text-primary focus-within:ring-[var(--color-secondary-focusVisible)] hover:bg-secondary-hover",
       },
       {
         variant: "filled",
         color: "secondary",
         className:
-          "bg-secondary-lighter text-text-primary focus-within:ring-[var(--color-secondary-focusVisible)]",
+          "bg-secondary-lighter text-text-primary focus-within:ring-[var(--color-secondary-focusVisible)] hover:bg-secondary-light",
       },
       // --- Neutral Color Variants ---
       {
         variant: "outlined",
         color: "neutral",
         className:
-          "border-neutral-950 text-text-primary focus-within:ring-[var(--color-text-focusVisible)]",
+          "border-black-outlinedBorder text-text-primary focus-within:ring-[var(--color-text-focusVisible)] hover:bg-action-hover",
       },
       {
         variant: "filled",
         color: "neutral",
         className:
-          "bg-white-focusVisible text-text-primary focus-within:ring-[var(--color-text-focusVisible)]",
+          "bg-white-focusVisible text-text-primary focus-within:ring-[var(--color-text-focusVisible)] hover:bg-white-focus",
       },
       // --- Error Color Variants ---
       {
         variant: "outlined",
         color: "error",
         className:
-          "border-error-dark text-text-primary focus-within:ring-[var(--color-error-focusVisible)]",
+          "border-error-dark text-text-primary focus-within:ring-[var(--color-error-focusVisible)] hover:bg-error-hover",
       },
       {
         variant: "filled",
         color: "error",
         className:
-          "bg-error-dark text-text-primary focus-within:ring-[var(--color-error-focusVisible)]",
+          "bg-error-dark text-text-primary focus-within:ring-[var(--color-error-focusVisible)] hover:bg-error-darker",
       },
+      // --- Disabled Color Variants ---
       {
         variant: "outlined",
         disabled: true,
@@ -147,14 +148,14 @@ const InputX = React.forwardRef(
 
     // Determine icon size class for leading/trailing components (assuming they are SVG-based icons)
     const iconSizeClass =
-      size === "small" ? "[&_svg]:size-3" : "[&_svg]:size-4";
+      size === "small" ? "[&_svg]:size-4" : "[&_svg]:size-4.5";
 
     return (
       <div className={wrapperClasses}>
         {leadingComponent && (
           <div
             className={cn(
-              "text-text-disabled/50 flex items-center justify-center pl-3",
+              "text-text-disabled/60 flex items-center justify-center pl-3",
               iconSizeClass,
             )}
           >
@@ -171,7 +172,7 @@ const InputX = React.forwardRef(
         {trailingComponent && (
           <div
             className={cn(
-              "text-text-disabled/50 flex items-center justify-center pr-3",
+              "text-text-disabled/60 flex items-center justify-center pr-3",
               iconSizeClass,
             )}
           >

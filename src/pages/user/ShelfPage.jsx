@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button";
 import BookCard from "@/src/components/BookCard";
+import BookEditModal from "@/src/components/BookEditModal";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -49,13 +51,24 @@ function Shelf() {
       hasUserReview: false,
     },
   ];
-
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("readlist");
   const [readBooks, setReadBooks] = useState(books);
   const navigate = useNavigate();
 
   const hdlBackToFeed = () => {
     navigate("/home");
+  };
+
+  const hdlBookClick = (book) => {
+    setSelectedBook(book);
+    setIsModalOpen(true);
+  };
+
+  const hdlCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBook(null);
   };
 
   const renderContent = () => {
@@ -67,9 +80,14 @@ function Shelf() {
               <div className="text-text-secondary">
                 <p className="subtitle-1">Readlist</p>
               </div>
-              <div className="bg-primary-main text-primary-contrast font-button line-height-labalMedium tracking-labelMedium rounded-full px-4 py-2">
-                <button>+ Add Book</button>
-              </div>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                fontWeight="Button"
+              >
+                + Add Book
+              </Button>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
               <div className="flex h-[360px] flex-col items-center justify-between">
@@ -94,15 +112,20 @@ function Shelf() {
                 <p className="subtitle-1">Read</p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="bg-primary-soft text-primary-main border-primary-main font-button line-height-labalMedium border- rounded-full border-1 px-4 py-2">
+                <Button variant="outlined" color="primary" size="medium">
                   Filter
-                </button>
-                <button className="bg-primary-soft text-primary-main border-primary-main font-button line-height-labalMedium border- rounded-full border-1 px-4 py-2">
+                </Button>
+                <Button variant="outlined" color="primary" size="medium">
                   Sort by: Latest Date
-                </button>
-                <button className="bg-primary-main text-primary-contrast font-button line-height-labalMedium tracking-labelMedium rounded-full px-4 py-2">
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  fontWeight="Button"
+                >
                   + Add Book
-                </button>
+                </Button>
               </div>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
@@ -111,12 +134,16 @@ function Shelf() {
                   <BookCard
                     key={book.id}
                     book={book}
-                    // onReviewClick={(bookId) => handleViewReview(bookId)}
+                    onBookClick={hdlBookClick}
                   />
                 ))}
               </div>
-
-              {/* ถ้าไม่มีหนังสือ */}
+              <BookEditModal
+                isOpen={isModalOpen}
+                onClose={hdlCloseModal}
+                book={selectedBook}
+              />
+              //no books read yet
               {readBooks.length === 0 && (
                 <div className="flex h-full flex-col items-center justify-center">
                   <div className="text-center">
@@ -170,12 +197,14 @@ function Shelf() {
                 <p className="h6 text-text-primary">Your Shelves</p>
               </div>
               <div>
-                <button
+                <Button
                   onClick={hdlBackToFeed}
-                  className="bg-primary-soft text-primary-main border-primary-main font-button line-height-labalMedium cursor-pointer rounded-full border-1 px-4 py-2"
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
                 >
                   Back to my feed
-                </button>
+                </Button>
               </div>
             </div>
             <div className="flex h-[668px] w-full justify-between">

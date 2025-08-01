@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { StarIcon } from "./icons";
 import ButtonTest from "../pages/test/ButtonTest";
 
-const BookCard = ({ book }) => {
+const BookCard = ({ book, onBookClick }) => {
+  if (!book) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="bg-paper-elevation-6 border-divider-soft h-fit rounded-md border-2 p-2">
       <div className="flex h-[162px] w-full items-center justify-center">
@@ -12,6 +15,7 @@ const BookCard = ({ book }) => {
           style={{
             backgroundImage: `url(${book.coverImage})`,
           }}
+          onClick={() => onBookClick?.(book)}
         ></div>
       </div>
       <div className="min-h-[116px] w-full">
@@ -32,9 +36,16 @@ const BookCard = ({ book }) => {
             </div>
           </div>
           <div>
-            <button className="border-secondary-outlinedBorder bg-secondary-soft font-button size-labelSmall text-secondary-main line-height-labelSmall tracking-labelSmall mt-2 w-full rounded-xs border-1 px-3 py-1">
+            <Button
+              variant="outlined"
+              color="secondary-soft"
+              size="small"
+              borderColor="secondary-outlinedBorder"
+              borderRadius="1px"
+              className="mt-2"
+            >
               View your review
-            </button>
+            </Button>
           </div>
         </div>
       </div>

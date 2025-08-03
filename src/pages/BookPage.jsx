@@ -2,28 +2,80 @@ import { useEffect, useState } from "react";
 import bookManageStore from "../stores/booksManageStore";
 import { useLocation, useParams } from "react-router";
 import { Star } from "../icons/Index";
+import cartManageStore from "../stores/cartManageStore";
+import useUserStore from "../stores/userStore";
+import reviewManageStore from "../stores/reviewStore";
+import { StarIcon } from "../components/icons";
+import productManageStore from "../stores/productManageStore";
 
 function Book() {
   const [loading, setLoading] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const getBookById = bookManageStore(state => state.getBookById);
+  const user = useUserStore(state => state.userId);
+  const token = useUserStore(state => state.token);
   const book = bookManageStore(state => state.book);
+  const review = reviewManageStore(state => state.reviews);
+  const getProduct = productManageStore(state => state.getProductId)
+  const product =  productManageStore(state => state.product);
+  const getReview = reviewManageStore(state => state.getAllReview);
+  const addReview = reviewManageStore(state => state.addReview)
+  const addToCart = cartManageStore(state => state.addToCart);
   const { bookId } = useParams();
-  console.log(bookId)
+  // console.log(token);
+  // console.log("User",user);
+  // console.log("Token",token);
+  // console.log(getProduct);
+  console.log("product", product);
   const hdlReview = () => {
     setShowReview(!showReview);
   }
+
+  // console.log(book);
+  // console.log(book.id);
+
+  const hdlPostReview = async() => {
+    try {
+      const data = document.getElementById("review")
+      const sendData = {userId: user, bookId: book.id, title: book.title, content: data.value, reviewPoint: 3}
+      // console.log(sendData);
+      // console.log("bookID",book.id);
+      const response = await addReview(book.id, sendData, token)
+      console.log(response);
+      setShowReview(!showReview);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const cartData = async(data) => {
+    try {
+      console.log(data);
+      const sendData = {userId: user, productId: product.id, quantity: 1 }
+      // console.log(sendData);
+      console.log(token);
+      const response = await addToCart(sendData, token)
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   useEffect(() => {
     const run = async () => {
       setLoading(true)
       const res = await getBookById(bookId);
+      const review = await getReview(bookId);
+      const product = await getProduct(bookId)
+      console.log(product);
       setLoading(false)
-      console.log(res.data);
+      // console.log(res.data);
     }
     run()
   }, [])
-  console.log(book);
+  // console.log(book);
+  // console.log('review', review)
   return (
     <>
       {loading
@@ -43,6 +95,7 @@ function Book() {
                 <p>{book?.Author.name}</p>
                 <div className="flex">
                   <Star className="w-10" />
+                  <StarIcon/>
                   <p>{book?.averageRating}</p>
                 </div>
                 <div className="flex gap-6">
@@ -50,7 +103,7 @@ function Book() {
                   <p>{book?.reviewCount} Reviews</p>
                   {/* <p>{book?.averageRating}</p> */}
                 </div>
-                <button className="p-3 border rounded-2xl w-fit">Add to cart</button>
+                <button className="p-3 border rounded-2xl w-fit" onClick={() => cartData(book.id)}>Add to cart</button>
               </div>
             </div>
             <div className="border mb-4">
@@ -84,7 +137,7 @@ function Book() {
                   <div className="">
                     {showReview &&
                       <div className="">
-                        <input type="text" placeholder="Write a review" />
+                        <input id="review" type="text" placeholder="Write a review" />
                       </div>
                     }
                     <p>Rate thie book</p>
@@ -97,7 +150,7 @@ function Book() {
                   </div>
                   {showReview 
                     ? 
-                    <button className="border p-4 rounded-2xl cursor-pointer" onClick={() => hdlReview()}>Post</button>
+                    <button className="border p-4 rounded-2xl cursor-pointer" onClick={() => hdlPostReview()}>Post</button>
                     :
                     <button className="border p-4 rounded-2xl cursor-pointer" onClick={() => hdlReview()}>Write a review</button>
                   }
@@ -107,9 +160,18 @@ function Book() {
                     <h1>Nothing here</h1>
                     <p>Nothing there</p>
                   </div>
-                ) : book?.review.map((review) => {
-                  <h1>{review}</h1>
-                })
+                ) : book?.review.map((review) => (
+                  <div className="flex flex-row gap-5" key={review.id}>
+                    <div>
+                      <h2>{review.user.name}</h2>
+                      <p>xxxx Reviews</p>
+                      <p>xxxx Followers</p>
+                    </div>
+                    <div>
+                      <p>{review.content}</p>
+                    </div>
+                  </div>
+                ))
                 }
               </div>
             </div>

@@ -1,8 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CartItem from '../../components/CartItem';
+import cartManageStore from '@/src/stores/cartManageStore';
+import useUserStore from '@/src/stores/userStore';
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]); // array of bookIds
+  const { getAllCart } = cartManageStore(); 
+  const token = useUserStore(state => state.token)
+
+  useEffect(() => {
+    const run = async () => {
+      const result = await getAllCart(token);
+      setCartItems(result?.data.cart.items)
+      // console.log("result", result);
+    }
+
+    run()
+  }, [])
 
   const handleRemove = (id) => {
     setCartItems(items => items.filter(bookId => bookId !== id));

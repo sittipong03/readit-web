@@ -32,9 +32,9 @@ function Login() {
 
   };
 
-  if (isSuccess) {
-    return <Navigate to="/home" replace />;
-  }
+  // if (isSuccess) {
+  //   return <Navigate to="/home" replace />;
+  // }
 
   return (
     <div className="w-full h-[700px] flex justify-center bg-linear-to-b from-paper-elevation-2 to-tertiary-lighter">

@@ -13,7 +13,7 @@ const bookManageStore = create((set,get) => ({
   getBookById : async(id) => {
     const result = await getBookById(id);
     set({book: result.data});
-    console.log(result);
+    // console.log(result);
     return result;
   }
 }));

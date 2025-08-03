@@ -21,7 +21,6 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-// import PaymentSuccess from "../pages/PaymentSuccess";
 import GeneralSetting from "../pages/user/setting/GeneralSetting";
 import PasswordSetting from "../pages/user/setting/PasswordSetting";
 import PurchasesSetting from "../pages/user/setting/PurchaseSetting";
@@ -30,6 +29,8 @@ import EarningSetting from "../pages/user/setting/EarningSetting";
 import ButtonTest from "../pages/test/ButtonTest";
 import Home from "../pages/Home";
 import OrderDetail from "../components/setting/OrderDetail";
+import PaymentSuccess from "../pages/user/PaymentSuccessPage";
+import BookCard from "../components/BookCard";
 
 const routerGuest = createBrowserRouter([
   {
@@ -49,7 +50,8 @@ const routerGuest = createBrowserRouter([
       { path: "/review", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/Register", element: <RegisterPage /> },
-      { path: "/ButtonTest", element: <ButtonTest /> },
+      { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component
+      { path: "/shelf", element: <ShelfPage /> }, // Example route for ShelfPage component
     ],
   },
 ]);
@@ -87,6 +89,7 @@ const routerUser = createBrowserRouter([
       { path: "/shelf", element: <ShelfPage /> },
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
+      { path: "/payment", element: <PaymentSuccess /> },
     ],
   },
   {
@@ -96,10 +99,11 @@ const routerUser = createBrowserRouter([
 ]);
 
 function AppRouter() {
-  // const user = 1;
-  // const user = useUserStore(state => state.user) // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
-  // const finalRouter = user == 1 ? routerUser : routerGuest; //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา
-  const finalRouter = routerUser;
+  const role = useUserStore((state) => state.role); // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
+  // test pull push
+  console.log(role);
+  const finalRouter =
+    role === "USER" ? routerUser : role === "ADMIN" ? routerUser : routerGuest; //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา
 
   return (
     <Suspense fallback={<p>Loading</p>}>

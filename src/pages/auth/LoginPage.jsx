@@ -56,9 +56,9 @@ function Login() {
 
           <form className="flex flex-col gap-[16px]" onSubmit={handleSubmit(handleLoginClick)}>
             <div className=" w-full h-[66px]">
-              <div className={`pb-1 label-medium ${isError ? "text-error-main" : "text-text-primary"}`}>
+              <label className={`pb-1 label-medium ${isError ? "text-error-main" : "text-text-primary"}`}>
                 Email:
-              </div>
+              </label>
               <input className={`w-full h-[44px] rounded-pill px-[12px] border  focus:outline-none focus-within:outline-auto focus-within:ring-2 focus-within:ring-primary-main
 ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
   `} type="text" placeholder="Email..." {...register('email')} />

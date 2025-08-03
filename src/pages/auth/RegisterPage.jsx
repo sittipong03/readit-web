@@ -1,10 +1,31 @@
 import { Link } from "react-router"
 import { WarningIcon, HidePasswordIcon } from "@/src/icons/Index"
 import { useState } from "react"
+import { useForm } from "react-hook-form";
+import * as authApi from '../../api/authApi'; 
+
 
 
 function Register() {
   const [isError, setIsError] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const { handleSubmit, register, formState: { errors, isSubmitting }, reset } = useForm()
+
+  const handleRegisterClick = async (data) => {
+    try {
+      console.log(data)
+      const result = await authApi.registerUser(data)
+      
+      console.log(result)
+      setIsError(false)
+      setIsSuccess(true)
+    } catch (error) {
+      setIsError(true)
+    }
+
+  };
+
 
   return (
     <div className="w-full h-[700px] flex justify-center bg-linear-to-b from-paper-elevation-2 to-tertiary-lighter">
@@ -32,14 +53,14 @@ function Register() {
             <div className="flex-shrink-0 text-text-disabled caption">OR</div>
             <div className="h-[1px] grow bg-text-disabled"></div>
           </div>
-
+          <form className="flex flex-col gap-[16px]" onSubmit={handleSubmit(handleRegisterClick)}>
           <div className=" w-full h-[66px]">
             <div className={`pb-1 label-medium ${isError ? "text-error-main" : "text-text-primary"}`}>
               Email:
             </div>
             <input className={`w-full h-[44px] rounded-pill px-[12px] border  focus:outline-none focus-within:outline-auto focus-within:ring-2 focus-within:ring-primary-main
 ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
-  `} type="text" placeholder="Email..." />
+  `} type="text" placeholder="Email..."  {...register('email')}/>
           </div>
 
           <div className=" w-full h-[66px]">
@@ -55,7 +76,7 @@ ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
     `}
             >
               <input className={`w-full h-[44px] focus:outline-none
-  `} type="password" placeholder="Password..." />
+  `} type="password" placeholder="Password..." {...register('password')}/>
               <HidePasswordIcon className="w-5 text-text-disabled" />
             </div>
           </div>
@@ -72,6 +93,9 @@ ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
           <div>
             <button className="flex items-center justify-center rounded-pill w-full h-[44px] text-primary-contrast bg-primary-main hover:bg-primary-light active:bg-primary-dark">Create Account</button>
           </div>
+
+
+          </form>
 
 
           <div className="flex items-center justify-center gap-0.5">

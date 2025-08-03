@@ -11,6 +11,7 @@ import UserLayout from "../layouts/UserLayout";
 //page section
 import LandingPage from "../pages/LandingPage";
 import HomePage from "../pages/HomePage";
+import Home from "../pages/Home";
 import BookPage from "../pages/BookPage";
 import ReviewPage from "../pages/ReviewPage";
 import LoginPage from "../pages/auth/LoginPage";
@@ -21,7 +22,7 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-import PaymentSuccess from "../pages/PaymentSuccess";
+// import PaymentSuccess from "../pages/PaymentSuccess";
 import BookCard from "../components/BookCard";
 
 const routerGuest = createBrowserRouter([
@@ -65,7 +66,7 @@ const routerUser = createBrowserRouter([
       { path: "/shelf", element: <ShelfPage /> },
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
-      { path: "/payment", element: <PaymentSuccess /> },
+      // { path: "/payment", element: <PaymentSuccess /> },
     ],
   },
 ]);

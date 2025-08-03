@@ -3,10 +3,7 @@ import axios from "axios";
 // ไฟล์นี้จะสร้าง axios instance เพื่อกำหนดและ แปะ token header ไว้เลย
 
 const axiosInstance = axios.create({
-  baseURL:
-    // process.env.READIT_API ||
-    // "http://localhost:6500/api" ||
-    "http://localhost:8899/api",
+  baseURL: "http://localhost:8899/api" || "http://localhost:6500/api",
   timeout: 20000,
   headers: {
     "Content-Type": "application/json",
@@ -21,8 +18,11 @@ axiosInstance.interceptors.request.use(
     //////////////////////////////////////////////////////////////////
     //////// note ************ ตรงนี้ต้องเอา token จาก useStore มาแปะตรงนี้
     //////////////////////////////////////////////////////////////////
-    let token = localStorage.getItem("authToken");
-
+    let token = localStorage.setItem(
+      "authToken",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiY21kdTNwazRkMDAwNmNyanM4cDk2YXowdyIsImVtYWlsIjoiY2hheWNoYXl0b20yQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0sImlhdCI6MTc1NDIwNjc4MCwiZXhwIjoxNzU0MjkzMTgwfQ.LlAMuLAzcap9YK7TjWZv1SDk2muwnuMCE5OkSuzWt_k",
+    );
+    console.log("[axios] token from storage:", token);
     if (!token) {
       console.warn(
         "⚠️ USING MOCK TOKEN! Remember to remove this for production.",
@@ -30,12 +30,16 @@ axiosInstance.interceptors.request.use(
       // *** ใส่ Token ปลอมที่คุณได้จากเพื่อนที่นี่ ***
       // อาจจะเป็น token ที่ไม่มีวันหมดอายุ หรือ User ID ที่ Backend รู้จัก
       token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiY21kc2RvbHZkMDAwMGNyNDZ6bzhkYW9jbSIsImVtYWlsIjoiY2hheWNoYXl0b20xQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0sImlhdCI6MTc1NDAyNTg0NSwiZXhwIjoxNzU0MTEyMjQ1fQ.ujAkDoRRnKxJPgFSu-vEZ8BORGvp6hDWGsYheb9o3Mk";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiY21kdTNwazRkMDAwNmNyanM4cDk2YXowdyIsImVtYWlsIjoiY2hheWNoYXl0b20yQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0sImlhdCI6MTc1NDIwNjc4MCwiZXhwIjoxNzU0MjkzMTgwfQ.LlAMuLAzcap9YK7TjWZv1SDk2muwnuMCE5OkSuzWt_k";
     }
 
     if (token) {
       // ถ้ามี token ให้เพิ่ม Authorization header เข้าไป
       config.headers["Authorization"] = `Bearer ${token}`;
+      console.log(
+        "[axios] attached Authorization header:",
+        config.headers["Authorization"],
+      );
     }
     return config;
   },

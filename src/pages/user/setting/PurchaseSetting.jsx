@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import nothing from "@/src/picture/nothing.png";
+import { getMyPurchaseHistory } from "../../../api/orderApi"; // 1. Import API
+import { useNavigate } from "react-router-dom";
 
-// Helper to format date as "DD MMM YYYY HH:mm"
+// ... (ฟังก์ชัน formatDate และ statusClasses เหมือนเดิม) ...
+
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   const date = d.toLocaleDateString("en-GB", {
@@ -16,26 +19,59 @@ function formatDate(dateStr) {
   return `${date} ${time}`;
 }
 
-// Map status to utility classes (ensure these exist in index.css)
 const statusClasses = {
-  Pending: "text-status-pending border-status-pending",
-  Cancelled: "text-status-disabled border-status-disabled",
-  Paid: "text-status-paid border-status-paid",
-  Preparing: "text-status-preparing border-status-preparing",
-  Delivered: "text-status-delivered border-status-delivered",
+  PENDING: "text-yellow-600 border-yellow-500 bg-yellow-100",
+  PROCESSING: "text-blue-600 border-blue-500 bg-blue-100",
+  SHIPPED: "text-purple-600 border-purple-500 bg-purple-100",
+  DELIVERED: "text-green-600 border-green-500 bg-green-100",
+  CANCELLED: "text-gray-600 border-gray-500 bg-gray-100",
+  REFUNDED: "text-red-600 border-red-500 bg-red-100",
 };
 
-export default function PurchaseHistoryPage({ purchases = [] }) {
+export default function PurchaseHistoryPage() {
+  const [purchases, setPurchases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        setLoading(true);
+        const response = await getMyPurchaseHistory();
+        setPurchases(response.data.orders || []);
+      } catch (err) {
+        setError("ไม่สามารถโหลดประวัติการสั่งซื้อได้");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPurchases();
+  }, []);
+
+  if (loading) return <div>Loading purchase history...</div>;
+  if (error) return <div className="text-center text-red-500">{error}</div>;
+
+  const totalPages = Math.ceil(purchases.length / pageSize);
+  const paginated = purchases.slice((page - 1) * pageSize, page * pageSize);
+
+  const goToPage = (p) => {
+    if (p < 1 || p > totalPages) return;
+    setPage(p);
+  };
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-8">
-      {/* Page Title */}
       <h1 className="text-headlineMedium font-header text-text-primary">
         Purchase History
       </h1>
 
-      {/* Card Container */}
-      <div className="bg-paper-elevation-6 shadow-card-3d rounded-2xl p-6">
-        <div className="overflow-x-auto">
+      <div className="bg-paper-elevation-6 shadow-card-3d flex min-h-[480px] flex-col rounded-2xl p-6">
+        {/* ตารางยืดเต็มพื้นที่บน */}
+        <div className="flex-1 overflow-x-auto overflow-y-auto">
           <table className="w-full border-collapse text-left">
             <thead className="text-body-2 text-text-secondary uppercase">
               <tr>
@@ -47,27 +83,34 @@ export default function PurchaseHistoryPage({ purchases = [] }) {
               </tr>
             </thead>
             <tbody>
-              {purchases.length > 0 ? (
-                purchases.map((p) => (
-                  <tr key={p.id} className="border-t border-neutral-300">
-                    <td className="text-body-2 text-text-primary py-4">
-                      {p.id}
+              {paginated.length > 0 ? (
+                paginated.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="cursor-pointer border-t border-neutral-300 hover:bg-neutral-100"
+                    onClick={() => navigate(`/setting/purchases/${p.id}`)}
+                  >
+                    <td className="text-body-2 text-text-primary py-4 font-mono text-xs">
+                      #{p.id.slice(-8)}
                     </td>
                     <td className="py-4">
-                      <div className="flex space-x-2">
-                        {p.books.map((book) => (
+                      <div className="flex -space-x-4">
+                        {p.items.map((item) => (
                           <img
-                            key={book.isbn}
-                            src={book.coverUrl}
-                            alt={book.title}
-                            className="h-14 w-10 rounded object-cover"
+                            key={item.id}
+                            src={
+                              item.product.book?.edition[0]?.coverImage ||
+                              "https://via.placeholder.com/40x56"
+                            }
+                            alt={item.product.book?.title}
+                            className="h-14 w-10 rounded border-2 border-white object-cover"
                           />
                         ))}
                       </div>
                     </td>
                     <td className="py-4">
                       <span
-                        className={`text-body-3 inline-block rounded-full border px-3 py-1 ${
+                        className={`text-body-3 inline-block rounded-full border px-3 py-1 font-semibold ${
                           statusClasses[p.status] ||
                           "text-text-primary border-neutral-300"
                         }`}
@@ -76,14 +119,14 @@ export default function PurchaseHistoryPage({ purchases = [] }) {
                       </span>
                     </td>
                     <td className="text-body-2 text-text-primary py-4">
-                      {formatDate(p.date)}
+                      {formatDate(p.createdAt)}
                     </td>
-                    <td className="text-body-2 text-text-primary py-4">
-                      {p.total}
+                    <td className="text-body-2 text-text-primary py-4 font-semibold">
+                      ฿{parseFloat(p.totalAmount).toFixed(2)}
                     </td>
                   </tr>
                 ))
-              ) : (
+              ) : purchases.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-16">
                     <div className="text-center">
@@ -101,28 +144,72 @@ export default function PurchaseHistoryPage({ purchases = [] }) {
                     </div>
                   </td>
                 </tr>
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center">
+                    <div>No orders on this page.</div>
+                  </td>
+                </tr>
+              )}
+              {/* เติมช่องว่างเพื่อให้ความสูงขั้นต่ำอยู่ครบ (ถ้าจำเป็น) */}
+              {paginated.length > 0 && paginated.length < pageSize && (
+                <tr
+                  style={{ height: `${(pageSize - paginated.length) * 72}px` }}
+                >
+                  <td colSpan={5} />
+                </tr>
               )}
             </tbody>
           </table>
-
-          {/* Pagination Controls */}
-          {purchases.length > 0 && (
-            <div className="text-body-2 text-text-secondary mt-6 flex items-center justify-end space-x-2">
-              <button disabled className="px-2 py-1 disabled:opacity-50">
-                &#171;
-              </button>
-              <button disabled className="px-2 py-1 disabled:opacity-50">
-                &#8249;
-              </button>
-              <span className="bg-primary-main rounded-full px-3 py-1 text-white">
-                1
-              </span>
-              <button className="px-2 py-1">2</button>
-              <button className="px-2 py-1">&#8250;</button>
-              <button className="px-2 py-1">&#187;</button>
-            </div>
-          )}
         </div>
+
+        {/* pagination อยู่ด้านล่างสุดด้วย mt-auto */}
+        {totalPages > 1 && (
+          <div className="text-body-2 text-text-secondary mt-auto flex items-center justify-end space-x-2">
+            <button
+              onClick={() => goToPage(1)}
+              disabled={page === 1}
+              className="px-2 py-1 disabled:opacity-50"
+            >
+              &#171;
+            </button>
+            <button
+              onClick={() => goToPage(page - 1)}
+              disabled={page === 1}
+              className="px-2 py-1 disabled:opacity-50"
+            >
+              &#8249;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => goToPage(p)}
+                aria-current={page === p ? "page" : undefined}
+                className={`cursor-pointer rounded-full px-3 py-1 ${
+                  page === p
+                    ? "bg-primary-main text-white"
+                    : "border border-neutral-300"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+            <button
+              onClick={() => goToPage(page + 1)}
+              disabled={page === totalPages}
+              className="px-2 py-1 disabled:opacity-50"
+            >
+              &#8250;
+            </button>
+            <button
+              onClick={() => goToPage(totalPages)}
+              disabled={page === totalPages}
+              className="px-2 py-1 disabled:opacity-50"
+            >
+              &#187;
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

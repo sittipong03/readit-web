@@ -5,11 +5,16 @@ import SearchNavbar from "./SearchNavbar";
 import { ReaditLogo } from "@/src/assets/readit";
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
+import useUserStore from "../../stores/userStore"
 
 function Navbar({ user, currentPage }) {
   const location = useLocation();
   const path = location.pathname.toLowerCase().replace(/\/$/, "");
   const isBrowser = path === "" || path === "/home";
+
+  const { userId, userName } = useUserStore()
+
+  const isAuthenticated = !!userId;
 
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -54,7 +59,11 @@ function Navbar({ user, currentPage }) {
         </div>
         {/* Right: Auth Conditional */}
         <div className="flex flex-1 items-center justify-end gap-4 text-sm">
-          {user?.id ? <GuestNavbar /> : <LoginNavbar user={user} />}
+          {isAuthenticated ? (
+            <GuestNavbar userName={userName} /> // ✅ show user navbar
+          ) : (
+            <LoginNavbar /> // ✅ show guest navbar
+          )}
         </div>
       </div>
     </nav>

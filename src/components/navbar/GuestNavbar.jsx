@@ -1,12 +1,21 @@
-import React from 'react'
+import { Button } from "@/components/ui/button";
+import React from "react";
 
 function GuestNavbar() {
   return (
-        <nav className='flex flex-row justify-between gap-5'>
-            <button className='text-[#7E765D] font-bold text-xl'>Log in</button>
-            <button className='px-5 py-2 rounded-2xl font-bold text-[#ffffff] bg-[#fd9a00]'>Join Readit</button>
-        </nav>
-  )
+    <nav className="flex flex-row justify-between gap-2">
+      <Button variant="text" asChild color="secondary">
+        <a href="/login" target="_blank">
+          Log in
+        </a>
+      </Button>
+      <Button asChild color="primary">
+        <a href="/register" target="_blank">
+          Join Readit
+        </a>
+      </Button>
+    </nav>
+  );
 }
 
-export default GuestNavbar
+export default GuestNavbar;

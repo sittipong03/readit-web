@@ -21,9 +21,16 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-import PaymentSuccess from "../pages/user/PaymentSuccessPage";
+import GeneralSetting from "../pages/user/setting/GeneralSetting";
+import PasswordSetting from "../pages/user/setting/PasswordSetting";
+import PurchasesSetting from "../pages/user/setting/PurchaseSetting";
+import AffiliateSetting from "../pages/user/setting/AffiliateSetting";
+import EarningSetting from "../pages/user/setting/EarningSetting";
 import ButtonTest from "../pages/test/ButtonTest";
 import Home from "../pages/Home";
+import OrderDetail from "../components/setting/OrderDetail";
+import PaymentSuccess from "../pages/user/PaymentSuccessPage";
+import BookCard from "../components/BookCard";
 
 const routerGuest = createBrowserRouter([
   {
@@ -43,38 +50,60 @@ const routerGuest = createBrowserRouter([
       { path: "/review", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/Register", element: <RegisterPage /> },
-      { path: "/ButtonTest", element: <ButtonTest /> },
+      { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component
+      { path: "/shelf", element: <ShelfPage /> }, // Example route for ShelfPage component
     ],
   },
 ]);
 
 const routerUser = createBrowserRouter([
   {
-    path: "*",
-    element: <Navigate to="/home" />,
-  },
-
-  {
     element: <UserLayout />,
     children: [
-      { path: '/home', element: <Home /> },
-      { path: '/homepage', element: <HomePage /> },
-      { path: '/book/:bookId', element: <BookPage /> },
-      { path: '/userproflie', element: <UserProfilePage /> },
-      { path: '/setting', element: <SettingPage /> },
-      { path: '/shelf', element: <ShelfPage /> },
-      { path: '/cart', element: <CartPage /> },
-      { path: '/checkout', element: <CheckOutPage /> },
-      {path: '/payment', element: <PaymentSuccess/>}
+      { path: "/home", element: <HomePage /> },
+      { path: "/book/:bookId", element: <BookPage /> },
+      { path: "/userproflie", element: <UserProfilePage /> },
+      {
+        path: "/setting",
+        element: <SettingPage />,
+        children: [
+          { index: true, element: <Navigate to="general" replace /> },
+          { path: "general", element: <GeneralSetting /> },
+          { path: "password", element: <PasswordSetting /> },
+          { path: "purchases", element: <PurchasesSetting /> },
+          { path: "purchases/:id", element: <OrderDetail /> },
+          { path: "affiliate", element: <AffiliateSetting /> },
+          { path: "earning", element: <EarningSetting /> },
+        ],
+      },
+      { path: "/shelf", element: <ShelfPage /> },
+      { path: "/cart", element: <CartPage /> },
+      { path: "/checkout", element: <CheckOutPage /> },
+      // { path: "/payment", element: <PaymentSuccess /> },
+      { path: "/ButtonTest", element: <ButtonTest /> },
+      { path: "/home", element: <Home /> },
+      { path: "/homepage", element: <HomePage /> },
+      { path: "/book/:bookId", element: <BookPage /> },
+      { path: "/userproflie", element: <UserProfilePage /> },
+      { path: "/setting", element: <SettingPage /> },
+      { path: "/shelf", element: <ShelfPage /> },
+      { path: "/cart", element: <CartPage /> },
+      { path: "/checkout", element: <CheckOutPage /> },
+      { path: "/payment", element: <PaymentSuccess /> },
     ],
+  },
+  {
+    path: "*",
+    element: <Navigate to="/home" />,
   },
 ]);
 
 function AppRouter() {
-      const role = useUserStore(state => state.role) // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
-      // test pull push 
-      console.log(role)
-      const finalRouter = role === "USER" || role === "ADMIN" ? routerUser : routerGuest //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา 
+  const role = useUserStore((state) => state.role); // กำหนดว่าใครเข้ามา จะเอามาจาก back แล้วใช้ useUserStore เช็ค กำหนดค่าเอา
+  // test pull push
+  console.log(role);
+  const finalRouter =
+    role === "USER" ? routerUser : role === "ADMIN" ? routerUser : routerGuest; //  เลือก เส้นทางตามตัวแปร user ที่เข้ามา
 
   return (
     <Suspense fallback={<p>Loading</p>}>

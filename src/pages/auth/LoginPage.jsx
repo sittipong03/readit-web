@@ -32,9 +32,9 @@ function Login() {
 
   };
 
-  if (isSuccess) {
-    return <Navigate to="/home" replace />;
-  }
+  // if (isSuccess) {
+  //   return <Navigate to="/home" replace />;
+  // }
 
   return (
     <div className="w-full h-[700px] flex justify-center bg-linear-to-b from-paper-elevation-2 to-tertiary-lighter">
@@ -103,8 +103,11 @@ ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
           </form>
 
           <div>
-            <Button color="neutral" variant="outlined" className="w-full h-[44px]  bg-primary-contrast/30 border border-[#000209]/12">
+            <a href="http://localhost:6500/api/auth/google">
+            <Button color="neutral" variant="outlined" className="w-full h-[44px]
+              bg-primary-contrast/30 border border-[#000209]/12">
               Log in via Google</Button>
+              </a>
           </div>
 
           <div>

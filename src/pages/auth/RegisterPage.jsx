@@ -45,7 +45,9 @@ function Register() {
           </div>
 
           <div>
+            <a href="http://localhost:6500/api/auth/google">
             <button className="flex items-center justify-center rounded-pill w-full h-[44px] text-primary bg-primary-contrast/30 hover:bg-primary-hover border   border-[#000209]/12 selection:bg-primary-selected" >Log in via Google</button>
+            </a>
           </div>
 
           <div className="flex items-center w-full gap-[12px]">

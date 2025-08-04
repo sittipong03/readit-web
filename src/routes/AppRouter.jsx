@@ -10,6 +10,7 @@ import UserLayout from "../layouts/UserLayout";
 
 //page section
 import LandingPage from "../pages/LandingPage";
+import Home from "../pages/Home";
 import HomePage from "../pages/HomePage";
 import Home from "../pages/Home";
 import BookPage from "../pages/BookPage";
@@ -44,7 +45,7 @@ const routerGuest = createBrowserRouter([
   },
   {
     path: "/auth/callback",
-    element: <GoogleAuthCallback />, 
+    element: <GoogleAuthCallback />,
   },
 
   {

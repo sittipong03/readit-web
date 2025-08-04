@@ -10,6 +10,7 @@ import UserLayout from "../layouts/UserLayout";
 
 //page section
 import LandingPage from "../pages/LandingPage";
+import Home from "../pages/Home";
 import HomePage from "../pages/HomePage";
 import BookPage from "../pages/BookPage";
 import ReviewPage from "../pages/ReviewPage";
@@ -21,7 +22,7 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
-import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentSuccess from "../pages/user/PaymentSuccessPage";
 import BookCard from "../components/BookCard";
 
 const routerGuest = createBrowserRouter([

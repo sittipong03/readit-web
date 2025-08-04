@@ -12,6 +12,7 @@ import UserLayout from "../layouts/UserLayout";
 import LandingPage from "../pages/LandingPage";
 import Home from "../pages/Home";
 import HomePage from "../pages/HomePage";
+import Home from "../pages/Home";
 import BookPage from "../pages/BookPage";
 import ReviewPage from "../pages/ReviewPage";
 import LoginPage from "../pages/auth/LoginPage";
@@ -22,8 +23,16 @@ import SettingPage from "../pages/user/SettingPage";
 import ShelfPage from "../pages/user/ShelfPage";
 import CartPage from "../pages/user/CartPage";
 import CheckOutPage from "../pages/user/CheckOutPage";
+import GeneralSetting from "../pages/user/setting/GeneralSetting";
+import PasswordSetting from "../pages/user/setting/PasswordSetting";
+import PurchasesSetting from "../pages/user/setting/PurchaseSetting";
+import AffiliateSetting from "../pages/user/setting/AffiliateSetting";
+import EarningSetting from "../pages/user/setting/EarningSetting";
+import ButtonTest from "../pages/test/ButtonTest";
+import OrderDetail from "../components/setting/OrderDetail";
 import PaymentSuccess from "../pages/user/PaymentSuccessPage";
 import BookCard from "../components/BookCard";
+import GoogleAuthCallback from "../pages/auth/GoogleAuthCallBack";
 
 const routerGuest = createBrowserRouter([
   {
@@ -33,6 +42,10 @@ const routerGuest = createBrowserRouter([
   {
     path: "*",
     element: <Navigate to="/" />,
+  },
+  {
+    path: "/auth/callback",
+    element: <GoogleAuthCallback />,
   },
 
   {
@@ -51,23 +64,35 @@ const routerGuest = createBrowserRouter([
 
 const routerUser = createBrowserRouter([
   {
-    path: "*",
-    element: <Navigate to="/home" />,
-  },
-
-  {
     element: <UserLayout />,
     children: [
       { path: "/home", element: <Home /> },
-      { path: "/homepage", element: <HomePage /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/userproflie", element: <UserProfilePage /> },
-      { path: "/setting", element: <SettingPage /> },
+      {
+        path: "/setting",
+        element: <SettingPage />,
+        children: [
+          { index: true, element: <Navigate to="general" replace /> },
+          { path: "general", element: <GeneralSetting /> },
+          { path: "password", element: <PasswordSetting /> },
+          { path: "purchases", element: <PurchasesSetting /> },
+          { path: "purchases/:id", element: <OrderDetail /> },
+          { path: "affiliate", element: <AffiliateSetting /> },
+          { path: "earning", element: <EarningSetting /> },
+        ],
+      },
       { path: "/shelf", element: <ShelfPage /> },
       { path: "/cart", element: <CartPage /> },
       { path: "/checkout", element: <CheckOutPage /> },
-      { path: "/payment", element: <PaymentSuccess /> },
+      // { path: "/payment", element: <PaymentSuccess /> },
+      { path: "/ButtonTest", element: <ButtonTest /> },
+      { path: "/homepage", element: <HomePage /> },
     ],
+  },
+  {
+    path: "*",
+    element: <Navigate to="/home" />,
   },
 ]);
 
@@ -81,6 +106,7 @@ function AppRouter() {
   return (
     <Suspense fallback={<p>Loading</p>}>
       <RouterProvider router={finalRouter} />
+      {/* <RouterProvider router={routerUser} /> */}
     </Suspense>
   );
 }

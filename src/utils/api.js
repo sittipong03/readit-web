@@ -1,6 +1,8 @@
 import axios from "axios";
+import useUserStore from "../stores/userStore";
 
 // ไฟล์นี้จะสร้าง axios instance เพื่อกำหนดและ แปะ token header ไว้เลย
+
 
 const axiosInstance = axios.create({
     baseURL:'http://localhost:6500/api' || 'http://localhost:8899/api',
@@ -18,7 +20,7 @@ axiosInstance.interceptors.request.use(
     //////////////////////////////////////////////////////////////////
     //////// note ************ ตรงนี้ต้องเอา token จาก useStore มาแปะตรงนี้
     //////////////////////////////////////////////////////////////////
-    const token = localStorage.getItem('authToken'); 
+    const token = useUserStore.getState().token; 
     if (token) {
       // ถ้ามี token ให้เพิ่ม Authorization header เข้าไป
       config.headers['Authorization'] = `Bearer ${token}`;

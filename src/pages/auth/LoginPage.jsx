@@ -32,9 +32,9 @@ function Login() {
 
   };
 
-  if (isSuccess) {
-    return <Navigate to="/home" replace />;
-  }
+  // if (isSuccess) {
+  //   return <Navigate to="/home" replace />;
+  // }
 
   return (
     <div className="w-full h-[700px] flex justify-center bg-linear-to-b from-paper-elevation-2 to-tertiary-lighter">
@@ -56,9 +56,9 @@ function Login() {
 
           <form className="flex flex-col gap-[16px]" onSubmit={handleSubmit(handleLoginClick)}>
             <div className=" w-full h-[66px]">
-              <div className={`pb-1 label-medium ${isError ? "text-error-main" : "text-text-primary"}`}>
+              <label className={`pb-1 label-medium ${isError ? "text-error-main" : "text-text-primary"}`}>
                 Email:
-              </div>
+              </label>
               <input className={`w-full h-[44px] rounded-pill px-[12px] border  focus:outline-none focus-within:outline-auto focus-within:ring-2 focus-within:ring-primary-main
 ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
   `} type="text" placeholder="Email..." {...register('email')} />
@@ -103,8 +103,11 @@ ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
           </form>
 
           <div>
-            <Button color="neutral" variant="outlined" className="w-full h-[44px]  bg-primary-contrast/30 border border-[#000209]/12">
+            <a href="http://localhost:6500/api/auth/google">
+            <Button color="neutral" variant="outlined" className="w-full h-[44px]
+              bg-primary-contrast/30 border border-[#000209]/12">
               Log in via Google</Button>
+              </a>
           </div>
 
           <div>

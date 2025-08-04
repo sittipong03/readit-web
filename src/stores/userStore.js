@@ -38,7 +38,6 @@ const useUserStore = create(
       login: async (input) => {
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
-
         set({
           token: result.data.token,
           userId: result.data.userId,
@@ -48,6 +47,29 @@ const useUserStore = create(
         });
         return result;
       },
+
+      setTokenFromGoogle: async (googletoken) => {
+        // 1. ตั้งค่า token ใน state ทันที
+        set({ token: googletoken, rememberMe: true }); // Social login มักจะให้ remember ไว้เลย
+
+        try {
+          // 2. ใช้ token ใหม่ไปยิง API /me เพื่อดึงข้อมูล User ที่สมบูรณ์
+          const res = await authApi.getMe(); 
+          const userData = res.data.result;
+
+          // 3. อัปเดตข้อมูล user ทั้งหมดลงใน store
+          set({
+            userId: userData.id,
+            userName: userData.name,
+            role: userData.role
+          });
+        } catch (error) {
+          console.error("Failed to fetch user data after Google login:", error);
+          // ถ้าล้มเหลว ให้ logout เพื่อเคลียร์ token ที่อาจจะใช้ไม่ได้
+          get().logout();
+        }
+      },
+
       logout: () => set({
         token: '',
         userId: null,

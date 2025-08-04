@@ -82,7 +82,7 @@ function Book() {
         ?
         <div className="p-20 text-2xl">Page loading</div>
         :
-        <div className="p-20 flex gap-4">
+        <div className="flex gap-4 p-20">
           <div className="w-2/5">
             <div className="">
               <div className="">
@@ -106,23 +106,23 @@ function Book() {
                 <button className="p-3 border rounded-2xl w-fit" onClick={() => cartData(book.id)}>Add to cart</button>
               </div>
             </div>
-            <div className="border mb-4">
+            <div className="mb-4 border">
               <h2>5 min read</h2>
               <p>{book?.description}</p>
             </div>
-            <div className="border mb-4">
+            <div className="mb-4 border">
               <h2>More Edition</h2>
               <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ratione, eaque.</p>
             </div>
             <div className="">
               <h2 className="mb-6">Gerne</h2>
               {book?.bookTag.map((tag) => (
-                <button className="mr-5 border p-3 rounded-2xl" key={tag.id}>{tag.tag.name}</button>
+                <button className="p-3 mr-5 border rounded-2xl" key={tag.id}>{tag.tag.name}</button>
               ))}
             </div>
           </div>
           <div className="w-3/5">
-            <div className="border mb-10">
+            <div className="mb-10 border">
               <h1>Do you know</h1>
               {book?.aiSuggestion ?
                 <p>{book?.aiSuggestion}</p>
@@ -131,7 +131,7 @@ function Book() {
 
             </div>
             <div className="">
-              <div className="border flex flex-col gap-5">
+              <div className="flex flex-col gap-5 border">
 
                 <div className="flex gap-5">
                   <div className="">
@@ -150,9 +150,9 @@ function Book() {
                   </div>
                   {showReview 
                     ? 
-                    <button className="border p-4 rounded-2xl cursor-pointer" onClick={() => hdlPostReview()}>Post</button>
+                    <button className="p-4 border cursor-pointer rounded-2xl" onClick={() => hdlPostReview()}>Post</button>
                     :
-                    <button className="border p-4 rounded-2xl cursor-pointer" onClick={() => hdlReview()}>Write a review</button>
+                    <button className="p-4 border cursor-pointer rounded-2xl" onClick={() => hdlReview()}>Write a review</button>
                   }
                 </div>
                 {book?.review.length == 0 ? (

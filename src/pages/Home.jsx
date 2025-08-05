@@ -29,6 +29,8 @@ function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
   const books = bookManageStore((state) => state.books);
   const [selectBook, setSelectBook] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
@@ -75,7 +77,7 @@ function Home() {
             </SelectContent>
           </SelectStyled>
           <div className="flex flex-col gap-2">
-            <Label>Promt</Label>
+            <Label>Prompt</Label>
             <Textarea placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
@@ -101,7 +103,7 @@ function Home() {
             <Dialog>
               <form>
                 <DialogTrigger asChild>
-                  <Button size="small" color="secondary">
+                  <Button size="small" color="secondary" >
                     <i class="fa-solid fa-plus"></i>
                     Add a book
                   </Button>
@@ -110,29 +112,25 @@ function Home() {
                   <DialogHeader>
                     <DialogTitle>Add a book</DialogTitle>
                     <DialogDescription>
-                      Make changes to your profile here. Click save when
-                      you&apos;re done.
+                      Add it instantly with its ISBN. We'll use this unique code
+                      to find all the details for you.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4">
                     <InputX
-                      label="Name"
-                      id="name-1"
-                      name="name"
-                      defaultValue="Pedro Duarte"
-                    />
-                    <InputX
-                      label="Username"
-                      id="username-1"
-                      name="username"
-                      defaultValue="@peduarte"
+                      label="ISBN"
+                      id="ISBN"
+                      name="ISBN"
+                      placeholder="e.g., 978-0140280190"
                     />
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
                       <Button variant="text">Cancel</Button>
                     </DialogClose>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="submit">
+                      <i class="fa-solid fa-plus"></i>Add a book
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </form>
@@ -183,10 +181,48 @@ function Home() {
                           {book.averageRating}
                         </p>
                       </Badge>
-                      <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
-                        <i className="fa-regular fa-star"></i>
-                        <p className="text-text-disabled">Rate</p>
-                      </Badge>
+                      <Dialog>
+                        <form>
+                          <DialogTrigger asChild>
+                            <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                              <i className="fa-regular fa-star"></i>
+                              <p className="text-text-disabled">Rate</p>
+                            </Badge>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Rate this book</DialogTitle>
+                            </DialogHeader>
+                            <div className="flex justify-center gap-1 my-4">
+                              {[1, 2, 3, 4, 5].map((starValue) => (
+                                <Button
+                                  key={starValue}
+                                  type="button"
+                                  variant="text"
+                                  size="icon"
+                                  color="info"
+                                  onClick={() => setRating(starValue)}
+                                  onMouseEnter={() => setHoverRating(starValue)}
+                                  onMouseLeave={() => setHoverRating(0)}
+                                  className={
+                                    starValue <= (hoverRating || rating)
+                                      ? "text-info-main [&_svg]:text-[32px] h-12 w-12"
+                                      : "text-text-disabled [&_svg]:text-[32px] h-12 w-12"
+                                  }
+                                >
+                                  <i className="fa-solid fa-star"></i>
+                                </Button>
+                              ))}
+                            </div>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="text">Later</Button>
+                              </DialogClose>
+                              <Button type="submit">Rate Now!</Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </form>
+                      </Dialog>
                     </div>
                     <Button
                       variant="ghost"

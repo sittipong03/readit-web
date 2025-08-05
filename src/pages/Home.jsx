@@ -39,6 +39,33 @@ function Home() {
     run();
   }, []);
 
+  const handleRating = async (e, bookId) => {
+    e.preventDefault();
+    try {
+      if (rating === 0) {
+        toast.error("Please select a star rating first.");
+        return;
+      }
+
+      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
+      // ตัวอย่าง: await api.rateBook(bookId, rating);
+      console.log(`Submitting rating ${rating} for book ${bookId}`);
+
+      toast.success("Thank you for your rating!", {
+        description: "Your feedback helps other readers.",
+      });
+
+      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
+      setRating(0);
+      setHoverRating(0);
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating.", {
+        description: "Please try again later.",
+      });
+    }
+  };
+
   console.log("Books", books);
   return (
     <div className="bg-paper-elevation-2 text-text-primary flex justify-center gap-4 pt-8 pb-24">
@@ -103,7 +130,7 @@ function Home() {
             <Dialog>
               <form>
                 <DialogTrigger asChild>
-                  <Button size="small" color="secondary" >
+                  <Button size="small" color="secondary">
                     <i class="fa-solid fa-plus"></i>
                     Add a book
                   </Button>
@@ -182,7 +209,7 @@ function Home() {
                         </p>
                       </Badge>
                       <Dialog>
-                        <form>
+                        <form onSubmit={(e) => handleRating(e, book.id)}>
                           <DialogTrigger asChild>
                             <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 tabular-nums transition-all">
                               <i className="fa-regular fa-star"></i>
@@ -193,21 +220,20 @@ function Home() {
                             <DialogHeader>
                               <DialogTitle>Rate this book</DialogTitle>
                             </DialogHeader>
-                            <div className="flex justify-center gap-1 my-4">
+                            <div className="my-4 flex justify-center gap-0">
                               {[1, 2, 3, 4, 5].map((starValue) => (
                                 <Button
                                   key={starValue}
                                   type="button"
                                   variant="text"
                                   size="icon"
-                                  color="info"
                                   onClick={() => setRating(starValue)}
                                   onMouseEnter={() => setHoverRating(starValue)}
                                   onMouseLeave={() => setHoverRating(0)}
                                   className={
                                     starValue <= (hoverRating || rating)
-                                      ? "text-info-main [&_svg]:text-[32px] h-12 w-12"
-                                      : "text-text-disabled [&_svg]:text-[32px] h-12 w-12"
+                                      ? "text-info-main h-12 w-12 [&_svg]:text-[32px]"
+                                      : "text-text-disabled h-12 w-12 [&_svg]:text-[32px]"
                                   }
                                 >
                                   <i className="fa-solid fa-star"></i>
@@ -218,7 +244,11 @@ function Home() {
                               <DialogClose asChild>
                                 <Button variant="text">Later</Button>
                               </DialogClose>
-                              <Button type="submit">Rate Now!</Button>
+                              <DialogClose asChild>
+                                <Button type="submit" disabled={rating === 0}>
+                                  Submit Rating
+                                </Button>
+                              </DialogClose>
                             </DialogFooter>
                           </DialogContent>
                         </form>

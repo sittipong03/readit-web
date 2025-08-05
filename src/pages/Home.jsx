@@ -89,10 +89,10 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-screen max-w-lg flex-col gap-6 p-10">
+      <div className="flex flex-col max-w-lg min-h-screen gap-6 p-10">
         {/* <Person className="w-50 mb-15" /> */}
         <div className="flex items-end">
-          <div className="flex flex-1 flex-col gap-0">
+          <div className="flex flex-col flex-1 gap-0">
             <h1 className="subtitle-1">Browse a book</h1>
             <p className="text-text-disabled caption">{`${books.length} Result was found`}</p>
           </div>

@@ -32,17 +32,20 @@ const useUserStore = create(
       userId: null,
       userName: null,
       role: null,
+      avatarUrl: '',
       token: '',
       rememberMe: false,
 
       login: async (input) => {
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
+        console.log("from login " , result)
         set({
           token: result.data.token,
           userId: result.data.userId,
           userName: result.data.user, 
           role: result.data.role,
+          avatarUrl : result.data.avatarUrl ,
           rememberMe: !!rememberMe, 
         });
         return result;
@@ -75,6 +78,7 @@ const useUserStore = create(
         userId: null,
         userName: null,
         role: null,
+        avatarUrl : "",
         rememberMe: false
       }),
     }),

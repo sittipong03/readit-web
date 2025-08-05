@@ -37,7 +37,7 @@ function GuestNavbar() {
     const fetchCart = async () => { //วังวน async/await 
       setCartItem([])
       let allCartItem = await getCart(token)
-      setCartItem(mockCartitem)
+      setCartItem(allCartItem)
     }
     fetchCart()
     console.log(cartItem.length)
@@ -157,7 +157,7 @@ function GuestNavbar() {
             <NavigationMenuTrigger className="px-0">
               <Avatar>
                 <AvatarImage
-                  src={avatar}
+                  src={avatar || "https://github.com/shadcn.png"}
                   alt="@shadcn"
                 />
                 <AvatarFallback className="bg-action-disabled/50">

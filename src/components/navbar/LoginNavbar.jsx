@@ -18,6 +18,7 @@ import useUserStore from "@/src/stores/userStore";
 import { useEffect, useState } from "react";
 import cartManageStore from "@/src/stores/cartManageStore";
 import { Badge } from "@/components/ui/badge";
+import useThemeStore from "@/src/stores/themeStore";
 
 function GuestNavbar() {
   const logout = useUserStore(state => state.logout)
@@ -27,8 +28,10 @@ function GuestNavbar() {
 
   const getCart = cartManageStore(state => state.getAllCart)
 
+  const { theme, toggleTheme } = useThemeStore();
+
   const [cartItem, setCartItem] = useState([])
-  const mockCartitem = ["a" , "b ", "c"]
+  const mockCartitem = ["a", "b ", "c"]
 
   useEffect(() => {
     const fetchCart = async () => { //วังวน async/await 
@@ -44,6 +47,10 @@ function GuestNavbar() {
   function hdllogout() {
     logout()
 
+  }
+
+  function hdltheme() {
+    toggleTheme()
   }
 
   return (
@@ -106,7 +113,7 @@ function GuestNavbar() {
               className={cn(
                 buttonVariants({ variant: "outlined", color: "secondary" }),
                 "w-9 px-0",
-                "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible relative",
+                "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible hover:text-action-active group-data-[state=open]:text-action-active relative",
               )}
             >
 
@@ -167,9 +174,13 @@ function GuestNavbar() {
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
-                      <div className="flex-1">Theme : Light</div>
-                      <i class="fa-solid fa-sun-bright"></i>
+                    <Link href="#" className="flex-row items-center gap-2" onClick={hdltheme}>
+                      <div className="flex-1">Theme : {theme === 'light' ? 'Light' : 'Dark'}</div>
+                      {theme === 'light' ? (
+                        <i className="fa-solid fa-sun-bright"></i>
+                      ) : (
+                        <i className="fa-solid fa-moon"></i>
+                      )}
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>

@@ -18,6 +18,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { ReaditLogo } from "@/src/assets/readit";
+import { toast, Toaster } from "sonner";
 
 const components = [
   {
@@ -457,7 +458,40 @@ function ButtonTest() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        <div className="h6 text-text-secondary">Toast</div>
+        <div className="flex gap-4">
+          <Button
+            variant="outlined"
+            onClick={() =>
+              toast.success("Event has been created", {
+                description: "Sunday, December 03, 2023 at 9:00 AM",
+                action: {
+                  label: "Okay",
+                  onClick: () => console.log("Undo"),
+                },
+              })
+            }
+          >
+            Show Toast
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() =>
+              toast.error("Event has been created", {
+                description: "Sunday, December 03, 2023 at 9:00 AM",
+                action: {
+                  label: "Okay",
+                  onClick: () => console.log("Undo"),
+                },
+              })
+            }
+          >
+            Show Toast
+          </Button>
+        </div>
       </div>
+      <Toaster richColors />
     </div>
   );
 }

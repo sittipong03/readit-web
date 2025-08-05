@@ -4,10 +4,10 @@ import Footer from "../components/Footer";
 
 export default function GuestLayout() {
   return (
-    <>
-      <Navbar />
+    <div className="bg-black-main">
+      <Navbar className="overflow-hidden" />
       <Outlet />
       <Footer />
-    </>
+    </div>
   );
 }

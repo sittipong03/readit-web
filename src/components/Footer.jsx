@@ -26,7 +26,9 @@ function Footer() {
             </div> */}
           </div>
           <div className="text-secondary-darker flex flex-col items-end gap-4">
-            <ReaditLogo size={20} className="text-secondary-dark mb-10" />
+            <a href="/home">
+              <ReaditLogo size={20} className="text-secondary-dark mb-10 hover:text-secondary-darker transition-all" />
+            </a>
             <div className="flex gap-3">
               <i class="fa-brands fa-facebook"></i>
               <i class="fa-brands fa-discord"></i>

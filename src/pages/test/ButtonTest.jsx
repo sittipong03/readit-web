@@ -31,6 +31,16 @@ import {
   SelectItem,
   SelectGroup,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const components = [
   {
@@ -369,6 +379,18 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Test"
+              id="pictureX"
+              type="email"
+              placeholder="Find books..."
+              color="neutral"
+              variant="filled"
+              disabled
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
+            />
+          </div>
         </div>
         <div className="h6 text-text-secondary">Navigation Menu</div>
         <NavigationMenu viewport={false}>
@@ -536,7 +558,7 @@ function ButtonTest() {
           </div>
         </div>
         <div className="h6 text-text-secondary">Select</div>
-        <div className="flex gap-4 space-y-6 bg-gray-100 ">
+        <div className="flex gap-4 space-y-6 bg-gray-100">
           {/* Variant: outlined, Color: primary, Size: medium */}
           <SelectStyled
             label="Primary Outlined"
@@ -575,6 +597,18 @@ function ButtonTest() {
             </SelectContent>
           </SelectStyled>
 
+          {/* สถานะ Disabled */}
+          <SelectStyled
+            label="Disabled Filled"
+            variant="filled"
+            color="primary"
+            disabled
+          >
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+
           {/* สถานะ Error (Invalid) */}
           <SelectStyled
             label="Error State"
@@ -587,6 +621,43 @@ function ButtonTest() {
             </SelectContent>
           </SelectStyled>
         </div>
+        <div className="h6 text-text-secondary">Dialog</div>
+        <Dialog>
+          <form>
+            <DialogTrigger asChild>
+              <Button variant="outlined">Open Dialog</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit profile</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you&apos;re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <InputX
+                  label="Name"
+                  id="name-1"
+                  name="name"
+                  defaultValue="Pedro Duarte"
+                />
+                <InputX
+                  label="Username"
+                  id="username-1"
+                  name="username"
+                  defaultValue="@peduarte"
+                />
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="text">Cancel</Button>
+                </DialogClose>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </form>
+        </Dialog>
       </div>
     </div>
   );

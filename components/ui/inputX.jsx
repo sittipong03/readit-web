@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 const inputVariants = cva(
   // Base styles for the outer container (div) that wraps the input and adornments
   "inline-flex items-center rounded-full font-medium cursor-pointer" +
-    "focus-within:outline-none focus-within:ring-1 focus-within:ring-offset-0 " + // Styles when the input inside is focused
+    "focus-within:outline-none focus-within:ring-1  focus-within:ring-offset-0 " + // Styles when the input inside is focused
     "aria-[invalid=true]:ring-error-main/20 aria-[invalid=true]:border-error-main transition-all", // Styles for invalid state
 
   {
@@ -91,7 +91,7 @@ const inputVariants = cva(
       {
         variant: "filled",
         disabled: true,
-        className: "bg-action-disabledBackground text-text-disabled",
+        className: "bg-action-disabledBackground ",
       },
     ],
     defaultVariants: {

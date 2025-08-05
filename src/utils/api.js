@@ -2,15 +2,16 @@ import axios from "axios";
 import useUserStore from "../stores/userStore";
 
 // ไฟล์นี้จะสร้าง axios instance เพื่อกำหนดและ แปะ token header ไว้เลย
+console.log(import.meta.env.VITE_PORT);
 
 
 const axiosInstance = axios.create({
-    baseURL:'http://localhost:6500/api' || 'http://localhost:8899/api',
-    timeout: 20000,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-})
+  baseURL:  `http://localhost:${import.meta.env.VITE_PORT || 8899}/api`,
+  timeout: 20000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 // ✅ Request Interceptor: ก่อนที่ request จะถูกส่ง
 // ใช้สำหรับแนบ Token ไปกับทุกๆ request โดยอัตโนมัติ

@@ -45,15 +45,6 @@ function UserNavbar() {
             <button className="rounded-2xl bg-amber-500 p-2 font-bold text-white">
               User
             </button>
-            {/* <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className="btn m-1 btn-circle bg-white">
-                      User
-                    </div>
-                    <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-1 w-52 p-2 shadow-sm">
-                      <li>Profile</li>
-                      <li>Logout</li>
-                    </ul>
-                  </div> */}
           </div>
         </nav>
       </header>

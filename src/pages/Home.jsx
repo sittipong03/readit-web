@@ -14,6 +14,16 @@ import {
   SelectItem,
   SelectGroup,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
@@ -29,7 +39,7 @@ function Home() {
 
   console.log("Books", books);
   return (
-    <div className="bg-paper-elevation-2 flex justify-center gap-4 pt-8 pb-24">
+    <div className="bg-paper-elevation-2 text-text-primary flex justify-center gap-4 pt-8 pb-24">
       <div className="flex w-fit flex-col gap-4 p-4">
         <div className="from-secondary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
           <div className="grid w-full max-w-sm items-center gap-2">
@@ -45,6 +55,7 @@ function Home() {
             label="Sort by:"
             variant="outlined"
             size="small"
+            defaultValue="option1"
           >
             <SelectContent>
               <SelectItem value="option1">Popularity</SelectItem>
@@ -55,9 +66,10 @@ function Home() {
             label="Genre:"
             variant="outlined"
             size="small"
+            defaultValue="option1"
           >
             <SelectContent>
-              <SelectItem default value="option1">All</SelectItem>
+              <SelectItem value="option1">All</SelectItem>
               <SelectItem value="option2">Drama</SelectItem>
               <SelectItem value="option3">Horror</SelectItem>
             </SelectContent>
@@ -86,10 +98,45 @@ function Home() {
           </div>
           <div className="flex items-center gap-2">
             <h1 className="subtitle-4">Can’t find the book?</h1>
-            <Button size="small" color="secondary">
-              <i class="fa-solid fa-plus"></i>
-              Add a book
-            </Button>
+            <Dialog>
+              <form>
+                <DialogTrigger asChild>
+                  <Button size="small" color="secondary">
+                    <i class="fa-solid fa-plus"></i>
+                    Add a book
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Add a book</DialogTitle>
+                    <DialogDescription>
+                      Make changes to your profile here. Click save when
+                      you&apos;re done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4">
+                    <InputX
+                      label="Name"
+                      id="name-1"
+                      name="name"
+                      defaultValue="Pedro Duarte"
+                    />
+                    <InputX
+                      label="Username"
+                      id="username-1"
+                      name="username"
+                      defaultValue="@peduarte"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="text">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Save changes</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </form>
+            </Dialog>
           </div>
         </div>
         <div className="flex flex-row flex-wrap gap-5 rounded-md">

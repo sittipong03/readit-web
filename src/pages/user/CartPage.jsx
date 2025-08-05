@@ -5,18 +5,24 @@ import useUserStore from '@/src/stores/userStore';
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]); // array of bookIds
-  const { getAllCart } = cartManageStore(); 
+  const { carts, getAllCart } = cartManageStore(); 
   const token = useUserStore(state => state.token)
 
+  // console.log("token",token);
+  // console.log('cartItem', cartItems)
   useEffect(() => {
     const run = async () => {
       const result = await getAllCart(token);
+
       setCartItems(result?.data.cart.items)
       // console.log("result", result);
     }
 
     run()
   }, [])
+
+
+    console.log(cartItems);
 
   const handleRemove = (id) => {
     setCartItems(items => items.filter(bookId => bookId !== id));
@@ -39,8 +45,8 @@ function Cart() {
 
         {/* Cart Items */}
         {cartItems.length > 0 ? (
-          cartItems.map(id => (
-            <CartItem key={id} bookId={id} onRemove={handleRemove} />
+          cartItems.map(cart => (
+            <CartItem key={cart.id} bookId={cart.product.bookId} onRemove={handleRemove} cart={cart}/>
           ))
         ) : (
           <p className="text-center text-gray-500 py-6">Your cart is empty.</p>

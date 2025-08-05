@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Person, ReviewButton, Star } from "../icons/Index";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
 import bookManageStore from "../stores/booksManageStore";
 import { Link } from "react-router";
 import { InputX } from "@/components/ui/inputX";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  SelectStyled,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+} from "@/components/ui/select";
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
@@ -29,10 +29,10 @@ function Home() {
 
   console.log("Books", books);
   return (
-    <div className="flex justify-center gap-4 pb-24 bg-paper-elevation-2">
-      <div className="flex flex-col gap-4 p-4 w-fit">
-        <div className="from-primary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
-          <div className="grid items-center w-full max-w-sm gap-2">
+    <div className="bg-paper-elevation-2 flex justify-center gap-4 pt-8 pb-24">
+      <div className="flex w-fit flex-col gap-4 p-4">
+        <div className="from-secondary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Search"
               size="small"
@@ -41,27 +41,30 @@ function Home() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
-            <InputX
-              label="Sort by:"
-              size="small"
-              id="SearchBook"
-              placeholder="Popularity"
-              trailingComponent={<i class="fa-solid fa-caret-down"></i>}
-            />
-          </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
-            <InputX
-              label="Genre:"
-              size="small"
-              id="SearchBook"
-              placeholder="All"
-              trailingComponent={<i class="fa-solid fa-caret-down"></i>}
-            />
-          </div>
+          <SelectStyled
+            label="Sort by:"
+            variant="outlined"
+            size="small"
+          >
+            <SelectContent>
+              <SelectItem value="option1">Popularity</SelectItem>
+              <SelectItem value="option2">Reviewed</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+          <SelectStyled
+            label="Genre:"
+            variant="outlined"
+            size="small"
+          >
+            <SelectContent>
+              <SelectItem default value="option1">All</SelectItem>
+              <SelectItem value="option2">Drama</SelectItem>
+              <SelectItem value="option3">Horror</SelectItem>
+            </SelectContent>
+          </SelectStyled>
           <div className="flex flex-col gap-2">
             <Label>Promt</Label>
-            <Textarea placeholder="Use our AI tool to help..." />
+            <Textarea placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
             <Button variant="outlined" color="secondary">
@@ -95,41 +98,66 @@ function Home() {
               setSelectBook(book.id);
             };
             return (
-              <div className="bg-secondary-lighter">
-                <div className="w-full h-[162px] bg-secondary-hover"> 
-                </div>
-                <div
-                  className="flex w-[180px] flex-col p-2"
-                  key={book.id}
+              <div className="bg-secondary-lighter border-divider relative w-[180px] overflow-hidden rounded-md border pb-15 transition-all hover:scale-105">
+                <Link
+                  to={{
+                    pathname: `/book/${book.id}`,
+                    state: { id: selectBook },
+                  }}
                 >
-                  <div className="subtitle-3 text-text-primary">{book.title}</div>
-                  <div className="flex-1 body-2 text-text-secondary">{`Author : ${book.Author?.name}`}</div>
-                  <div className="flex gap-4">
-                    <div className="flex gap-2">
-                      <Star className="w-5" />
-                      <p>{book.averageRating}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Star className="w-5" />
-                      <p>Rate</p>
+                  <div className="bg-secondary-hover flex h-[162px] items-center justify-center">
+                    <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
+                      <img
+                        src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
+                        alt="Book Cover Title"
+                        className="h-full w-full object-cover"
+                      />
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="small"
-                    color="secondary"
-                    className="rounded-sm"
+                </Link>
+                <div className="flex flex-col p-2" key={book.id}>
+                  {/* <Button
+                    variant="text"
+                    color="neutral"
+                    size="icon"
+                    className="text-action-active-icon absolute top-1 left-1 w-7 h-7 opacity-60"
                   >
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <Link
-                      to={{
-                        pathname: `/book/${book.id}`,
-                        state: { id: selectBook },
-                      }}
+                    <i className="fa-regular fa-bookmark"></i>
+                  </Button> */}
+                  <div className="subtitle-3 text-text-primary">
+                    {book.title}
+                  </div>
+                  <div className="body-3 text-text-secondary flex-1">{`${book.Author.name}`}</div>
+                  <div className="absolute bottom-2 left-0 w-full px-2">
+                    <div className="flex gap-0">
+                      <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                        <i className="fa-solid fa-star"></i>
+                        <p className="text-warning-main">
+                          {book.averageRating}
+                        </p>
+                      </Badge>
+                      <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                        <i className="fa-regular fa-star"></i>
+                        <p className="text-text-disabled">Rate</p>
+                      </Badge>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="small"
+                      color="secondary"
+                      className="mt-1 w-full rounded-sm"
                     >
-                      Write a review
-                    </Link>
-                  </Button>
+                      <i class="fa-solid fa-pen-to-square"></i>
+                      <Link
+                        to={{
+                          pathname: `/book/${book.id}`,
+                          state: { id: selectBook },
+                        }}
+                      >
+                        Write a review
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             );

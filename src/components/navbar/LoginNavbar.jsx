@@ -15,12 +15,31 @@ import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
 import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useUserStore from "@/src/stores/userStore";
+import { useEffect, useState } from "react";
+import cartManageStore from "@/src/stores/cartManageStore";
+import { Badge } from "@/components/ui/badge";
 
 function GuestNavbar() {
   const logout = useUserStore(state => state.logout)
-  const avatar = useUserStore(state => state.avatarUrl
-  )
-  console.log(avatar)
+  const token = useUserStore(state => state.token)
+  const avatar = useUserStore(state => state.avatarUrl)
+  const userName = useUserStore(state => state.userName)
+
+  const getCart = cartManageStore(state => state.getAllCart)
+
+  const [cartItem, setCartItem] = useState([])
+  const mockCartitem = ["a" , "b ", "c"]
+
+  useEffect(() => {
+    const fetchCart = async () => { //วังวน async/await 
+      setCartItem([])
+      let allCartItem = await getCart(token)
+      setCartItem(mockCartitem)
+    }
+    fetchCart()
+    console.log(cartItem.length)
+
+  }, [])
 
   function hdllogout() {
     logout()
@@ -28,12 +47,15 @@ function GuestNavbar() {
   }
 
   return (
+
     <nav className="flex flex-row items-center justify-between gap-1">
+
       <Link to='/shelf'>
         <Button variant="text" color="secondary">
           {<i class="fa-solid fa-bookmark"></i>}Readlist
         </Button>
       </Link>
+
       <NavigationMenu viewport={false}>
         <NavigationMenuList className="gap-2">
           <NavigationMenuItem>
@@ -84,23 +106,31 @@ function GuestNavbar() {
               className={cn(
                 buttonVariants({ variant: "outlined", color: "secondary" }),
                 "w-9 px-0",
-                "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible",
+                "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible relative",
               )}
             >
-              <i class="fa-solid fa-cart-shopping"></i>
+
+              <i className=" fa-solid fa-cart-shopping"></i>
+              {(cartItem?.length ?? 0) > 0 && (
+                <Badge
+                  className="absolute h-5 px-1 font-mono rounded-full bg-primary-main min-w-5 tabular-nums -top-2 -right-2"
+                >
+                  {cartItem?.length}
+                </Badge>
+              )}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link href="#">Components</Link>
+                    <Link to="/cart"> Your Cart</Link>
                   </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
+                  {/* <NavigationMenuLink asChild>
                     <Link href="#">Documentation</Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
                     <Link href="#">Blocks</Link>
-                  </NavigationMenuLink>
+                  </NavigationMenuLink> */}
                 </li>
               </ul>
             </NavigationMenuContent>
@@ -116,7 +146,7 @@ function GuestNavbar() {
                   <i class="fa-solid fa-user"></i>
                 </AvatarFallback>
               </Avatar>
-              <div className="ml-2">User</div>
+              <div className="ml-2">{userName}</div>
             </NavigationMenuTrigger>
             <NavigationMenuContent className="">
               <ul className="grid w-[200px] gap-4">
@@ -126,13 +156,13 @@ function GuestNavbar() {
                       Your Feed
                     </Link>
                   </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
+                  {/* <NavigationMenuLink asChild>
                     <Link to="/shelf" className="flex-row items-center gap-2">
                       Your Shelves
                     </Link>
-                  </NavigationMenuLink>
+                  </NavigationMenuLink> */}
                   <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
+                    <Link to="/shelf" className="flex-row items-center gap-2">
                       Your Readlist
                     </Link>
                   </NavigationMenuLink>

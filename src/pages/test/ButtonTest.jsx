@@ -2,7 +2,12 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "react-router";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
+import {
+  BadgeCheckIcon,
+  CircleCheckIcon,
+  CircleHelpIcon,
+  CircleIcon,
+} from "lucide-react";
 import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
@@ -18,6 +23,24 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { ReaditLogo } from "@/src/assets/readit";
+import { toast, Toaster } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import {
+  SelectStyled,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const components = [
   {
@@ -356,6 +379,18 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Test"
+              id="pictureX"
+              type="email"
+              placeholder="Find books..."
+              color="neutral"
+              variant="filled"
+              disabled
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
+            />
+          </div>
         </div>
         <div className="h6 text-text-secondary">Navigation Menu</div>
         <NavigationMenu viewport={false}>
@@ -457,6 +492,172 @@ function ButtonTest() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        <div className="h6 text-text-secondary">Toast</div>
+        <div className="flex gap-4">
+          <Button
+            variant="outlined"
+            onClick={() =>
+              toast.success("Event has been created", {
+                description: "Sunday, December 03, 2023 at 9:00 AM",
+                action: {
+                  label: "Okay",
+                  onClick: () => console.log("Undo"),
+                },
+              })
+            }
+          >
+            Show Toast
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() =>
+              toast.error("Event has been created", {
+                description: "Sunday, December 03, 2023 at 9:00 AM",
+                action: {
+                  label: "Okay",
+                  onClick: () => console.log("Undo"),
+                },
+              })
+            }
+          >
+            Show Toast
+          </Button>
+        </div>
+        <div className="h6 text-text-secondary">Badge</div>
+        <div className="flex gap-3">
+          <Badge asChild>
+            <Link href="/">Badge</Link>
+          </Badge>
+          <Badge variant="secondary">Secondary</Badge>
+          <Badge variant="error">Destructive</Badge>
+          <Badge variant="outline">Outline</Badge>
+          <div className="flex w-full flex-wrap gap-2">
+            <Badge
+              variant="secondary"
+              className="bg-info-main text-white dark:bg-blue-600"
+            >
+              <BadgeCheckIcon />
+              Verified
+            </Badge>
+            <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
+              8
+            </Badge>
+            <Badge
+              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
+              variant="error"
+            >
+              99
+            </Badge>
+            <Badge
+              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
+              variant="outline"
+            >
+              20+
+            </Badge>
+          </div>
+        </div>
+        <div className="h6 text-text-secondary">Select</div>
+        <div className="flex gap-4 space-y-6 bg-gray-100">
+          {/* Variant: outlined, Color: primary, Size: medium */}
+          <SelectStyled
+            label="Primary Outlined"
+            variant="outlined"
+            color="primary"
+            size="medium"
+          >
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+              <SelectItem value="option2">Option 2</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+
+          {/* Variant: filled, Color: secondary, Size: small */}
+          <SelectStyled
+            label="Secondary Filled (Small)"
+            variant="filled"
+            color="secondary"
+            size="small"
+          >
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+              <SelectItem value="option2">Option 2</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+
+          {/* สถานะ Disabled */}
+          <SelectStyled
+            label="Disabled Filled"
+            variant="filled"
+            color="neutral"
+            disabled
+          >
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+
+          {/* สถานะ Disabled */}
+          <SelectStyled
+            label="Disabled Filled"
+            variant="filled"
+            color="primary"
+            disabled
+          >
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+
+          {/* สถานะ Error (Invalid) */}
+          <SelectStyled
+            label="Error State"
+            variant="outlined"
+            color="error"
+            aria-invalid={true}
+          >
+            <SelectContent>
+              <SelectItem value="option1">Option 1</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+        </div>
+        <div className="h6 text-text-secondary">Dialog</div>
+        <Dialog>
+          <form>
+            <DialogTrigger asChild>
+              <Button variant="outlined">Open Dialog</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit profile</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you&apos;re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <InputX
+                  label="Name"
+                  id="name-1"
+                  name="name"
+                  defaultValue="Pedro Duarte"
+                />
+                <InputX
+                  label="Username"
+                  id="username-1"
+                  name="username"
+                  defaultValue="@peduarte"
+                />
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="text">Cancel</Button>
+                </DialogClose>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </form>
+        </Dialog>
       </div>
     </div>
   );

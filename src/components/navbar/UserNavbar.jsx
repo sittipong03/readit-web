@@ -1,4 +1,5 @@
 import { Cart, Notification } from "@/src/icons/Index";
+import { SparklesIcon } from "../icons/sparkles-icon";
 
 function UserNavbar() {
   return (
@@ -32,6 +33,9 @@ function UserNavbar() {
             <button className="text-xl font-bold text-[#7e765d]">
               Readlist
             </button>
+            <Button variant="text">
+              <SparklesIcon /> Test
+            </Button>
             <button>
               <Notification className="w-12 rounded-[50%] border border-[#7e765d] p-1" />
             </button>
@@ -41,15 +45,6 @@ function UserNavbar() {
             <button className="rounded-2xl bg-amber-500 p-2 font-bold text-white">
               User
             </button>
-            {/* <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className="btn m-1 btn-circle bg-white">
-                      User
-                    </div>
-                    <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-1 w-52 p-2 shadow-sm">
-                      <li>Profile</li>
-                      <li>Logout</li>
-                    </ul>
-                  </div> */}
           </div>
         </nav>
       </header>

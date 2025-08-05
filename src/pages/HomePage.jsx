@@ -2,7 +2,7 @@ import { SparklesIcon } from "../components/icons/sparkles-icon";
 import { Button } from "../../components/ui/button";
 import { LoaderCircle } from "lucide-react"
 
-function Home() {
+function HomePage() {
   return (
     <div className="w-screen dark">
       <div className="flex flex-col items-center gap-4 p-4 bg-paper-elevation-6">
@@ -60,4 +60,4 @@ function Home() {
     </div>
   );
 }
-export default Home;
+export default HomePage;

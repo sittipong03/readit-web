@@ -10,3 +10,4 @@ const addToken = (token) => ({
 
 export const getCart = (token) => cartApi.get("/", addToken(token));
 export const addToCart = (body, token) => cartApi.post("/", body, addToken(token));
+export const editCart = (body, token) => cartApi.patch("/", body, addToken(token));

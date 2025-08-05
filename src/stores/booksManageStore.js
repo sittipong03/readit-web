@@ -7,6 +7,7 @@ const bookManageStore = create((set,get) => ({
   book: null,
   getAllBooks : async() => {
     const result = await getAllBooks()
+    console.log(result)
     set({books: result.data})
     return result;
   },

@@ -12,7 +12,6 @@ import UserLayout from "../layouts/UserLayout";
 import LandingPage from "../pages/LandingPage";
 import Home from "../pages/Home";
 import HomePage from "../pages/HomePage";
-import Home from "../pages/Home";
 import BookPage from "../pages/BookPage";
 import ReviewPage from "../pages/ReviewPage";
 import LoginPage from "../pages/auth/LoginPage";

@@ -1,42 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, Book } from "lucide-react";
 import { XIcon } from "./icons";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { set } from "zod";
 
 const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [books] = useState([
-    {
-      id: 1,
-      title: "The Unthinkable: Who Survives When Disaster Strikes",
-      author: "John Green",
-      cover: "/api/placeholder/60/80",
-    },
-    {
-      id: 2,
-      title: "The Fault in Our Stars",
-      author: "John Green",
-      cover: "/api/placeholder/60/80",
-    },
-    {
-      id: 3,
-      title: "Looking for Alaska",
-      author: "John Green",
-      cover: "/api/placeholder/60/80",
-    },
-    {
-      id: 4,
-      title: "Paper Towns",
-      author: "John Green",
-      cover: "/api/placeholder/60/80",
-    },
-    {
-      id: 5,
-      title: "An Abundance of Katherines",
-      author: "John Green",
-      cover: "/api/placeholder/60/80",
-    },
-  ]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [books, setBooks] = useState([]);
+
+  const fetchBooks = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.get("http://localhost:6500/api/book", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      console.log("API Response:", response.data);
+
+      let booksArray;
+      if (Array.isArray(response.data)) {
+        booksArray = response.data;
+      } else if (Array.isArray(response.data.books)) {
+        booksArray = response.data.books;
+      } else if (Array.isArray(response.data.data)) {
+        booksArray = response.data.data;
+      } else {
+        throw new Error("Invalid response format: expected an array of books");
+      }
+
+      const booksData = booksArray.map((book) => {
+        const latestEdition = book.edition?.[0];
+
+        return {
+          id: book.id,
+          title: book.title,
+          author: book.Author?.name || "Unknown Author",
+          coverImage: latestEdition?.coverImage || null,
+          description: book.description,
+          ratingCount: book.ratingCount,
+        };
+      });
+
+      setBooks(booksData);
+    } catch (err) {
+      console.error("Error fetching books:", err);
+      setError("Failed to load books. Please try again.");
+      setBooks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchBooks();
+    }
+  }, [isOpen]);
 
   const filteredBooks = books.filter(
     (book) =>
@@ -44,22 +70,59 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
       book.author.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const handleBookSelect = (book) => {
-    if (onBookSelect) {
-      onBookSelect(book);
+  const hdlBookSelect = async (book) => {
+    try {
+      await axios.post(
+        "http://localhost:6500/api/book/wishlist",
+        {
+          bookId: book.id,
+          shelfType: "WISHLIST",
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
+      );
+
+      if (onBookSelect) {
+        const newBook = {
+          ...book,
+          id: book.id,
+          rating: 0,
+          totalRatings: book.ratingCount || 0,
+          userRating: null,
+          hasUserReview: false,
+          createdAt: new Date().toISOString(), // เพิ่ม timestamp
+        };
+        onBookSelect(newBook);
+      }
+      onClose();
+    } catch (error) {
+      if (error.response?.status === 409) {
+        alert("Book is already in your wishlist!");
+      } else {
+        console.error("Error adding book to wishlist:", error);
+      }
     }
+  };
+
+  const hdlClose = () => {
+    setSearchQuery("");
+    setError(null);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/80">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/80"
+      onWheel={(evt) => evt.preventDefault()}
+    >
       <div className="bg-paper-elevation-6 relative h-[444px] w-[438px] max-w-[90vw] rounded-lg bg-white p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="subtitle-2">Add a book</h2>
           <button
-            onClick={onClose}
+            onClick={hdlClose}
             className="rounded-full p-1 transition-colors hover:bg-gray-100"
           >
             <XIcon className="h-6 w-6" />
@@ -73,7 +136,10 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
           <div className="flex w-full items-center justify-between gap-3">
             <div className="relative flex w-full items-center justify-between gap-3">
               <div className="absolute top-1/2 left-4 -translate-y-1/2 transform">
-                <i class="fa-solid fa-book color-action-active"></i>
+                <i
+                  className="fa-solid fa-book"
+                  style={{ color: "action-disabled" }}
+                ></i>
               </div>
               <Input
                 type="text"
@@ -90,38 +156,70 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
         </div>
 
         <div className="h-[280px] flex-1 overflow-hidden">
-          <div
-            className="scrollbar-hide max-h-full space-y-3 overflow-y-auto"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {filteredBooks.map((book, index) => (
-              <div
-                key={book.id}
-                onClick={() => handleBookSelect(book)}
-                className="w-cursor-pointer hover:bg-secondary-hover flex items-center space-x-4 overflow-hidden rounded-xl px-2 py-2 transition-colors"
-              >
-                <div className="flex h-16 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-md">
-                  <Book className="h-6 w-6 text-white" />
-                </div>
+          {loading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-center">
+                <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2 border-purple-500"></div>
+                <p className="text-gray-500">Loading books...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-center">
+                <p className="mb-2 text-red-500">{error}</p>
+                <button
+                  onClick={fetchBooks}
+                  className="rounded-lg bg-purple-500 px-4 py-2 text-white transition-colors hover:bg-purple-600"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="scrollbar-hide max-h-full space-y-3 overflow-y-auto"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {filteredBooks.map((book) => (
+                <div
+                  key={book.id}
+                  onClick={() => hdlBookSelect(book)}
+                  className="w-cursor-pointer hover:bg-secondary-hover mt-2 flex items-center space-x-4 overflow-hidden rounded-xl px-2 py-2 transition-colors"
+                >
+                  <div className="flex h-16 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-md">
+                    {book.coverImage ? (
+                      <img
+                        src={book.coverImage}
+                        alt={book.title}
+                        className="h-full w-full rounded-lg object-cover"
+                        onError={(evt) => {
+                          evt.target.style.display = "none";
+                          evt.target.nextSibling.style.display = "flex";
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={`${book.coverImage ? "hidden" : "flex"} h-6 w-6 text-white`}
+                    >
+                      <Book className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
 
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <h3 className="truncate font-semibold text-gray-900">
-                    {index === 0 ? book.title : "Book name"}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {index === 0 ? book.author : "Author"}
+                  <div className="min-w-0 flex-1 items-center overflow-hidden">
+                    <h3 className="subtitle-4">{book.title}</h3>
+                    <p className="body-3">{book.author}</p>
+                  </div>
+                </div>
+              ))}
+
+              {filteredBooks.length === 0 && searchQuery && (
+                <div className="py-12 text-center">
+                  <Book className="mx-auto mb-4 h-12 w-12 text-gray-300" />
+                  <p className="text-gray-500">
+                    No books found matching "{searchQuery}"
                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {filteredBooks.length === 0 && searchQuery && (
-            <div className="py-12 text-center">
-              <Book className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-              <p className="text-gray-500">
-                No books found matching "{searchQuery}"
-              </p>
+              )}
             </div>
           )}
         </div>

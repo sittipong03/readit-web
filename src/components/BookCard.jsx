@@ -90,7 +90,7 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
                 color="secondary"
                 size="small"
                 borderColor="secondary-outlinedBorder"
-                className="mt-2 w-full"
+                className="mt-2 w-full rounded-xs"
                 onClick={hdlGoViewOwnReview}
               >
                 <EyeIcon size={16} />
@@ -102,7 +102,7 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
                 color="secondary"
                 size="small"
                 borderColor="secondary-outlinedBorder"
-                className="mt-2 w-full"
+                className="mt-2 w-full rounded-xs"
                 onClick={hdlGoWriteReview}
               >
                 <EditIcon size={16} />

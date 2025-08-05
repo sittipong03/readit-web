@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { XIcon } from "./icons";
+import { EditIcon, XIcon } from "./icons";
+import { EyeIcon } from "lucide-react";
 
 const ManageBookModal = ({
   isOpen,
@@ -8,10 +9,18 @@ const ManageBookModal = ({
   book,
   readBooks,
   onMarkAsRead,
+  onWriteReview,
+  onViewReview,
   onAddToReading,
+  onAddToFavorites,
+  onRemoveFromFavorite,
   onDeleteFromShelf,
+  isFavorite = false,
 }) => {
   if (!isOpen || !book) return null;
+
+  const hasUserReview = book.hasUserReview || book.userRating;
+  const isInWishlist = book.shelf === "WISHLIST";
 
   const hdlMarkAsRead = () => {
     const isAlreadyRead = readBooks.some((readBook) => readBook.id === book.id);
@@ -23,6 +32,18 @@ const ManageBookModal = ({
 
     if (onMarkAsRead) {
       onMarkAsRead(book);
+    }
+  };
+
+  const hdlWriteReview = () => {
+    if (onWriteReview) {
+      onWriteReview(book);
+    }
+  };
+
+  const hdlViewReview = () => {
+    if (onViewReview) {
+      onViewReview(book);
     }
   };
 
@@ -40,6 +61,16 @@ const ManageBookModal = ({
     if (onDeleteFromShelf) {
       onDeleteFromShelf(book);
     } else {
+      onClose();
+    }
+  };
+
+  const hdlToggleFavorite = () => {
+    if (isFavorite && onRemoveFromFavorite) {
+      onRemoveFromFavorite(book);
+      onClose();
+    } else if (!isFavorite && onAddToFavorites) {
+      onAddToFavorites(book);
       onClose();
     }
   };
@@ -77,7 +108,106 @@ const ManageBookModal = ({
         </div>
         {/* Action buttons */}
         <div className="space-y-3">
-          <Button
+          {hasUserReview ? (
+            <>
+              <Button
+                onClick={hdlViewReview}
+                variant="contained"
+                size="large"
+                color="primary"
+                className="w-full"
+              >
+                <EyeIcon size={16} />
+                View your review
+              </Button>
+
+              <Button
+                onClick={hdlToggleFavorite}
+                variant="outlined"
+                size="large"
+                color="primary"
+                className="w-full"
+              >
+                {isFavorite ? "Remove from favorite" : "Add to favorite"}
+              </Button>
+
+              <Button
+                onClick={hdlDeleteFromShelf}
+                variant="outlined"
+                size="large"
+                color="error"
+                className="w-full"
+              >
+                Delete from shelf
+              </Button>
+            </>
+          ) : isInWishlist ? (
+            <>
+              <Button
+                onClick={hdlMarkAsRead}
+                variant="contained"
+                size="large"
+                color="primary"
+                className="w-full"
+              >
+                Mark as read
+              </Button>
+
+              <Button
+                onClick={hdlAddToReading}
+                variant="outlined"
+                size="large"
+                color="primary"
+                className="w-full"
+              >
+                Add to reading
+              </Button>
+
+              <Button
+                onClick={hdlDeleteFromShelf}
+                variant="outlined"
+                size="large"
+                color="error"
+                className="w-full"
+              >
+                Delete from shelf
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={hdlWriteReview}
+                variant="contained"
+                size="large"
+                color="primary"
+                className="w-full"
+              >
+                <EditIcon size={16} />
+                Write a review
+              </Button>
+
+              <Button
+                onClick={hdlToggleFavorite}
+                variant="outlined"
+                size="large"
+                color="primary"
+                className="w-full"
+              >
+                Add to favorite
+              </Button>
+
+              <Button
+                onClick={hdlDeleteFromShelf}
+                variant="outlined"
+                size="large"
+                color="error"
+                className="w-full"
+              >
+                Delete from shelf
+              </Button>
+            </>
+          )}
+          {/* <Button
             onClick={hdlMarkAsRead}
             variant="contained"
             size="large"
@@ -105,7 +235,7 @@ const ManageBookModal = ({
             className="w-full"
           >
             Delete from shelf
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

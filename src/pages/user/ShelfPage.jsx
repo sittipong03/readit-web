@@ -73,6 +73,84 @@ function Shelf() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const fetchBooks = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.get("/api/book/wishlist", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = response.data;
+
+      setReadBooks(data.readBooks || []);
+      setReadingBooks(data.readingBooks || []);
+      setWishlistBooks(data.wishlistBooks || []);
+      setFavoriteBooks(data.favoriteBooks || []);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setError("Failed to load books. Please try again.");
+
+      // fallback data
+      const sampleBooks = [
+        {
+          id: 1,
+          title: "The Wedding Crasher",
+          author: "Christina Escudéz",
+          coverImage:
+            "https://i.harperapps.com/hcanz/covers/9780062909893/y648.jpg",
+          rating: 3.2,
+          totalRatings: 12,
+          userRating: null,
+          hasUserReview: false,
+          createAt: new Date("2022-01-15"),
+        },
+        {
+          id: 2,
+          title: "The Seven Husbands of Evelyn Hugo",
+          author: "Taylor Jenkins Reid",
+          coverImage:
+            "https://www.asiabooks.com/media/catalog/product/cache/a5ac216be58c0cbce1cb04612ece96dc/9/7/9781398515697.jpg",
+          rating: 4.2,
+          totalRatings: 20,
+          userRating: 4.5,
+          hasUserReview: true,
+          createdAt: new Date("2021-01-15"),
+        },
+        {
+          id: 3,
+          title: "Atomic Habits",
+          author: "James Clear",
+          coverImage:
+            "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg",
+          rating: 4.8,
+          totalRatings: 150,
+          userRating: 5.0,
+          hasUserReview: true,
+          createdAt: new Date("2025-01-15"),
+        },
+        {
+          id: 4,
+          title: "The Midnight Library",
+          author: "Matt Haig",
+          coverImage:
+            "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1602190253i/52578297.jpg",
+          rating: 4.1,
+          totalRatings: 85,
+          userRating: null,
+          hasUserReview: false,
+          createdAt: new Date("2024-01-15"),
+        },
+      ];
+      setReadBooks(sampleBooks);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const hdlBackToFeed = () => {
     navigate("/userprofile");
   };
@@ -88,6 +166,11 @@ function Shelf() {
   };
 
   const hdlAddBook = (book) => {
+    const existingBook = wishlistBooks.find((b) => b.id === book.id);
+    if (existingBook) {
+      console.log("Book already exists in wishlist");
+      return;
+    }
     const newBook = {
       ...book,
       id: Date.now(),
@@ -122,18 +205,6 @@ function Shelf() {
     hdlCloseModal();
   };
 
-  const hdlToggleFavorite = (book) => {
-    const isFavorite = favoriteBooks.some((fav) => fav.id === book.id);
-
-    if (isFavorite) {
-      setFavoriteBooks((prev) => prev.filter((fav) => fav.id !== book.id));
-    } else {
-      if (book.hasUserReview || book.userRating) {
-        setFavoriteBooks((prev) => [...prev, book]);
-      }
-    }
-  };
-
   const hdlToggleSort = () => {
     setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
   };
@@ -151,9 +222,31 @@ function Shelf() {
     });
   };
 
+  const hdlToggleFavorite = (book) => {
+    if (!book?.id) return;
+
+    const isFavoriteBook = favoriteBooks.some((fav) => fav?.id === book.id);
+
+    if (isFavoriteBook) {
+      setFavoriteBooks((prev) => prev.filter((fav) => fav?.id !== book.id));
+    } else {
+      if (book.hasUserReview || book.userRating) {
+        setFavoriteBooks((prev) => [...prev, book]);
+      }
+    }
+  };
+
   // check if a book is favorite
   const isFavorite = (book) => {
-    return favoriteBooks.some((fav) => fav.id === book.id);
+    try {
+      if (!book?.id || !Array.isArray(favoriteBooks)) return false;
+      return favoriteBooks
+        .filter((fav) => fav && fav.id) // กรอง null และ undefined ออก
+        .some((fav) => fav.id === book.id);
+    } catch (error) {
+      console.error("Error in isFavorite:", error);
+      return false;
+    }
   };
 
   const renderContent = () => {
@@ -438,8 +531,8 @@ function Shelf() {
                           onClick={() => setActiveTab("readlist")}
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "readlist"
-                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main"
-                              : ""
+                              ? "bg-primary-soft subtitle-3 text-primary-main"
+                              : "boody-1 hover:bg-primary-soft"
                           }`}
                         >
                           Readlist
@@ -450,8 +543,8 @@ function Shelf() {
                           onClick={() => setActiveTab("read")}
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "read"
-                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main"
-                              : ""
+                              ? "bg-primary-soft subtitle-3 text-primary-main"
+                              : "body-1 hover:bg-primary-soft"
                           }`}
                         >
                           Read
@@ -462,8 +555,8 @@ function Shelf() {
                           onClick={() => setActiveTab("favorites")}
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "favorites"
-                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main"
-                              : ""
+                              ? "bg-primary-soft subtitle-3 text-primary-main"
+                              : "body-1 hover:bg-primary-soft"
                           }`}
                         >
                           Favorites
@@ -491,10 +584,19 @@ function Shelf() {
         isOpen={isManageBookModalOpen}
         onClose={hdlCloseModal}
         book={selectedBook}
-        readBooks={readBooks}
+        onBookSelect={hdlAddBook}
+        isFavorite={isFavorite(selectedBook)}
         onMarkAsRead={hdlMarkAsRead}
         onAddToReading={hdlAddToReading}
         onDeleteFromShelf={hdlDeleteFromShelf}
+        onWriteReview={() => {
+          navigate(`/review`);
+        }}
+        onViewReview={() => {
+          navigate(`/userprofile`);
+        }}
+        onAddToFavorite={hdlToggleFavorite}
+        onRemoveFromFavorite={hdlToggleFavorite}
       />
     </div>
   );

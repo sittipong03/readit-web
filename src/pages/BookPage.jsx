@@ -7,6 +7,7 @@ import useUserStore from "../stores/userStore";
 import reviewManageStore from "../stores/reviewStore";
 import { StarIcon } from "../components/icons";
 import productManageStore from "../stores/productManageStore";
+import { LoaderCircle } from "lucide-react";
 
 function Book() {
   const [loading, setLoading] = useState(false);
@@ -77,10 +78,10 @@ function Book() {
   // console.log(book);
   // console.log('review', review)
   return (
-    <>
+    <div className="bg-paper-elevation-6 min-h-[700px]">
       {loading
         ?
-        <div className="p-20 text-2xl">Page loading</div>
+        <div className="p-20 text-2xl flex justify-center gap-2"><LoaderCircle className="animate-spin" />Page loading</div>
         :
         <div className="flex gap-4 p-20">
           <div className="w-2/5">
@@ -178,7 +179,7 @@ function Book() {
           </div>
         </div>
       }
-    </>
+    </div>
   )
 }
 export default Book

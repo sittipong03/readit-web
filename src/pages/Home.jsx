@@ -1,92 +1,143 @@
-import React, { useEffect, useState } from 'react'
-import { Person, ReviewButton, Star } from '../icons/Index'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
-import bookManageStore from '../stores/booksManageStore'
-import { Link } from 'react-router'
-
-
+import React, { useEffect, useState } from "react";
+import { Person, ReviewButton, Star } from "../icons/Index";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import bookManageStore from "../stores/booksManageStore";
+import { Link } from "react-router";
+import { InputX } from "@/components/ui/inputX";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 function Home() {
-  const getBooks = bookManageStore(state => state.getAllBooks);
-  const books = bookManageStore(state => state.books);
-  const [selectBook, setSelectBook] = useState(null)
+  const getBooks = bookManageStore((state) => state.getAllBooks);
+  const books = bookManageStore((state) => state.books);
+  const [selectBook, setSelectBook] = useState(null);
 
   useEffect(() => {
     const run = async () => {
-      await getBooks()
-    }
-    run()
-  }, [])
+      await getBooks();
+    };
+    run();
+  }, []);
 
-  console.log("Books", books)
+  console.log("Books", books);
   return (
-    <div className='px-15 pt-30 pb-50 flex flex-row justify-center items-around text-5xl font-bold bg-paper-elevation-2'>
-      <div className="flex flex-col justify-center w-1/5 bg-primary-lighter">
-        <label>Search</label>
-        <Input className="w-80" placeholder="Title Author or ISBN" type="text" />
-        <div className="flex flex-col">
-          <label className='mb-2'>Sort By : </label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Popularity" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="popularity">Popularity</SelectItem>
-              <SelectItem value="mostvisited">Most visited</SelectItem>
-              <SelectItem value="mostsaleed">Most sale</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col">
-          <label className='mb-2'>Genre : </label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="ALL" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="popularity">Popularity</SelectItem>
-              <SelectItem value="mostvisited">Most visited</SelectItem>
-              <SelectItem value="mostsaleed">Most sale</SelectItem>
-            </SelectContent>
-          </Select>
+    <div className="bg-paper-elevation-2 flex justify-center gap-4 pb-24">
+      <div className="flex w-fit flex-col gap-4 p-4">
+        <div className="from-primary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Search"
+              size="small"
+              id="SearchBook"
+              placeholder="Title, author, or ISBN..."
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
+            />
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Sort by:"
+              size="small"
+              id="SearchBook"
+              placeholder="Popularity"
+              trailingComponent={<i class="fa-solid fa-caret-down"></i>}
+            />
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Genre:"
+              size="small"
+              id="SearchBook"
+              placeholder="All"
+              trailingComponent={<i class="fa-solid fa-caret-down"></i>}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Promt</Label>
+            <Textarea placeholder="Use our AI tool to help..." />
+          </div>
+          <div className="flex flex-col gap-3">
+            <Button variant="outlined" color="secondary">
+              Clear Filter
+            </Button>
+            <Button>
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Search
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="w-4/5 items-center h-screen overflow-y-auto p-10">
+      <div className="flex min-h-screen max-w-lg flex-col gap-6 p-10">
         {/* <Person className="w-50 mb-15" /> */}
-        <h1 className='mb-3 subtitle-1'>Browse a book</h1>
-        <p className='text-xl mb-5 text-white'>{`${books.length} Result was found`}</p>
-        <div className="flex flex-row flex-wrap">
+        <div className="flex items-end">
+          <div className="flex flex-1 flex-col gap-0">
+            <h1 className="subtitle-1">Browse a book</h1>
+            <p className="text-text-disabled caption">{`${books.length} Result was found`}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <h1 className="subtitle-4">Can’t find the book?</h1>
+            <Button size="small" color="secondary">
+              <i class="fa-solid fa-plus"></i>
+              Add a book
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-row flex-wrap gap-5 rounded-md">
           {books.map((book) => {
             const hdlSelectBook = () => {
-              setSelectBook(book.id)
-            }
-            return <div className='flex flex-col border rounded-2xl p-5 m-5 w-[300px] flex-wrap justify-center gap-3' key={book.id}>
-              <h3>{book.title}</h3>
-              <p>{`Author : ${book.Author.name}`}</p>
-              <div className="flex gap-4">
-                <div className='flex gap-2'>
-                  <Star className="w-5"/>
-                  <p>{book.averageRating}</p>
+              setSelectBook(book.id);
+            };
+            return (
+              <div className="bg-secondary-lighter">
+                <div className="w-full h-[162px] bg-secondary-hover"> 
                 </div>
-                <div className='flex gap-2'>
-                  <Star className="w-5"/>
-                  <p>Rate</p>
+                <div
+                  className="flex w-[180px] flex-col p-2"
+                  key={book.id}
+                >
+                  <div className="subtitle-3 text-text-primary">{book.title}</div>
+                  <div className="body-2 text-text-secondary flex-1">{`Author : ${book.Author.name}`}</div>
+                  <div className="flex gap-4">
+                    <div className="flex gap-2">
+                      <Star className="w-5" />
+                      <p>{book.averageRating}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Star className="w-5" />
+                      <p>Rate</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="small"
+                    color="secondary"
+                    className="rounded-sm"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <Link
+                      to={{
+                        pathname: `/book/${book.id}`,
+                        state: { id: selectBook },
+                      }}
+                    >
+                      Write a review
+                    </Link>
+                  </Button>
                 </div>
               </div>
-              <button className='border w-mg flex rounded-xl p-3 cursor-pointer'><ReviewButton className="w-5"/> Write a review</button>
-              <button onClick={hdlSelectBook}>
-                <Link to={{
-                  pathname: `/book/${book.id}`,
-                  state: {id: selectBook}
-                }}>View detail</Link>
-              </button>
-            </div>
-})}
+            );
+          })}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

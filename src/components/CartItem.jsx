@@ -1,18 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import cartManageStore from '../stores/cartManageStore';
+import useUserStore from '../stores/userStore';
+import { editCart } from '../api/cartApi';
 
-function CartItem({ bookId, onRemove }) {
+function CartItem({ bookId, onRemove, cart }) {
+    const { userId } = useUserStore();
     const [book, setBook] = useState(null);
-    const [quantity, setQuantity] = useState(1);
+    const getAllCart = cartManageStore(state => state.getAllCart);
+    const token = useUserStore(state => state.token)
+    // console.log("bookId", bookId);
+
+    console.log(cart);
+    // console.log(userId);
+    
+    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         axios.get(`http://localhost:6500/api/book/${bookId}`)
             .then(res => setBook(res.data))
             .catch(err => console.error('Error fetching book:', err));
+        const run = async() => {
+            const allCart = await getAllCart(token);
+            const totalItems = allCart.data.cart.items;
+            setCartItems(totalItems)
+        }
+        run()
     }, [bookId]);
 
-    const handleQtyChange = (type) => {
-        setQuantity(q => Math.max(1, type === 'inc' ? q + 1 : q - 1));
+    const handleQtyChange = async (data, type) => {
+        const itemId = cartItems.find(item => item.productId === data.productId).id
+        const updatedQuantity = type === "inc" ? data.quantity + 1 : data.quantity - 1;
+        const response = await editCart({ userId, itemId, quantity: updatedQuantity }, token);
+
+        console.log(response.data.item);
+        // setQuantity(q => Math.max(1, type === 'inc' ? q + 1 : q - 1));
     };
 
     if (!book) return null;
@@ -39,13 +61,13 @@ function CartItem({ bookId, onRemove }) {
             </div>
 
             <div className="flex items-center gap-2 w-[20%] justify-center">
-                <button onClick={() => handleQtyChange('dec')} className="px-2 py-1 border rounded">−</button>
-                <span>{quantity}</span>
-                <button onClick={() => handleQtyChange('inc')} className="px-2 py-1 border rounded">+</button>
+                <button onClick={() => handleQtyChange(cart, "dec")} className="px-2 py-1 border rounded">−</button>
+                <span>{cart.quantity}</span>
+                <button onClick={() => handleQtyChange(cart, "inc")} className="px-2 py-1 border rounded">+</button>
             </div>
 
             <div className="w-[20%] text-center text-amber-700 font-semibold">
-                ${(book.price * quantity).toFixed(2)}
+                ${(cart.product.price * cart.quantity).toFixed(2)}
             </div>
 
             <div className="w-[20%] flex justify-center">

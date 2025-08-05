@@ -7,10 +7,12 @@ import useUserStore from "../stores/userStore";
 import reviewManageStore from "../stores/reviewStore";
 import { StarIcon } from "../components/icons";
 import productManageStore from "../stores/productManageStore";
+import { toast } from "react-toastify";
 
 function Book() {
   const [loading, setLoading] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [createReview, setCreateReview] = useState(false)
   const getBookById = bookManageStore(state => state.getBookById);
   const user = useUserStore(state => state.userId);
   const token = useUserStore(state => state.token);
@@ -22,8 +24,9 @@ function Book() {
   const addReview = reviewManageStore(state => state.addReview)
   const addToCart = cartManageStore(state => state.addToCart);
   const { bookId } = useParams();
+  // console.log(book);
   // console.log(token);
-  // console.log("User",user);
+  console.log("User",user);
   // console.log("Token",token);
   // console.log(getProduct);
   console.log("product", product);
@@ -31,18 +34,14 @@ function Book() {
     setShowReview(!showReview);
   }
 
-  // console.log(book);
-  // console.log(book.id);
 
   const hdlPostReview = async() => {
     try {
       const data = document.getElementById("review")
       const sendData = {userId: user, bookId: book.id, title: book.title, content: data.value, reviewPoint: 3}
-      // console.log(sendData);
-      // console.log("bookID",book.id);
       const response = await addReview(book.id, sendData, token)
-      console.log(response);
       setShowReview(!showReview);
+      setCreateReview(!createReview);
     } catch (error) {
       console.log(error);
     }
@@ -50,11 +49,9 @@ function Book() {
 
   const cartData = async(data) => {
     try {
-      console.log(data);
       const sendData = {userId: user, productId: product.id, quantity: 1 }
-      // console.log(sendData);
-      console.log(token);
-      const response = await addToCart(sendData, token)
+      const response = await addToCart(sendData, token);
+      toast.success(response.data.message)
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -67,13 +64,12 @@ function Book() {
       setLoading(true)
       const res = await getBookById(bookId);
       const review = await getReview(bookId);
-      const product = await getProduct(bookId)
+      const product = await getProduct(bookId);
       console.log(product);
       setLoading(false)
-      // console.log(res.data);
     }
     run()
-  }, [])
+  }, [createReview])
   // console.log(book);
   // console.log('review', review)
   return (

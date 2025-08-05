@@ -1,5 +1,5 @@
 import {create} from "zustand";
-import { addToCart, getCart } from "../api/cartApi";
+import { addToCart, editCart, getCart } from "../api/cartApi";
 
 const cartManageStore = create((set, get) => ({
   carts: [],
@@ -11,7 +11,11 @@ const cartManageStore = create((set, get) => ({
   addToCart: async (body, token) => {
     const result = await addToCart(body, token);
     return result;
+  },
+  editCart: async(body, token) => {
+    const result =  await editCart(body, token);
+    return result;
   }
-}))
+}));
 
-export default cartManageStore
+export default cartManageStore;

@@ -11,7 +11,7 @@ const buttonVariants = cva(
         contained: "",
         outlined: "border bg-transparent",
         text: "bg-transparent",
-        ghost: "", 
+        ghost: "",
         mixed: "border",
         link: "bg-transparent underline-offset-4 hover:underline",
       },
@@ -64,7 +64,11 @@ const buttonVariants = cva(
         className:
           "border-primary-outlinedBorder disabled:border-0 bg-primary-soft text-primary-main hover:bg-primary-hover active:bg-primary-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "primary", className: "text-primary-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "primary",
+        className: "text-primary-main disabled:text-text-disabled",
+      },
 
       // --- Secondary Color ---
       {
@@ -97,7 +101,11 @@ const buttonVariants = cva(
         className:
           "border-secondary-outlinedBorder disabled:border-0 bg-secondary-soft text-secondary-main hover:bg-secondary-hover active:bg-secondary-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "secondary", className: "text-secondary-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "secondary",
+        className: "text-secondary-main disabled:text-text-disabled",
+      },
 
       // --- Tertiary Color ---
       {
@@ -130,7 +138,11 @@ const buttonVariants = cva(
         className:
           "border-tertiary-outlinedBorder disabled:border-0 bg-tertiary-soft text-tertiary-main hover:bg-tertiary-hover active:bg-tertiary-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "tertiary", className: "text-tertiary-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "tertiary",
+        className: "text-tertiary-main disabled:text-text-disabled",
+      },
 
       // --- Error Color ---
       {
@@ -163,7 +175,11 @@ const buttonVariants = cva(
         className:
           "border-error-outlinedBorder disabled:border-0 bg-error-soft text-error-main hover:bg-error-hover active:bg-error-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "error", className: "text-error-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "error",
+        className: "text-error-main disabled:text-text-disabled",
+      },
 
       // --- Warning Color ---
       {
@@ -196,7 +212,11 @@ const buttonVariants = cva(
         className:
           "border-warning-outlinedBorder disabled:border-0 bg-warning-soft text-warning-main hover:bg-warning-hover active:bg-warning-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "warning", className: "text-warning-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "warning",
+        className: "text-warning-main disabled:text-text-disabled",
+      },
 
       // --- Info Color ---
       {
@@ -229,7 +249,11 @@ const buttonVariants = cva(
         className:
           "border-info-outlinedBorder disabled:border-0 bg-info-soft text-info-main hover:bg-info-hover active:bg-info-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "info", className: "text-info-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "info",
+        className: "text-info-main disabled:text-text-disabled",
+      },
 
       // --- Success Color ---
       {
@@ -262,7 +286,11 @@ const buttonVariants = cva(
         className:
           "border-success-outlinedBorder disabled:border-0 bg-success-soft text-success-main hover:bg-success-hover active:bg-success-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "success", className: "text-success-main disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "success",
+        className: "text-success-main disabled:text-text-disabled",
+      },
 
       // --- Neutral Color ---
       {
@@ -295,7 +323,11 @@ const buttonVariants = cva(
         className:
           "border-action-active bg-action-disabledBackground text-text-primary hover:bg-action-hover active:bg-action-focus disabled:bg-action-disabledBackground disabled:text-text-disabled disabled:border-neutral-400",
       },
-      { variant: "link", color: "neutral", className: "text-text-primary disabled:text-text-disabled" },
+      {
+        variant: "link",
+        color: "neutral",
+        className: "px-0 text-text-primary disabled:text-text-disabled",
+      },
     ],
     defaultVariants: {
       variant: "contained",

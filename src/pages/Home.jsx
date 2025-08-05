@@ -29,10 +29,10 @@ function Home() {
 
   console.log("Books", books);
   return (
-    <div className="bg-paper-elevation-2 flex justify-center gap-4 pb-24">
-      <div className="flex w-fit flex-col gap-4 p-4">
+    <div className="flex justify-center gap-4 pb-24 bg-paper-elevation-2">
+      <div className="flex flex-col gap-4 p-4 w-fit">
         <div className="from-primary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Search"
               size="small"
@@ -41,7 +41,7 @@ function Home() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Sort by:"
               size="small"
@@ -50,7 +50,7 @@ function Home() {
               trailingComponent={<i class="fa-solid fa-caret-down"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Genre:"
               size="small"
@@ -74,10 +74,10 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-screen max-w-lg flex-col gap-6 p-10">
+      <div className="flex flex-col max-w-lg min-h-screen gap-6 p-10">
         {/* <Person className="w-50 mb-15" /> */}
         <div className="flex items-end">
-          <div className="flex flex-1 flex-col gap-0">
+          <div className="flex flex-col flex-1 gap-0">
             <h1 className="subtitle-1">Browse a book</h1>
             <p className="text-text-disabled caption">{`${books.length} Result was found`}</p>
           </div>
@@ -103,7 +103,7 @@ function Home() {
                   key={book.id}
                 >
                   <div className="subtitle-3 text-text-primary">{book.title}</div>
-                  <div className="body-2 text-text-secondary flex-1">{`Author : ${book.Author.name}`}</div>
+                  <div className="flex-1 body-2 text-text-secondary">{`Author : ${book.Author?.name}`}</div>
                   <div className="flex gap-4">
                     <div className="flex gap-2">
                       <Star className="w-5" />

@@ -14,13 +14,26 @@ import { buttonVariants } from "@/components/ui/button";
 import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
 import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useUserStore from "@/src/stores/userStore";
 
 function GuestNavbar() {
+  const logout = useUserStore(state => state.logout)
+  const avatar = useUserStore(state => state.avatarUrl
+  )
+  console.log(avatar)
+
+  function hdllogout() {
+    logout()
+
+  }
+
   return (
     <nav className="flex flex-row items-center justify-between gap-1">
-      <Button variant="text" color="secondary">
-        {<i class="fa-solid fa-bookmark"></i>}Readlist
-      </Button>
+      <Link to='/shelf'>
+        <Button variant="text" color="secondary">
+          {<i class="fa-solid fa-bookmark"></i>}Readlist
+        </Button>
+      </Link>
       <NavigationMenu viewport={false}>
         <NavigationMenuList className="gap-2">
           <NavigationMenuItem>
@@ -92,11 +105,11 @@ function GuestNavbar() {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem className="h-8"> 
+          <NavigationMenuItem className="h-8">
             <NavigationMenuTrigger className="px-0">
               <Avatar>
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  src={avatar}
                   alt="@shadcn"
                 />
                 <AvatarFallback className="bg-action-disabled/50">
@@ -109,12 +122,12 @@ function GuestNavbar() {
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
+                    <Link to="/userproflie" className="flex-row items-center gap-2">
                       Your Feed
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
+                    <Link to="/shelf" className="flex-row items-center gap-2">
                       Your Shelves
                     </Link>
                   </NavigationMenuLink>
@@ -130,13 +143,18 @@ function GuestNavbar() {
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
+                    <Link to="/setting/affiliate" className="flex-row items-center gap-2">
                       Affiliate Program
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link to="/setting" className="flex-row items-center gap-2">
+                      Setting
                     </Link>
                   </NavigationMenuLink>
                   <div className="w-full h-[1px] bg-divider my-2"></div>
                   <NavigationMenuLink asChild className="hover:bg-error-dark">
-                    <Link href="#" className="flex-row items-center gap-2 text-error-main">
+                    <Link href="#" className="flex-row items-center gap-2 text-error-main" onClick={hdllogout}>
                       Sign out
                     </Link>
                   </NavigationMenuLink>

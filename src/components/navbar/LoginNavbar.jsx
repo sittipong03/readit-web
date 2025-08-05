@@ -107,6 +107,16 @@ function GuestNavbar() {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
+          {/* <div>
+                <i className=" fa-solid fa-cart-shopping"></i>
+              {(cartItem?.length ?? 0) > 0 && (
+                <Badge
+                  className="absolute h-5 px-1 font-mono rounded-full bg-primary-main min-w-5 tabular-nums -top-2 -right-2"
+                >
+                  {cartItem?.length}
+                </Badge>)}
+          </div> */}
+          <Link to="/cart">
           <NavigationMenuItem>
             <NavigationMenuTrigger
               showIcon={false}
@@ -120,28 +130,29 @@ function GuestNavbar() {
               <i className=" fa-solid fa-cart-shopping"></i>
               {(cartItem?.length ?? 0) > 0 && (
                 <Badge
-                  className="absolute h-5 px-1 font-mono rounded-full bg-primary-main min-w-5 tabular-nums -top-2 -right-2"
+                  className="absolute h-5 px-1 font-mono rounded-full bg-primary-main min-w-5 tabular-nums text-action-active -top-2 -right-2"
                 >
                   {cartItem?.length}
                 </Badge>
               )}
             </NavigationMenuTrigger>
-            <NavigationMenuContent>
+            {/* <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/cart"> Your Cart</Link>
                   </NavigationMenuLink>
-                  {/* <NavigationMenuLink asChild>
+                  <NavigationMenuLink asChild>
                     <Link href="#">Documentation</Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
                     <Link href="#">Blocks</Link>
-                  </NavigationMenuLink> */}
+                  </NavigationMenuLink>
                 </li>
               </ul>
-            </NavigationMenuContent>
+            </NavigationMenuContent> */}
           </NavigationMenuItem>
+          </Link>
           <NavigationMenuItem className="h-8">
             <NavigationMenuTrigger className="px-0">
               <Avatar>
@@ -174,14 +185,14 @@ function GuestNavbar() {
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2" onClick={hdltheme}>
+                    <div className="flex-row items-center gap-2" onClick={hdltheme}>
                       <div className="flex-1">Theme : {theme === 'light' ? 'Light' : 'Dark'}</div>
                       {theme === 'light' ? (
                         <i className="fa-solid fa-sun-bright"></i>
                       ) : (
                         <i className="fa-solid fa-moon"></i>
                       )}
-                    </Link>
+                    </div>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
                     <Link to="/setting/affiliate" className="flex-row items-center gap-2">

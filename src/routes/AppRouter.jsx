@@ -47,7 +47,7 @@ const routerGuest = createBrowserRouter([
     children: [
       { path: "/homepage", element: <HomePage /> },
       { path: "/book/:bookId", element: <BookPage /> },
-      { path: "/review", element: <ReviewPage /> },
+      { path: "/review/:bookId", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/Register", element: <RegisterPage /> },
       { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component

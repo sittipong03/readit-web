@@ -6,7 +6,7 @@ const menuItems = [
   { path: "/setting/password", label: "Change Password" },
   { path: "/setting/purchases", label: "Purchases" },
   { path: "/setting/affiliate", label: "Affiliate" },
-  { path: "/setting/earning", label: "Earning" },
+  // { path: "/setting/earning", label: "Earning" },
 ];
 
 const linkStyles = {

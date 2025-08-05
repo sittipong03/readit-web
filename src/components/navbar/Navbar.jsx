@@ -37,12 +37,14 @@ function Navbar({ user, currentPage }) {
 
   return (
     <nav
-      className={`sticky top-0 z-50 transform transition-transform duration-300 ease-in-out ${!isVisible ? "-translate-y-full" : ""} dark`}
+      className={`max-w-screen sticky top-0 z-50 transform transition-transform duration-300 ease-in-out ${!isVisible ? "-translate-y-full" : ""} dark`}
     >
       <div className="flex items-center justify-between bg-paper-elevation-2 px-6 py-3 text-[#d5c4a1] shadow-md">
         {/* Left: Logo + Search */}
         <div className="flex flex-1 items-center gap-4">
-          <ReaditLogo className="text-secondary-main" size={20} />
+          <a href="/book">
+            <ReaditLogo className="text-secondary-main hover:text-secondary-darker transition-all" size={20} />
+          </a>
           {!isBrowser && <SearchNavbar />}
         </div>
         {/* Center: Navigation */}

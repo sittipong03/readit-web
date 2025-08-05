@@ -1,92 +1,218 @@
-import React, { useEffect, useState } from 'react'
-import { Person, ReviewButton, Star } from '../icons/Index'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
-import bookManageStore from '../stores/booksManageStore'
-import { Link } from 'react-router'
-
-
+import React, { useEffect, useState } from "react";
+import { Person, ReviewButton, Star } from "../icons/Index";
+import { Input } from "@/components/ui/input";
+import bookManageStore from "../stores/booksManageStore";
+import { Link } from "react-router";
+import { InputX } from "@/components/ui/inputX";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  SelectStyled,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 function Home() {
-  const getBooks = bookManageStore(state => state.getAllBooks);
-  const books = bookManageStore(state => state.books);
-  const [selectBook, setSelectBook] = useState(null)
+  const getBooks = bookManageStore((state) => state.getAllBooks);
+  const books = bookManageStore((state) => state.books);
+  const [selectBook, setSelectBook] = useState(null);
 
   useEffect(() => {
     const run = async () => {
-      await getBooks()
-    }
-    run()
-  }, [])
+      await getBooks();
+    };
+    run();
+  }, []);
 
-  console.log("Books", books)
+  console.log("Books", books);
   return (
-    <div className='px-15 pt-30 pb-50 flex flex-row justify-center items-around text-5xl font-bold bg-paper-elevation-2'>
-      <div className="flex flex-col justify-center w-1/5 bg-primary-lighter">
-        <label>Search</label>
-        <Input className="w-80" placeholder="Title Author or ISBN" type="text" />
-        <div className="flex flex-col">
-          <label className='mb-2'>Sort By : </label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Popularity" />
-            </SelectTrigger>
+    <div className="bg-paper-elevation-2 text-text-primary flex justify-center gap-4 pt-8 pb-24">
+      <div className="flex w-fit flex-col gap-4 p-4">
+        <div className="from-secondary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Search"
+              size="small"
+              id="SearchBook"
+              placeholder="Title, author, or ISBN..."
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
+            />
+          </div>
+          <SelectStyled
+            label="Sort by:"
+            variant="outlined"
+            size="small"
+            defaultValue="option1"
+          >
             <SelectContent>
-              <SelectItem value="popularity">Popularity</SelectItem>
-              <SelectItem value="mostvisited">Most visited</SelectItem>
-              <SelectItem value="mostsaleed">Most sale</SelectItem>
+              <SelectItem value="option1">Popularity</SelectItem>
+              <SelectItem value="option2">Reviewed</SelectItem>
             </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col">
-          <label className='mb-2'>Genre : </label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="ALL" />
-            </SelectTrigger>
+          </SelectStyled>
+          <SelectStyled
+            label="Genre:"
+            variant="outlined"
+            size="small"
+            defaultValue="option1"
+          >
             <SelectContent>
-              <SelectItem value="popularity">Popularity</SelectItem>
-              <SelectItem value="mostvisited">Most visited</SelectItem>
-              <SelectItem value="mostsaleed">Most sale</SelectItem>
+              <SelectItem value="option1">All</SelectItem>
+              <SelectItem value="option2">Drama</SelectItem>
+              <SelectItem value="option3">Horror</SelectItem>
             </SelectContent>
-          </Select>
+          </SelectStyled>
+          <div className="flex flex-col gap-2">
+            <Label>Promt</Label>
+            <Textarea placeholder="Start your AI-assisted search. " />
+          </div>
+          <div className="flex flex-col gap-3">
+            <Button variant="outlined" color="secondary">
+              Clear Filter
+            </Button>
+            <Button>
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Search
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="w-4/5 items-center h-screen overflow-y-auto p-10">
+      <div className="flex flex-col max-w-lg min-h-screen gap-6 p-10">
         {/* <Person className="w-50 mb-15" /> */}
-        <h1 className='mb-3 subtitle-1'>Browse a book</h1>
-        <p className='text-xl mb-5 text-white'>{`${books.length} Result was found`}</p>
-        <div className="flex flex-row flex-wrap">
+        <div className="flex items-end">
+          <div className="flex flex-col flex-1 gap-0">
+            <h1 className="subtitle-1">Browse a book</h1>
+            <p className="text-text-disabled caption">{`${books.length} Result was found`}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <h1 className="subtitle-4">Can’t find the book?</h1>
+            <Dialog>
+              <form>
+                <DialogTrigger asChild>
+                  <Button size="small" color="secondary">
+                    <i class="fa-solid fa-plus"></i>
+                    Add a book
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Add a book</DialogTitle>
+                    <DialogDescription>
+                      Make changes to your profile here. Click save when
+                      you&apos;re done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4">
+                    <InputX
+                      label="Name"
+                      id="name-1"
+                      name="name"
+                      defaultValue="Pedro Duarte"
+                    />
+                    <InputX
+                      label="Username"
+                      id="username-1"
+                      name="username"
+                      defaultValue="@peduarte"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="text">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Save changes</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </form>
+            </Dialog>
+          </div>
+        </div>
+        <div className="flex flex-row flex-wrap gap-5 rounded-md">
           {books.map((book) => {
             const hdlSelectBook = () => {
-              setSelectBook(book.id)
-            }
-            return <div className='flex flex-col border rounded-2xl p-5 m-5 w-[300px] flex-wrap justify-center gap-3' key={book.id}>
-              <h3>{book.title}</h3>
-              <p>{`Author : ${book.Author.name}`}</p>
-              <div className="flex gap-4">
-                <div className='flex gap-2'>
-                  <Star className="w-5"/>
-                  <p>{book.averageRating}</p>
-                </div>
-                <div className='flex gap-2'>
-                  <Star className="w-5"/>
-                  <p>Rate</p>
+              setSelectBook(book.id);
+            };
+            return (
+              <div className="bg-secondary-lighter border-divider relative w-[180px] overflow-hidden rounded-md border pb-15 transition-all hover:scale-105">
+                <Link
+                  to={{
+                    pathname: `/book/${book.id}`,
+                    state: { id: selectBook },
+                  }}
+                >
+                  <div className="bg-secondary-hover flex h-[162px] items-center justify-center">
+                    <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
+                      <img
+                        src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
+                        alt="Book Cover Title"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </Link>
+                <div className="flex flex-col p-2" key={book.id}>
+                  {/* <Button
+                    variant="text"
+                    color="neutral"
+                    size="icon"
+                    className="text-action-active-icon absolute top-1 left-1 w-7 h-7 opacity-60"
+                  >
+                    <i className="fa-regular fa-bookmark"></i>
+                  </Button> */}
+                  <div className="subtitle-3 text-text-primary">
+                    {book.title}
+                  </div>
+                  <div className="body-3 text-text-secondary flex-1">{`${book.Author.name}`}</div>
+                  <div className="absolute bottom-2 left-0 w-full px-2">
+                    <div className="flex gap-0">
+                      <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                        <i className="fa-solid fa-star"></i>
+                        <p className="text-warning-main">
+                          {book.averageRating}
+                        </p>
+                      </Badge>
+                      <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                        <i className="fa-regular fa-star"></i>
+                        <p className="text-text-disabled">Rate</p>
+                      </Badge>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="small"
+                      color="secondary"
+                      className="mt-1 w-full rounded-sm"
+                    >
+                      <i class="fa-solid fa-pen-to-square"></i>
+                      <Link
+                        to={{
+                          pathname: `/book/${book.id}`,
+                          state: { id: selectBook },
+                        }}
+                      >
+                        Write a review
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <button className='border w-mg flex rounded-xl p-3 cursor-pointer'><ReviewButton className="w-5"/> Write a review</button>
-              <button onClick={hdlSelectBook}>
-                <Link to={{
-                  pathname: `/book/${book.id}`,
-                  state: {id: selectBook}
-                }}>View detail</Link>
-              </button>
-            </div>
-})}
+            );
+          })}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

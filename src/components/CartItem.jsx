@@ -13,8 +13,10 @@ function CartItem({ bookId, onRemove, cart }) {
 
     console.log(cart);
     // console.log(userId);
+   
     
     const [cartItems, setCartItems] = useState([]);
+    const [countCart, setCountCart] = useState(0);
 
     useEffect(() => {
         axios.get(`http://localhost:6500/api/book/${bookId}`)
@@ -31,8 +33,8 @@ function CartItem({ bookId, onRemove, cart }) {
     const handleQtyChange = async (data, type) => {
         const itemId = cartItems.find(item => item.productId === data.productId).id
         const updatedQuantity = type === "inc" ? data.quantity + 1 : data.quantity - 1;
-        const response = await editCart({ userId, itemId, quantity: updatedQuantity }, token);
-
+        const response = await editCart({ userId, itemId, quantity: updatedQuantity + countCart }, token);
+        setCountCart(prev => prev + (type === "inc" ? 1 : -1))
         console.log(response.data.item);
         // setQuantity(q => Math.max(1, type === 'inc' ? q + 1 : q - 1));
     };
@@ -62,12 +64,12 @@ function CartItem({ bookId, onRemove, cart }) {
 
             <div className="flex items-center gap-2 w-[20%] justify-center">
                 <button onClick={() => handleQtyChange(cart, "dec")} className="px-2 py-1 border rounded">−</button>
-                <span>{cart.quantity}</span>
+                <span>{cart.quantity+countCart}</span>
                 <button onClick={() => handleQtyChange(cart, "inc")} className="px-2 py-1 border rounded">+</button>
             </div>
 
             <div className="w-[20%] text-center text-amber-700 font-semibold">
-                ${(cart.product.price * cart.quantity).toFixed(2)}
+                ${(cart.product.price * (cart.quantity+countCart)).toFixed(2)}
             </div>
 
             <div className="w-[20%] flex justify-center">

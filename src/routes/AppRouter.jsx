@@ -10,6 +10,7 @@ import UserLayout from "../layouts/UserLayout";
 
 //page section
 import LandingPage from "../pages/LandingPage";
+import Home from "../pages/Home";
 import HomePage from "../pages/HomePage";
 import BookPage from "../pages/BookPage";
 import ReviewPage from "../pages/ReviewPage";
@@ -27,10 +28,10 @@ import PurchasesSetting from "../pages/user/setting/PurchaseSetting";
 import AffiliateSetting from "../pages/user/setting/AffiliateSetting";
 import EarningSetting from "../pages/user/setting/EarningSetting";
 import ButtonTest from "../pages/test/ButtonTest";
-import Home from "../pages/Home";
 import OrderDetail from "../components/setting/OrderDetail";
 import PaymentSuccess from "../pages/user/PaymentSuccessPage";
 import BookCard from "../components/BookCard";
+import GoogleAuthCallback from "../pages/auth/GoogleAuthCallBack";
 
 const routerGuest = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const routerGuest = createBrowserRouter([
   {
     path: "*",
     element: <Navigate to="/" />,
+  },
+  {
+    path: "/auth/callback",
+    element: <GoogleAuthCallback />,
   },
 
   {
@@ -61,6 +66,7 @@ const routerUser = createBrowserRouter([
     element: <UserLayout />,
     children: [
       { path: "/", element: <HomePage /> },
+      { path: "/home", element: <Home /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/userproflie", element: <UserProfilePage /> },
       {
@@ -81,15 +87,7 @@ const routerUser = createBrowserRouter([
       { path: "/checkout", element: <CheckOutPage /> },
       // { path: "/payment", element: <PaymentSuccess /> },
       { path: "/ButtonTest", element: <ButtonTest /> },
-      { path: "/home", element: <Home /> },
       { path: "/homepage", element: <HomePage /> },
-      { path: "/book/:bookId", element: <BookPage /> },
-      { path: "/userproflie", element: <UserProfilePage /> },
-      { path: "/setting", element: <SettingPage /> },
-      { path: "/shelf", element: <ShelfPage /> },
-      { path: "/cart", element: <CartPage /> },
-      { path: "/checkout", element: <CheckOutPage /> },
-      { path: "/payment", element: <PaymentSuccess /> },
     ],
   },
   {

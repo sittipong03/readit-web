@@ -5,11 +5,16 @@ import SearchNavbar from "./SearchNavbar";
 import { ReaditLogo } from "@/src/assets/readit";
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
+import useUserStore from "../../stores/userStore"
 
 function Navbar({ user, currentPage }) {
   const location = useLocation();
   const path = location.pathname.toLowerCase().replace(/\/$/, "");
   const isBrowser = path === "" || path === "/home";
+
+  const { userId, userName } = useUserStore()
+
+  const isAuthenticated = !!userId;
 
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -32,12 +37,14 @@ function Navbar({ user, currentPage }) {
 
   return (
     <nav
-      className={`sticky top-0 z-50 transform transition-transform duration-300 ease-in-out ${!isVisible ? "-translate-y-full" : ""} dark`}
+      className={`max-w-screen sticky top-0 z-50 transform transition-transform duration-300 ease-in-out ${!isVisible ? "-translate-y-full" : ""} dark`}
     >
       <div className="flex items-center justify-between bg-paper-elevation-2 px-6 py-3 text-[#d5c4a1] shadow-md">
         {/* Left: Logo + Search */}
         <div className="flex flex-1 items-center gap-4">
-          <ReaditLogo className="text-secondary-main" size={20} />
+          <a href="/book">
+            <ReaditLogo className="text-secondary-main hover:text-secondary-darker transition-all" size={20} />
+          </a>
           {!isBrowser && <SearchNavbar />}
         </div>
         {/* Center: Navigation */}
@@ -54,7 +61,11 @@ function Navbar({ user, currentPage }) {
         </div>
         {/* Right: Auth Conditional */}
         <div className="flex flex-1 items-center justify-end gap-4 text-sm">
-          {user?.id ? <GuestNavbar /> : <LoginNavbar user={user} />}
+          {isAuthenticated ? (
+            <GuestNavbar userName={userName} /> // ✅ show user navbar
+          ) : (
+            <LoginNavbar /> // ✅ show guest navbar
+          )}
         </div>
       </div>
     </nav>

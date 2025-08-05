@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
+import AddBookModal from "@/src/components/AddBookModal"; // BookSearchModal
 import BookCard from "@/src/components/BookCard";
-import BookEditModal from "@/src/components/BookEditModal";
+import BookManageModal from "@/src/components/BookManageModal"; // ใช้อันเดียว สำหรับทุกการจัดการหนังสือ
+import { ChevronsUpDown, ChevronsUpDownIcon, Funnel } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { create } from "zustand";
+import axios from "axios";
 
 function Shelf() {
   const books = [
@@ -16,6 +20,7 @@ function Shelf() {
       totalRatings: 12,
       userRating: null,
       hasUserReview: false,
+      createdAt: "2025-08-03 04:49:24.558",
     },
     {
       id: 2,
@@ -27,6 +32,7 @@ function Shelf() {
       totalRatings: 20,
       userRating: 4.5,
       hasUserReview: true,
+      createdAt: "2025-08-03 04:24:24.558",
     },
     {
       id: 3,
@@ -38,6 +44,7 @@ function Shelf() {
       totalRatings: 150,
       userRating: 5.0,
       hasUserReview: true,
+      createdAt: "2025-08-03 04:01:24.558",
     },
     {
       id: 4,
@@ -49,26 +56,104 @@ function Shelf() {
       totalRatings: 85,
       userRating: null,
       hasUserReview: false,
+      createdAt: "2025-08-03 04:59:24.558",
     },
   ];
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [activeTab, setActiveTab] = useState("readlist");
+  const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
+  const [isManageBookModalOpen, setIsManageBookModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [wishlistBooks, setWishlistBooks] = useState([]);
+  const [readingBooks, setReadingBooks] = useState([]);
   const [readBooks, setReadBooks] = useState(books);
+  const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const [sortOrder, setSortOrder] = useState("latest");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const hdlBackToFeed = () => {
-    navigate("/home");
+    navigate("/userprofile");
   };
 
   const hdlBookClick = (book) => {
     setSelectedBook(book);
-    setIsModalOpen(true);
+    setIsManageBookModalOpen(true);
   };
 
   const hdlCloseModal = () => {
-    setIsModalOpen(false);
+    setIsManageBookModalOpen(false);
     setSelectedBook(null);
+  };
+
+  const hdlAddBook = (book) => {
+    const newBook = {
+      ...book,
+      id: Date.now(),
+      rating: 0,
+      totalRatings: 0,
+      userRating: null,
+      hasUserReview: false,
+    };
+    setWishlistBooks((prev) => [...prev, newBook]);
+
+    setSelectedBook(newBook);
+    // setIsManageBookModalOpen(true);
+  };
+
+  const hdlMarkAsRead = (book) => {
+    setReadBooks((prev) => [...prev, book]);
+    setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+    setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+    hdlCloseModal();
+  };
+
+  const hdlAddToReading = (book) => {
+    setReadingBooks((prev) => [...prev, book]);
+    setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+    hdlCloseModal();
+  };
+
+  const hdlDeleteFromShelf = (book) => {
+    setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+    setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+    setReadBooks((prev) => prev.filter((b) => b.id !== book.id));
+    hdlCloseModal();
+  };
+
+  const hdlToggleFavorite = (book) => {
+    const isFavorite = favoriteBooks.some((fav) => fav.id === book.id);
+
+    if (isFavorite) {
+      setFavoriteBooks((prev) => prev.filter((fav) => fav.id !== book.id));
+    } else {
+      if (book.hasUserReview || book.userRating) {
+        setFavoriteBooks((prev) => [...prev, book]);
+      }
+    }
+  };
+
+  const hdlToggleSort = () => {
+    setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
+  };
+
+  const getSortedBooks = (books) => {
+    return [...books].sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+
+      if (sortOrder === "latest") {
+        return dateB - dateA;
+      } else {
+        return dateA - dateB;
+      }
+    });
+  };
+
+  // check if a book is favorite
+  const isFavorite = (book) => {
+    return favoriteBooks.some((fav) => fav.id === book.id);
   };
 
   const renderContent = () => {
@@ -83,22 +168,118 @@ function Shelf() {
               <Button
                 variant="contained"
                 color="primary"
-                size="large"
+                size="medium"
                 fontWeight="Button"
+                onClick={() => setIsAddBookModalOpen(true)}
               >
                 + Add Book
               </Button>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
               <div className="flex h-[360px] flex-col items-center justify-between">
+                {/* Reading Section */}
                 <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
-                  <p className="subtitle-2">Reading (0/3)</p>
+                  <p className="subtitle-2">
+                    Reading ({readingBooks.length}/3)
+                  </p>
                 </div>
-                <div className="flex h-[128px] w-[852px] items-center"></div>
+                <div className="flex h-[128px] w-[852px] items-center">
+                  {readingBooks.length === 0 ? (
+                    <div className="flex w-full items-center justify-center">
+                      <p className="text-text-disabled">
+                        No books currently reading
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex w-full gap-4 overflow-x-auto">
+                      {readingBooks.slice(0, 3).map((book) => (
+                        <div key={book.id} className="flex-shrink-0">
+                          <div
+                            className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                            onClick={() => hdlBookClick(book)}
+                          >
+                            {book.coverImage ? (
+                              <img
+                                src={book.coverImage}
+                                alt={book.title}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+                                <span className="text-xs font-bold text-white">
+                                  {book.title.substring(0, 2)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {readingBooks.length > 3 && (
+                        <div className="flex h-28 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200">
+                          <span className="text-sm text-gray-600">
+                            +{readingBooks.length - 3}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Wishlist Section */}
                 <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
                   <p className="subtitle-2">Wishlists</p>
                 </div>
-                <div className="flex h-[128px] w-[852px] items-center"></div>
+                <div className="flex h-[128px] w-[852px] items-center">
+                  {wishlistBooks.length === 0 ? (
+                    <div className="flex w-full items-center justify-center">
+                      <div className="text-center">
+                        <p className="text-text-disabled mb-2">
+                          No books in wishlist yet
+                        </p>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          size="medium"
+                          onClick={() => setIsAddBookModalOpen(true)}
+                        >
+                          + Add your first book
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex w-full gap-4 overflow-x-auto">
+                      {wishlistBooks.slice(0, 6).map((book) => (
+                        <div key={book.id} className="flex-shrink-0">
+                          <div
+                            className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                            onClick={() => hdlBookClick(book)}
+                          >
+                            {book.coverImage ? (
+                              <img
+                                src={book.coverImage}
+                                alt={book.title}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+                                <span className="text-xs font-bold text-white">
+                                  {book.title.substring(0, 2)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {wishlistBooks.length > 6 && (
+                        <div className="flex h-28 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200">
+                          <span className="text-sm text-gray-600">
+                            +{wishlistBooks.length - 6}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -112,38 +293,54 @@ function Shelf() {
                 <p className="subtitle-1">Read</p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outlined" color="primary" size="medium">
-                  Filter
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
+                  className="flex items-center"
+                >
+                  <p>Filter</p>
+                  <Funnel className="fill-primary-main" />
                 </Button>
-                <Button variant="outlined" color="primary" size="medium">
-                  Sort by: Latest Date
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
+                  onClick={hdlToggleSort}
+                >
+                  Sort by :{" "}
+                  {sortOrder === "latest" ? "Latest Date" : "Oldest Date"}
+                  <ChevronsUpDown />
                 </Button>
                 <Button
                   variant="contained"
                   color="primary"
-                  size="large"
+                  size="medium"
                   fontWeight="Button"
+                  onClick={() => setIsAddBookModalOpen(true)}
                 >
                   + Add Book
                 </Button>
               </div>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
-              <div className="grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {readBooks.map((book) => (
+              <div
+                className="scrollbar-hide grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                }}
+              >
+                {getSortedBooks(readBooks).map((book) => (
                   <BookCard
                     key={book.id}
                     book={book}
                     onBookClick={hdlBookClick}
+                    onToggleFavorite={hdlToggleFavorite}
+                    isFavorite={isFavorite(book)}
                   />
                 ))}
               </div>
-              <BookEditModal
-                isOpen={isModalOpen}
-                onClose={hdlCloseModal}
-                book={selectedBook}
-              />
-              //no books read yet
               {readBooks.length === 0 && (
                 <div className="flex h-full flex-col items-center justify-center">
                   <div className="text-center">
@@ -172,12 +369,36 @@ function Shelf() {
               </div>
             </div>
             <div className="shadow-card-3d mt-4 flex h-[608px] justify-center rounded-lg p-6">
-              <div className="flex h-[360px] flex-col items-center justify-between">
-                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2"></div>
-                <div className="flex h-[128px] w-[852px] items-center"></div>
-                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2"></div>
-                <div className="flex h-[128px] w-[852px] items-center"></div>
-              </div>
+              {favoriteBooks.length === 0 ? (
+                <div className="flex h-full flex-col items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-text-disabled mb-2 text-lg">
+                      No favorite books yet
+                    </p>
+                    <p className="text-text-secondary text-sm">
+                      Star your favorite books from the Read section!
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="scrollbar-hide grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                  }}
+                >
+                  {favoriteBooks.map((book) => (
+                    <BookCard
+                      key={book.id}
+                      book={book}
+                      onBookClick={hdlBookClick}
+                      onToggleFavorite={hdlToggleFavorite}
+                      isFavorite={true}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
@@ -208,17 +429,6 @@ function Shelf() {
               </div>
             </div>
             <div className="flex h-[668px] w-full justify-between">
-              {/* <div className="flex h-[160px] w-[240px] flex-col justify-between">
-                <div className="bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main flex h-[48px] w-full items-center rounded-xl px-4 py-2">
-                  <button className="subtitle-3">Readlist</button>
-                </div>
-                <div className="font-weight-Subtitle font-titleSmall line-height-titlesmall tracking-titlesmall flex h-[48px] w-full items-center rounded-xl px-4 py-2">
-                  <button className="body-1">Read</button>
-                </div>
-                <div className="font-titleSmall font-weight-Subtitle line-height-titlesmall tracking-titlesmall flex h-[48px] w-full items-center rounded-xl px-4 py-2">
-                  <button className="body-1">Favorites</button>
-                </div>
-              </div> */}
               <aside className="h-40 w-64">
                 <div>
                   <nav>
@@ -228,8 +438,8 @@ function Shelf() {
                           onClick={() => setActiveTab("readlist")}
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "readlist"
-                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main flex h-[48px] w-full items-center rounded-xl px-4 py-2"
-                              : "flex h-[48px] w-full items-center rounded-xl px-4 py-2"
+                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main"
+                              : ""
                           }`}
                         >
                           Readlist
@@ -240,8 +450,8 @@ function Shelf() {
                           onClick={() => setActiveTab("read")}
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "read"
-                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main flex h-[48px] w-full items-center rounded-xl px-4 py-2"
-                              : "flex h-[48px] w-full items-center rounded-xl px-4 py-2"
+                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main"
+                              : ""
                           }`}
                         >
                           Read
@@ -252,8 +462,8 @@ function Shelf() {
                           onClick={() => setActiveTab("favorites")}
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "favorites"
-                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main flex h-[48px] w-full items-center rounded-xl px-4 py-2"
-                              : "flex h-[48px] w-full items-center rounded-xl px-4 py-2"
+                              ? "bg-primary-soft font-button font-weight-Subtitle line-height-titlesmall tracking-titlesmall text-primary-main"
+                              : ""
                           }`}
                         >
                           Favorites
@@ -268,6 +478,24 @@ function Shelf() {
           </div>
         </div>
       </div>
+
+      {/* Add Book Modal */}
+      <AddBookModal
+        isOpen={isAddBookModalOpen}
+        onClose={() => setIsAddBookModalOpen(false)}
+        onBookSelect={hdlAddBook}
+      />
+
+      {/* Book Manage Modal */}
+      <BookManageModal
+        isOpen={isManageBookModalOpen}
+        onClose={hdlCloseModal}
+        book={selectedBook}
+        readBooks={readBooks}
+        onMarkAsRead={hdlMarkAsRead}
+        onAddToReading={hdlAddToReading}
+        onDeleteFromShelf={hdlDeleteFromShelf}
+      />
     </div>
   );
 }

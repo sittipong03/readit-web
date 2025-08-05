@@ -65,6 +65,7 @@ const routerUser = createBrowserRouter([
   {
     element: <UserLayout />,
     children: [
+      { path: "/", element: <HomePage /> },
       { path: "/home", element: <Home /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/userproflie", element: <UserProfilePage /> },

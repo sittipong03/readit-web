@@ -614,7 +614,7 @@ html::-webkit-scrollbar-thumb:hover {
 
   --shadow-card-3d:
     -4px -4px 8px 0 var(--color-lighting-dark) inset,
-    4px 4px 8px 0 var(--color-lighting-lighter) inset,
+    4px 4px 8px 0 rgb(from var(--color-lighting-lighter) r g b / 20%) inset,
     2px 2px 4px 0 var(--color-lighting-darker),
     0 0 2px 0 var(--color-lighting-darker),
     4px 4px 24px 0 var(--color-lighting-dark);

@@ -46,7 +46,6 @@ function Home() {
 
   useEffect(() => {
     const run = async () => {
-      
       if(!aiSearch){
         await getBooks();
       }else{

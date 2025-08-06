@@ -39,6 +39,7 @@ function Book() {
   const { bookId } = useParams();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [switchDoYouKnow, setSwitchDoYouKnow] = useState(0)
   // console.log(book);
   // console.log(token);
   console.log("User", user);
@@ -105,6 +106,13 @@ function Book() {
       console.log(error);
     }
   };
+
+  const listOfDoYouKnow = book?.aiSuggestion.split("|")
+  console.log('listOfDoYouKnow', listOfDoYouKnow)
+
+  const shuffleDoYouKnow = () => {
+    setSwitchDoYouKnow(Math.floor(Math.random() * 9))
+  }
 
   useEffect(() => {
     const getbook = async () => {
@@ -202,13 +210,13 @@ function Book() {
                   <div className="subtitle-1 text-tertiary-main mb-4">
                     Do you know
                   </div>
-                  <Button variant="mixed" color="tertiary" type="submit">
+                  <Button variant="mixed" color="tertiary" type="submit" onClick={() => shuffleDoYouKnow()}>
                     <i class="fa-regular fa-shuffle"></i>
                     Tell me more
                   </Button>
                 </div>
                 {book?.aiSuggestion ? (
-                  <div className="body-2">{book?.aiSuggestion}</div>
+                  <div className="body-2">{listOfDoYouKnow[switchDoYouKnow]}</div>
                 ) : (
                   <p>Template for Ai suggestion.</p>
                 )}

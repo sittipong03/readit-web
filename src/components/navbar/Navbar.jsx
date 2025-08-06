@@ -5,14 +5,14 @@ import SearchNavbar from "./SearchNavbar";
 import { ReaditLogo } from "@/src/assets/readit";
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
-import useUserStore from "../../stores/userStore"
+import useUserStore from "../../stores/userStore";
 
 function Navbar({ user, currentPage }) {
   const location = useLocation();
   const path = location.pathname.toLowerCase().replace(/\/$/, "");
   const isBrowser = path === "" || path === "/home";
 
-  const { userId, userName } = useUserStore()
+  const { userId, userName } = useUserStore();
 
   const isAuthenticated = !!userId;
 
@@ -37,13 +37,16 @@ function Navbar({ user, currentPage }) {
 
   return (
     <nav
-      className={`max-w-screen sticky top-0 z-50 transform transition-transform duration-300 ease-in-out ${!isVisible ? "-translate-y-full" : ""} dark`}
+      className={`sticky top-0 z-50 max-w-screen transform transition-transform duration-300 ease-in-out ${!isVisible ? "-translate-y-full" : ""} dark`}
     >
-      <div className="flex items-center justify-between bg-paper-elevation-2 px-6 py-3 text-[#d5c4a1] shadow-md">
+      <div className="bg-paper-elevation-2 flex items-center justify-between px-6 py-3 text-[#d5c4a1] shadow-md">
         {/* Left: Logo + Search */}
         <div className="flex flex-1 items-center gap-4">
           <a href="/book">
-            <ReaditLogo className="text-secondary-main hover:text-secondary-darker transition-all" size={20} />
+            <ReaditLogo
+              className="text-secondary-main hover:text-secondary-darker transition-all"
+              size={20}
+            />
           </a>
           {!isBrowser && <SearchNavbar />}
         </div>

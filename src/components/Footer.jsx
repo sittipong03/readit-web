@@ -27,11 +27,14 @@ function Footer() {
           </div>
           <div className="text-secondary-darker flex flex-col items-end gap-4">
             <a href="/home">
-              <ReaditLogo size={20} className="text-secondary-dark mb-10 hover:text-secondary-darker transition-all" />
+              <ReaditLogo
+                size={20}
+                className="text-secondary-dark hover:text-secondary-darker mb-10 transition-all"
+              />
             </a>
             <div className="flex gap-3">
-              <i class="fa-brands fa-facebook"></i>
-              <i class="fa-brands fa-discord"></i>
+              <i className="fa-brands fa-facebook"></i>
+              <i className="fa-brands fa-discord"></i>
             </div>
             {/* <p>Version 0.1.0 © 2025 Readit. All Rights Reserved</p> */}
           </div>

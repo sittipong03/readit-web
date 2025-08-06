@@ -7,12 +7,11 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useUserStore from "@/src/stores/userStore";
 import { useEffect, useState } from "react";
@@ -21,45 +20,44 @@ import { Badge } from "@/components/ui/badge";
 import useThemeStore from "@/src/stores/themeStore";
 
 function GuestNavbar() {
-  const logout = useUserStore(state => state.logout)
-  const token = useUserStore(state => state.token)
-  const avatar = useUserStore(state => state.avatarUrl)
-  const userName = useUserStore(state => state.userName)
+  const logout = useUserStore((state) => state.logout);
+  const token = useUserStore((state) => state.token);
+  const avatar = useUserStore((state) => state.avatarUrl);
+  const userName = useUserStore((state) => state.userName);
 
-  const getCart = cartManageStore(state => state.getAllCart)
+  const getCart = cartManageStore((state) => state.getAllCart);
 
-  const { theme, toggleTheme } = useThemeStore();
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
-  const [cartItem, setCartItem] = useState([])
-  const mockCartitem = ["a", "b ", "c"]
+  const [cartItem, setCartItem] = useState([]);
+  const mockCartitem = ["a", "b ", "c"];
 
+  // console.log("token----", token);
   useEffect(() => {
-    const fetchCart = async () => { //วังวน async/await 
-      setCartItem([])
-      let allCartItem = await getCart(token)
-      setCartItem(allCartItem)
-    }
-    fetchCart()
-    console.log(cartItem.length)
-
-  }, [])
+    const fetchCart = async () => {
+      //วังวน async/await
+      setCartItem([]);
+      let allCartItem = await getCart(token);
+      setCartItem(allCartItem);
+    };
+    fetchCart();
+    console.log(cartItem.length);
+  }, []);
 
   function hdllogout() {
-    logout()
-
+    logout();
   }
 
   function hdltheme() {
-    toggleTheme()
+    toggleTheme();
   }
 
   return (
-
     <nav className="flex flex-row items-center justify-between gap-1">
-
-      <Link to='/shelf'>
+      <Link to="/shelf">
         <Button variant="text" color="secondary">
-          {<i class="fa-solid fa-bookmark"></i>}Readlist
+          {<i className="fa-solid fa-bookmark"></i>}Readlist
         </Button>
       </Link>
 
@@ -74,7 +72,7 @@ function GuestNavbar() {
                 "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible",
               )}
             >
-              <i class="fa-solid fa-bell"></i>
+              <i className="fa-solid fa-bell"></i>
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[260px] gap-4">
@@ -117,26 +115,23 @@ function GuestNavbar() {
                 </Badge>)}
           </div> */}
           <Link to="/cart">
-          <NavigationMenuItem>
-            <NavigationMenuTrigger
-              showIcon={false}
-              className={cn(
-                buttonVariants({ variant: "outlined", color: "secondary" }),
-                "w-9 px-0",
-                "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible hover:text-action-active group-data-[state=open]:text-action-active relative",
-              )}
-            >
-
-              <i className=" fa-solid fa-cart-shopping"></i>
-              {(cartItem?.length ?? 0) > 0 && (
-                <Badge
-                  className="absolute h-5 px-1 font-mono rounded-full bg-primary-main min-w-5 tabular-nums text-action-active -top-2 -right-2"
-                >
-                  {cartItem?.length}
-                </Badge>
-              )}
-            </NavigationMenuTrigger>
-            {/* <NavigationMenuContent>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger
+                showIcon={false}
+                className={cn(
+                  buttonVariants({ variant: "outlined", color: "secondary" }),
+                  "w-9 px-0",
+                  "group-data-[state=open]:bg-primary-focus hover:bg-primary-focusVisible hover:text-action-active group-data-[state=open]:text-action-active relative",
+                )}
+              >
+                <i className="fa-solid fa-cart-shopping"></i>
+                {(cartItem?.length ?? 0) > 0 && (
+                  <Badge className="bg-primary-main text-action-active absolute -top-2 -right-2 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
+                    {cartItem?.length}
+                  </Badge>
+                )}
+              </NavigationMenuTrigger>
+              {/* <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
@@ -151,7 +146,7 @@ function GuestNavbar() {
                 </li>
               </ul>
             </NavigationMenuContent> */}
-          </NavigationMenuItem>
+            </NavigationMenuItem>
           </Link>
           <NavigationMenuItem className="h-8">
             <NavigationMenuTrigger className="px-0">
@@ -161,7 +156,7 @@ function GuestNavbar() {
                   alt="@shadcn"
                 />
                 <AvatarFallback className="bg-action-disabled/50">
-                  <i class="fa-solid fa-user"></i>
+                  <i className="fa-solid fa-user"></i>
                 </AvatarFallback>
               </Avatar>
               <div className="ml-2">{userName}</div>
@@ -170,7 +165,10 @@ function GuestNavbar() {
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/userproflie" className="flex-row items-center gap-2">
+                    <Link
+                      to="/userproflie"
+                      className="flex-row items-center gap-2"
+                    >
                       Your Feed
                     </Link>
                   </NavigationMenuLink>
@@ -185,9 +183,14 @@ function GuestNavbar() {
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <div className="flex-row items-center gap-2" onClick={hdltheme}>
-                      <div className="flex-1">Theme : {theme === 'light' ? 'Light' : 'Dark'}</div>
-                      {theme === 'light' ? (
+                    <div
+                      className="flex-row items-center gap-2"
+                      onClick={hdltheme}
+                    >
+                      <div className="flex-1">
+                        Theme : {theme === "light" ? "Light" : "Dark"}
+                      </div>
+                      {theme === "light" ? (
                         <i className="fa-solid fa-sun-bright"></i>
                       ) : (
                         <i className="fa-solid fa-moon"></i>
@@ -195,7 +198,10 @@ function GuestNavbar() {
                     </div>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <Link to="/setting/affiliate" className="flex-row items-center gap-2">
+                    <Link
+                      to="/setting/affiliate"
+                      className="flex-row items-center gap-2"
+                    >
                       Affiliate Program
                     </Link>
                   </NavigationMenuLink>
@@ -204,9 +210,13 @@ function GuestNavbar() {
                       Setting
                     </Link>
                   </NavigationMenuLink>
-                  <div className="w-full h-[1px] bg-divider my-2"></div>
+                  <div className="bg-divider my-2 h-[1px] w-full"></div>
                   <NavigationMenuLink asChild className="hover:bg-error-dark">
-                    <Link href="#" className="flex-row items-center gap-2 text-error-main" onClick={hdllogout}>
+                    <Link
+                      href="#"
+                      className="text-error-main flex-row items-center gap-2"
+                      onClick={hdllogout}
+                    >
                       Sign out
                     </Link>
                   </NavigationMenuLink>

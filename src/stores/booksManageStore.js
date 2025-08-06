@@ -1,5 +1,9 @@
 import { create } from "zustand";
 import {
+  getAllBooks,
+  getBookByAI,
+  getBookById,
+  getUserWishlist,
   fetchAiSuggestion,
   fetchAllBooks,
   fetchBookByAI,
@@ -9,6 +13,13 @@ import {
 const bookManageStore = create((set, get) => ({
   books: [],
   book: null,
+  userWishlist: [],
+  getUserWishlist: async () => {
+    const result = await getUserWishlist();
+    console.log("result-------", result);
+    set({ userWishlist: result.data });
+    return result;
+  },
   getAllBooks: async () => {
     const result = await fetchAllBooks();
     console.log(result);
@@ -21,13 +32,13 @@ const bookManageStore = create((set, get) => ({
     // console.log(result);
     return result;
   },
-  getBookByAI : async(data) => {
-    console.log('dataaaa', data)
-    const result = await fetchBookByAI({books:data});
+  getBookByAI: async (data) => {
+    console.log("dataaaa", data);
+    const result = await fetchBookByAI({ books: data });
     console.log("result", result);
-    set({books: result.data.books});
+    set({ books: result.data.books });
 
-    return result
+    return result;
   },
   getAiSuggestion: async (id) => {
     try {

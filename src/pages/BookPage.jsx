@@ -13,7 +13,7 @@ import { LoaderCircle } from "lucide-react";
 function Book() {
   const [loading, setLoading] = useState(false);
   const [showReview, setShowReview] = useState(false);
-  const [createReview, setCreateReview] = useState(false)
+  const [createReview, setCreateReview] = useState(false);
   const getBookById = bookManageStore(state => state.getBookById);
   const user = useUserStore(state => state.userId);
   const token = useUserStore(state => state.token);
@@ -25,7 +25,7 @@ function Book() {
   const addReview = reviewManageStore(state => state.addReview)
   const addToCart = cartManageStore(state => state.addToCart);
   const { bookId } = useParams();
-  // console.log(book);
+  console.log(book);
   // console.log(token);
   console.log("User",user);
   // console.log("Token",token);
@@ -48,6 +48,8 @@ function Book() {
     }
   }
 
+  
+
   const cartData = async(data) => {
     try {
       const sendData = {userId: user, productId: product.id, quantity: 1 }
@@ -63,21 +65,19 @@ function Book() {
   useEffect(() => {
     const getbook = async () => {
       setLoading(true)
-      const res = await getBookById(bookId);
-      const review = await getReview(bookId);
+      // const res = await getBookById(bookId);
+      // const review = await getReview(bookId);
+      const [res, review] = await Promise.all([getBookById(bookId),getReview(bookId)])
       console.log(product);
       setLoading(false)
-      
       
     }
     const getProduct = async() => {
       const product = await getProduct(bookId);
     }
     getbook(), getProduct()
-
   }, [createReview])
-  // console.log(book);
-  // console.log('review', review)
+
   return (
     <div className="bg-paper-elevation-6 min-h-[700px]">
       {loading

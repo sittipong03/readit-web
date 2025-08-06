@@ -1,12 +1,68 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PersonwithNothing } from '../icons/Index'
+import { Button } from '@/components/ui/button'
 
 function UserProfile() {
+
+  const [loadingAI, setLoadingAI] = useState(false);
+
+
   return (
     <>
-      <div className="flex p-16">
-        <div className="w-2/5"></div>
-        <div className="w-3/5 flex flex-col">
+      <div className="bg-paper-elevation-6 text-text-primary flex min-h-[700px] justify-center">
+        <div className='w-full max-w-lg'>
+          <div className="flex gap-10 p-10">
+            {/* left column */}
+            <div className="flex w-full max-w-[480px] flex-col gap-6 border">
+              <div className='w-full max-w-[480px] '>
+
+              </div>
+            </div>
+            <div className="flex flex-col w-full max-w-[660px] gap-6 ">
+              <div className="flex w-full max-w-[660px] h-[204px] gap-2 ">
+                <div className='flex flex-col border w-full rounded-lg bg-tertiary-selected  border-tertiary-outlinedBorder max-w-[322px] h-full max-h-[204px] '>
+
+                  <div className='subtitle-2'>
+                    <div className='text-tertiary-darker'>
+                      Daily book
+                    </div>
+                    <div className='text-tertiary-darker'>
+                      recommendations
+                    </div>
+                  </div>
+
+                  <div className='body-2'>
+                    <div>
+                      Allow our AI to recommend books
+                    </div>
+                    <div>
+                      tailored just for you.
+                    </div>
+                    <Button
+                      variant={loadingAI ? "contained" : "contained"}
+                      color="tertiary"
+                      size="medium"
+                      disabled={loadingAI ? true : false}
+                    >
+                      <i className="fa-solid fa-shuffle"></i>
+                      {loadingAI ? "Thinking..." : "Surprise Me"}
+                    </Button>
+                  </div>
+
+
+                </div>
+                <div className='flex flex-col border w-full rounded-lg bg-secondary-selected gap-15 border-secondary-outlinedBorder max-w-[322px] h-full max-h-[204px]'>
+
+                </div>
+              </div>
+            </div>
+            {/* right colume */}
+            <div className=''>
+
+            </div>
+          </div>
+          {/* <div className="w-2/5"></div>
+        <div className="flex flex-col w-3/5">
           <div className="grid grid-cols-6 gap-4">
             <div className="p-6 border rounded-2xl col-start-2 col-end-4 bg-[#A44EE4] opacity-[50%]">
               <h1 className='text-2xl mb-4 text-[#491570] font-bold'>Daily book recommendations</h1>
@@ -33,7 +89,7 @@ function UserProfile() {
               <p>Follow someone to see their activities</p>
             </div>
           </div>
-
+        </div> */}
         </div>
       </div>
     </>

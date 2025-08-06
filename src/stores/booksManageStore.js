@@ -1,8 +1,5 @@
 import { create } from "zustand";
 import {
-  getAllBooks,
-  getBookByAI,
-  getBookById,
   getUserWishlist,
   fetchAiSuggestion,
   fetchAllBooks,

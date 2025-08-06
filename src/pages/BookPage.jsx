@@ -11,6 +11,7 @@ import reviewManageStore from "../stores/reviewStore";
 import StaticRating from "../components/StaticRating";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   SelectStyled,
   SelectContent,
@@ -186,15 +187,15 @@ function Book() {
                     className="mt-3 opacity-50"
                     disabled={true}
                   >
-                    <i className="fa-regular fa-cart-shopping "></i>
+                    <i className="fa-regular fa-cart-shopping"></i>
                     Not available
                   </Button>
                 )}
               </div>
             </div>
 
-            <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-4 rounded-lg p-6">
-              <div className="subtitle-2">5 mins read</div>
+            <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-3 rounded-lg p-6">
+              <div className="subtitle-2 mb-1">5 mins read</div>
               <p>{book.description || "No description available."}</p>
               {latestIsbn ? (
                 <div className="body-2 flex gap-4">
@@ -349,7 +350,7 @@ function Book() {
                 </div>
 
                 {/* Review List */}
-                {reviews?.length === 0 ? (
+                {book.review?.length === 0 ? (
                   <div className="flex flex-col items-center gap-4 p-4">
                     <img
                       src={nothingPic}
@@ -364,14 +365,44 @@ function Book() {
                     </div>
                   </div>
                 ) : (
-                  reviews?.map((r) => (
-                    <div className="flex flex-row gap-5 pt-4" key={r.id}>
-                      <div>
-                        <div className="font-bold">{r.user?.name}</div>
-                        <StaticRating rating={r.reviewPoint} />
+                  book.review?.map((r) => (
+                    <div
+                      className="bg-paper-elevation-6 shadow-card-3d flex flex-row gap-4 rounded-lg p-6"
+                      key={r.id}
+                    >
+                      <div className="flex w-[200px] flex-col gap-2">
+                        <Avatar className="size-10">
+                          <AvatarImage src={r.avatarUrl} alt="@shadcn" />
+                          <AvatarFallback className="bg-action-disabled/50">
+                            <i class="fa-solid fa-user"></i>
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <div className="subtitle-4">{r.user?.name}</div>
+                          <div className="body-3 text-text-disabled">
+                            {r.user?.reviewCount || 0} reviews
+                          </div>
+                          <div className="body-3 text-text-disabled">
+                            {r.user?.followerCount || 0} followers
+                          </div>
+                        </div>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size="small"
+                          className="w-25"
+                        >
+                          Follow
+                        </Button>
                       </div>
-                      <div className="mt-2">
-                        <p>{r.content}</p>
+                      <div className="flex flex-col gap-3 w-full">
+                        <StaticRating
+                          rating={r.reviewPoint}
+                          showNumber={false}
+                          size="16px"
+                        />
+                        <div className="body-2 text-text-secondary">{r.content}</div>
+                        <div className="body-3 text-text-disabled pt-3 border-t border-divider w-full">Was this review helpful?</div>
                       </div>
                     </div>
                   ))

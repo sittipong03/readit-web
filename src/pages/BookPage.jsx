@@ -388,7 +388,7 @@ function Book() {
                     >
                       <div className="flex w-[200px] flex-col gap-2">
                         <Avatar className="size-10">
-                          <AvatarImage src={r.avatarUrl} alt="@shadcn" />
+                          <AvatarImage src={r.user.avatarUrl} alt="@shadcn" />
                           <AvatarFallback className="bg-action-disabled/50">
                             <i class="fa-solid fa-user"></i>
                           </AvatarFallback>

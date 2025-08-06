@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { set } from "zod";
 import useUserStore from "../stores/userStore.js";
+import axiosInstance from "../utils/api";
+import bookManageStore from "../stores/booksManageStore";
 
 const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,18 +15,23 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   const [books, setBooks] = useState([]);
   const user = useUserStore((state) => state.userId);
 
+  const getUserWishlist = bookManageStore((state) => state.getUserWishlist);
+  const userWishlist = bookManageStore((state) => state.userWishlist);
+
+  console.log("userWishlist", userWishlist);
+
   const fetchBooks = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get("http://localhost:6500/api/book", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      const response = await axiosInstance.get("/book", {
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // },
       });
 
-      console.log("API Response:", response.data);
+      console.log("API Response:---", response.data);
 
       let booksArray;
       if (Array.isArray(response.data)) {
@@ -63,28 +70,36 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   useEffect(() => {
     if (isOpen) {
       fetchBooks();
+      getUserWishlist();
     }
   }, [isOpen]);
 
   const filteredBooks = books.filter(
     (book) =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()),
+      (book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        book.author.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      !userWishlist.some((wishlistBook) => {
+        console.log(
+          "wishlistBook.bookId === book.id",
+          wishlistBook.bookId === book.id,
+        );
+        return wishlistBook.bookId === book.id;
+      }),
   );
 
   const hdlBookSelect = async (book, user) => {
     console.log(book, user);
     try {
-      await axios.post(
-        "http://localhost:6500/api/book/wishlist",
+      await axiosInstance.post(
+        "/book/wishlist",
         {
           bookId: book.id,
           userId: user,
           shelfType: "WISHLIST",
         },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        },
+        // {
+        //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        // },
       );
 
       if (onBookSelect) {
@@ -124,10 +139,7 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/80"
-      onWheel={(evt) => evt.preventDefault()}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/80">
       <div className="bg-paper-elevation-6 relative h-[444px] w-[438px] max-w-[90vw] rounded-lg bg-white p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="subtitle-2">Add a book</h2>

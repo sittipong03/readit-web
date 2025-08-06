@@ -22,7 +22,9 @@ const ManageBookModal = ({
   if (!isOpen || !book) return null;
 
   const hasUserReview = book.hasUserReview || book.userRating;
-  const isInWishlist = wishlistBooks.some((b) => b.id === book.id);
+  const isInWishlist =
+    book.shelfType === "WISHLIST" ||
+    wishlistBooks.some((b) => b.id === book.id);
   const isInReading = readingBooks.some((b) => b.id === book.id);
   const isInRead = readBooks.some((b) => b.id === book.id);
 
@@ -212,7 +214,7 @@ const ManageBookModal = ({
               </Button>
             </>
           )}
-          {/* <Button
+          <Button
             onClick={hdlMarkAsRead}
             variant="contained"
             size="large"
@@ -240,7 +242,7 @@ const ManageBookModal = ({
             className="w-full"
           >
             Delete from shelf
-          </Button> */}
+          </Button>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-function MoreMenu() {
+function MoreMenu({ onEdit, onDelete, onReport }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
@@ -8,7 +8,6 @@ function MoreMenu() {
     setOpen(prev => !prev);
   }
 
-  // Close menu on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -32,13 +31,33 @@ function MoreMenu() {
 
       {open && (
         <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow z-10 text-sm text-[#3a2f27]">
-          <button className="block w-full text-left px-4 py-2 hover:bg-paper-elevation-1 bg-paper-elevation-1">Edit</button>
-          <button className="block w-full text-left px-4 py-2 hover:bg-paper-elevation-1 bg-paper-elevation-1">Delete</button>
-          <button className="block w-full text-left px-4 py-2 hover:bg-paper-elevation-1 bg-paper-elevation-1">Report</button>
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              Edit
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              Delete
+            </button>
+          )}
+          <button
+            onClick={onReport}
+            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+          >
+            Report
+          </button>
         </div>
       )}
     </div>
   );
 }
+
 
 export default MoreMenu

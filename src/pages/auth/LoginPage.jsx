@@ -1,6 +1,6 @@
 import { Await, Link } from "react-router";
-import { Navigate } from "react-router";
-import { useState } from "react";
+import { Navigate, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 // import from inside project stuff
@@ -15,6 +15,7 @@ function Login() {
   const login = useUserStore((state) => state.login);
   const token = useUserStore((state) => state.token);
 
+  const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -35,6 +36,13 @@ function Login() {
       setIsError(true);
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/userproflie", { replace: true });
+    }
+  }, [token, navigate]);
+  
 
   // if (isSuccess) {
   //   return <Navigate to="/home" replace />;

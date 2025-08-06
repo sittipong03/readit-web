@@ -7,7 +7,9 @@ const ManageBookModal = ({
   isOpen,
   onClose,
   book,
-  readBooks,
+  readBooks = [],
+  wishlistBooks = [],
+  readingBooks = [],
   onMarkAsRead,
   onWriteReview,
   onViewReview,
@@ -20,7 +22,9 @@ const ManageBookModal = ({
   if (!isOpen || !book) return null;
 
   const hasUserReview = book.hasUserReview || book.userRating;
-  const isInWishlist = book.shelf === "WISHLIST";
+  const isInWishlist = wishlistBooks.some((b) => b.id === book.id);
+  const isInReading = readingBooks.some((b) => b.id === book.id);
+  const isInRead = readBooks.some((b) => b.id === book.id);
 
   const hdlMarkAsRead = () => {
     const isAlreadyRead = readBooks.some((readBook) => readBook.id === book.id);
@@ -33,6 +37,7 @@ const ManageBookModal = ({
     if (onMarkAsRead) {
       onMarkAsRead(book);
     }
+    onClose();
   };
 
   const hdlWriteReview = () => {

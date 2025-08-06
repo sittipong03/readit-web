@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Search, Book } from "lucide-react";
 import { XIcon } from "./icons";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { set } from "zod";
+import useUserStore from "../stores/userStore.js";
 
 const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [books, setBooks] = useState([]);
+  const user = useUserStore((state) => state.userId);
 
   const fetchBooks = async () => {
     try {
@@ -70,12 +72,14 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
       book.author.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const hdlBookSelect = async (book) => {
+  const hdlBookSelect = async (book, user) => {
+    console.log(book, user);
     try {
       await axios.post(
         "http://localhost:6500/api/book/wishlist",
         {
           bookId: book.id,
+          userId: user,
           shelfType: "WISHLIST",
         },
         {
@@ -91,16 +95,22 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
           totalRatings: book.ratingCount || 0,
           userRating: null,
           hasUserReview: false,
-          createdAt: new Date().toISOString(), // เพิ่ม timestamp
+          createdAt: new Date().toISOString(),
         };
         onBookSelect(newBook);
       }
       onClose();
     } catch (error) {
-      if (error.response?.status === 409) {
+      if (error.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("token");
+      } else if (error.response?.status === 409) {
         alert("Book is already in your wishlist!");
       } else {
         console.error("Error adding book to wishlist:", error);
+        alert(
+          `Failed to add book: ${error.response?.data?.message || error.message}`,
+        );
       }
     }
   };
@@ -183,7 +193,7 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
               {filteredBooks.map((book) => (
                 <div
                   key={book.id}
-                  onClick={() => hdlBookSelect(book)}
+                  onClick={() => hdlBookSelect(book, user)}
                   className="w-cursor-pointer hover:bg-secondary-hover mt-2 flex items-center space-x-4 overflow-hidden rounded-xl px-2 py-2 transition-colors"
                 >
                   <div className="flex h-16 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-md">

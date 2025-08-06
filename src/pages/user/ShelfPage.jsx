@@ -3,7 +3,7 @@ import AddBookModal from "@/src/components/AddBookModal"; // BookSearchModal
 import BookCard from "@/src/components/BookCard";
 import BookManageModal from "@/src/components/BookManageModal"; // ใช้อันเดียว สำหรับทุกการจัดการหนังสือ
 import { ChevronsUpDown, ChevronsUpDownIcon, Funnel } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { create } from "zustand";
 import axios from "axios";
@@ -73,6 +73,10 @@ function Shelf() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
   const fetchBooks = async () => {
     try {
       setLoading(true);
@@ -86,9 +90,9 @@ function Shelf() {
 
       const data = response.data;
 
-      setReadBooks(data.readBooks || []);
-      setReadingBooks(data.readingBooks || []);
       setWishlistBooks(data.wishlistBooks || []);
+      setReadingBooks(data.readingBooks || []);
+      setReadBooks(data.readBooks || []);
       setFavoriteBooks(data.favoriteBooks || []);
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -483,7 +487,7 @@ function Shelf() {
                 >
                   {favoriteBooks.map((book) => (
                     <BookCard
-                      key={book.id}
+                      key={book.id || index}
                       book={book}
                       onBookClick={hdlBookClick}
                       onToggleFavorite={hdlToggleFavorite}
@@ -584,6 +588,9 @@ function Shelf() {
         isOpen={isManageBookModalOpen}
         onClose={hdlCloseModal}
         book={selectedBook}
+        readBooks={readBooks || []}
+        wishlistBooks={wishlistBooks || []}
+        readingBooks={readingBooks || []}
         onBookSelect={hdlAddBook}
         isFavorite={isFavorite(selectedBook)}
         onMarkAsRead={hdlMarkAsRead}

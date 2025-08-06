@@ -32,6 +32,7 @@ import OrderDetail from "../components/setting/OrderDetail";
 import PaymentSuccess from "../pages/user/PaymentSuccessPage";
 import BookCard from "../components/BookCard";
 import GoogleAuthCallback from "../pages/auth/GoogleAuthCallBack";
+import UserProfile from "../pages/UserProfile";
 
 const routerGuest = createBrowserRouter([
   {
@@ -69,7 +70,7 @@ const routerUser = createBrowserRouter([
       { path: "/home", element: <Home /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/review/:bookId", element: <ReviewPage /> },
-      { path: "/userproflie", element: <UserProfilePage /> },
+      { path: "/userproflie", element: <UserProfile /> },
       {
         path: "/setting",
         element: <SettingPage />,

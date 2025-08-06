@@ -2,6 +2,8 @@ import { Await, Link } from "react-router"
 import { Navigate } from "react-router"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // import from inside project stuff
 import * as authApi from "../../api/authApi.js"
@@ -13,6 +15,7 @@ import useUserStore from "../../stores/userStore.js"
 
 
 function Login() {
+  const navigate = useNavigate();
 
   const login = useUserStore(state => state.login)
 
@@ -23,13 +26,17 @@ function Login() {
 
   const handleLoginClick = async (data) => {
     try {
-      const user = await login(data)
-      setIsError(false)
-      setIsSuccess(true)
-    } catch (error) {
-      setIsError(true)
-    }
 
+      const user = await login(data); // login sets auth and stores token
+      setIsError(false);
+      setIsSuccess(true);
+
+      const token = useUserStore.getState().token;
+
+    } catch (error) {
+      console.error("Login error:", error);
+      setIsError(true);
+    }
   };
 
   // if (isSuccess) {
@@ -104,10 +111,10 @@ ${isError ? 'border-error-main' : 'border-secondary-outlinedBorder'}
 
           <div>
             <a href="http://localhost:6500/api/auth/google">
-            <Button color="neutral" variant="outlined" className="w-full h-[44px]
+              <Button color="neutral" variant="outlined" className="w-full h-[44px]
               bg-primary-contrast/30 border border-[#000209]/12">
-              Log in via Google</Button>
-              </a>
+                Log in via Google</Button>
+            </a>
           </div>
 
           <div>

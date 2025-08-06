@@ -378,7 +378,7 @@ html::-webkit-scrollbar-thumb:hover {
 
   --color-text-primary: rgb(from var(--Neutral-950) r g b / 90%);
   --color-text-secondary: rgb(from var(--Neutral-950) r g b / 72%);
-  --color-text-disabled: rgb(from var(--Neutral-950) r g b / 25%);
+  --color-text-disabled: rgb(from var(--Neutral-950) r g b / 40%);
   --color-text-hover: rgb(from var(--Neutral-950) r g b / 8%);
   --color-text-selected: rgb(from var(--Neutral-950) r g b / 12%);
   --color-text-focus: rgb(from var(--Neutral-950) r g b / 16%);

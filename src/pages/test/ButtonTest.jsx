@@ -84,9 +84,9 @@ const components = [
 
 function ButtonTest() {
   return (
-    <div className="dark w-full">
-      <div className="bg-paper-elevation-6 flex min-h-screen flex-col items-center gap-10 p-8">
-        <div className="text-text-primary flex w-fit items-center gap-4 text-center">
+    <div className="w-full dark">
+      <div className="flex flex-col items-center min-h-screen gap-10 p-8 bg-paper-elevation-6">
+        <div className="flex items-center gap-4 text-center text-text-primary w-fit">
           <div className="display-3">DesignSystem Test</div>
           <Button variant="outlined" asChild color="tertiary">
             <a href="https://lucide.dev/icons/" target="_blank">
@@ -235,7 +235,7 @@ function ButtonTest() {
 
         <div className="h6 text-text-secondary">Input</div>
         <div className="flex flex-wrap justify-center gap-4">
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               id="pictureX"
               label="Test"
@@ -247,7 +247,7 @@ function ButtonTest() {
             />
           </div>
 
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <Label htmlFor="pictureX">Picture</Label>
             <InputX
               id="pictureX"
@@ -255,7 +255,7 @@ function ButtonTest() {
               trailingComponent={<i className="fa-solid fa-file-image"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -265,7 +265,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -275,7 +275,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -284,7 +284,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -294,7 +294,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -304,7 +304,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -315,7 +315,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -325,7 +325,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -336,7 +336,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -346,7 +346,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -357,7 +357,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -368,7 +368,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -532,25 +532,25 @@ function ButtonTest() {
           <Badge variant="secondary">Secondary</Badge>
           <Badge variant="error">Destructive</Badge>
           <Badge variant="outline">Outline</Badge>
-          <div className="flex w-full flex-wrap gap-2">
+          <div className="flex flex-wrap w-full gap-2">
             <Badge
               variant="secondary"
-              className="bg-info-main text-white dark:bg-blue-600"
+              className="text-white bg-info-main dark:bg-blue-600"
             >
               <BadgeCheckIcon />
               Verified
             </Badge>
-            <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
-              8
+            <Badge className="h-5 px-1 font-mono rounded-full min-w-5 tabular-nums">
+              9
             </Badge>
             <Badge
-              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
+              className="h-5 px-1 font-mono rounded-full min-w-5 tabular-nums"
               variant="error"
             >
               99
             </Badge>
             <Badge
-              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
+              className="h-5 px-1 font-mono rounded-full min-w-5 tabular-nums"
               variant="outline"
             >
               20+

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getAllBooks, getBookById } from "../api/bookApi.js";
+import { getAllBooks, getBookByAI, getBookById } from "../api/bookApi.js";
 
 
 const bookManageStore = create((set,get) => ({
@@ -14,8 +14,15 @@ const bookManageStore = create((set,get) => ({
   getBookById : async(id) => {
     const result = await getBookById(id);
     set({book: result.data});
-    // console.log(result);
     return result;
+  },
+  getBookByAI : async(data) => {
+    console.log('dataaaa', data)
+    const result = await getBookByAI({books:data});
+    console.log("result", result);
+    set({books: result.data.books});
+
+    return result
   }
 }));
 

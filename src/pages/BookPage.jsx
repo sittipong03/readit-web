@@ -11,6 +11,16 @@ import { toast } from "react-toastify";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  SelectStyled,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+} from "@/components/ui/select";
+import nothingPic from "../assets/nothing-pic.png";
+import { InputX } from "@/components/ui/inputX";
+import { Textarea } from "@/components/ui/textarea";
+import StaticRating from "../components/StaticRating";
 
 function Book() {
   const [loading, setLoading] = useState(false);
@@ -27,6 +37,8 @@ function Book() {
   const addReview = reviewManageStore((state) => state.addReview);
   const addToCart = cartManageStore((state) => state.addToCart);
   const { bookId } = useParams();
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   // console.log(book);
   // console.log(token);
   console.log("User", user);
@@ -52,6 +64,34 @@ function Book() {
       setCreateReview(!createReview);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  
+  const handleRating = async (e, bookId) => {
+    e.preventDefault();
+    try {
+      if (rating === 0) {
+        toast.error("Please select a star rating first.");
+        return;
+      }
+
+      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
+      // ตัวอย่าง: await api.rateBook(bookId, rating);
+      console.log(`Submitting rating ${rating} for book ${bookId}`);
+
+      toast.success("Thank you for your rating!", {
+        description: "Your feedback helps other readers.",
+      });
+
+      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
+      setRating(0);
+      setHoverRating(0);
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating.", {
+        description: "Please try again later.",
+      });
     }
   };
 
@@ -106,9 +146,7 @@ function Book() {
                     {book?.Author.name}
                   </div>
                   <div className="flex gap-2">
-                    <Star className="w-10" />
-                    <StarIcon />
-                    <p>{book?.averageRating}</p>
+                    <StaticRating rating={book?.averageRating} />
                   </div>
                   <div className="flex gap-3">
                     <div className="text-text-disabled body-2">
@@ -147,7 +185,11 @@ function Book() {
                 <div className="subtitle-3">Gerne:</div>
                 <div className="flex flex-wrap gap-2">
                   {book?.bookTag.map((tag) => (
-                    <Badge variant="secondary" className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3" key={tag.id}>
+                    <Badge
+                      variant="secondary"
+                      className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3"
+                      key={tag.id}
+                    >
                       {tag.tag.name}
                     </Badge>
                   ))}
@@ -171,47 +213,112 @@ function Book() {
                   <p>Template for Ai suggestion.</p>
                 )}
               </div>
-              <div className="">
-                <div className="flex flex-col gap-5 border">
-                  <div className="flex gap-5">
-                    <div className="">
-                      {showReview && (
-                        <div className="">
-                          <input
-                            id="review"
-                            type="text"
-                            placeholder="Write a review"
-                          />
-                        </div>
-                      )}
-                      <p>Rate thie book</p>
-                      <div className="flex">
-                        <Star className="w-6" />
-                        <Star className="w-6" />
-                        <Star className="w-6" />
-                        <Star className="w-6" />
+
+              <div className="flex">
+                <div className="subtitle-1 w-full">Reviews</div>
+                <div className="w-[200px]">
+                  <SelectStyled
+                    variant="outlined"
+                    size="small"
+                    defaultValue="option1"
+                    className="w-full"
+                  >
+                    <SelectContent>
+                      <SelectItem value="option1">Newest</SelectItem>
+                      <SelectItem value="option2">Oldest</SelectItem>
+                      <SelectItem value="option3">Highest Score</SelectItem>
+                      <SelectItem value="option4">Lowest score</SelectItem>
+                    </SelectContent>
+                  </SelectStyled>
+                </div>
+              </div>
+
+              <div className="bg-paper-elevation-8 shadow-card-3d rounded-lg p-6">
+                <div className="flex flex-col gap-5">
+                  <div className="shadow-card-3d bg-paper-elevation-6 flex flex-col gap-4 rounded-lg p-6">
+                    {showReview && (
+                      <div className="">
+                        <Textarea
+                          placeholder="Write a review..."
+                          className="w-full"
+                        />
                       </div>
-                    </div>
-                    {showReview ? (
-                      <button
-                        className="cursor-pointer rounded-2xl border p-4"
-                        onClick={() => hdlPostReview()}
-                      >
-                        Post
-                      </button>
-                    ) : (
-                      <button
-                        className="cursor-pointer rounded-2xl border p-4"
-                        onClick={() => hdlReview()}
-                      >
-                        Write a review
-                      </button>
                     )}
+                    <div className="flex gap-10">
+                      <div className="">
+                        <div>
+                          <div className="text-text-disabled body-2">
+                            Rate thie book:
+                          </div>
+                          <div className="flex gap-0">
+                            {[1, 2, 3, 4, 5].map((starValue) => (
+                              <Button
+                                key={starValue}
+                                type="button"
+                                variant="text"
+                                size="icon"
+                                color="info"
+                                onClick={() => setRating(starValue)}
+                                onMouseEnter={() => setHoverRating(starValue)}
+                                onMouseLeave={() => setHoverRating(0)}
+                                className={
+                                  starValue <= (hoverRating || rating)
+                                    ? "text-info-main h-6 w-6 [&_svg]:text-[20px]"
+                                    : "text-text-disabled h-6 w-6 [&_svg]:text-[20px]"
+                                }
+                              >
+                                <i
+                                  className={
+                                    starValue <= (hoverRating || rating)
+                                      ? "fa-solid fa-star"
+                                      : "fa-regular fa-star"
+                                  }
+                                ></i>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {showReview ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="large"
+                          className="w-full"
+                          onClick={() => hdlPostReview()}
+                        >
+                          <i class="fa-solid fa-edit"></i>
+                          Post
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="mixed"
+                          color="primary"
+                          size="large"
+                          className="w-full"
+                          onClick={() => hdlReview()}
+                        >
+                          <i class="fa-solid fa-edit"></i>
+                          Write a review
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   {book?.review.length == 0 ? (
-                    <div className="">
-                      <h1>Nothing here</h1>
-                      <p>Nothing there</p>
+                    <div className="flex flex-col items-center gap-4 p-4">
+                      <div className="h-[120px] w-[132px]">
+                        <img
+                          src={nothingPic}
+                          alt="Nothing here"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <div className="subtitle-1">Nothing here</div>
+                        <div className="caption text-text-disabled">
+                          Be the first to review this book!
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     book?.review.map((review) => (

@@ -7,6 +7,7 @@ import { set } from "zod";
 import useUserStore from "../stores/userStore.js";
 import axiosInstance from "../utils/api";
 import bookManageStore from "../stores/booksManageStore";
+import { toast } from "sonner";
 
 const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -117,13 +118,13 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
       onClose();
     } catch (error) {
       if (error.response?.status === 401) {
-        alert("Session expired. Please login again.");
+        toast.error("Session expired. Please login again.");
         localStorage.removeItem("token");
       } else if (error.response?.status === 409) {
-        alert("Book is already in your wishlist!");
+        toast.error("Book is already in your wishlist!");
       } else {
         console.error("Error adding book to wishlist:", error);
-        alert(
+        toast.error(
           `Failed to add book: ${error.response?.data?.message || error.message}`,
         );
       }

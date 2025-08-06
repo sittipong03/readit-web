@@ -75,9 +75,9 @@ function Shelf() {
   const [error, setError] = useState(null);
   const token = useUserStore((state) => state.token);
   const currentUserId = useUserStore((state) => state.userId);
-  const navigate = useNavigate();
   const getUserWishlist = bookManageStore((state) => state.getUserWishlist);
   const userWishlist = bookManageStore((state) => state.userWishlist);
+  const navigate = useNavigate();
 
   console.log("userWishlist-------", userWishlist);
 
@@ -172,8 +172,27 @@ function Shelf() {
     navigate("/userprofile");
   };
 
-  const hdlBookClick = (book) => {
-    setSelectedBook(book);
+  const hdlBookClick = (item) => {
+    console.log("=== Before sending to modal ===");
+    console.log("Original item:", item);
+    console.log("item.book:", item.book);
+
+    // ตรวจสอบว่ามีข้อมูลหรือไม่
+    if (!item || !item.book) {
+      console.error("No book data found!");
+      return;
+    }
+
+    const bookData = {
+      ...item.book,
+      shelfType: item.ShelfType,
+      shelfId: item.id,
+      addedAt: item.addedAt,
+    };
+
+    console.log("Sending to modal:", bookData);
+
+    setSelectedBook(bookData);
     setIsManageBookModalOpen(true);
   };
 

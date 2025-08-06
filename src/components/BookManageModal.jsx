@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { EditIcon, XIcon } from "./icons";
 import { EyeIcon } from "lucide-react";
@@ -28,6 +28,18 @@ const ManageBookModal = ({
   const isInReading = readingBooks.some((b) => b.id === book.id);
   const isInRead = readBooks.some((b) => b.id === book.id);
 
+  useEffect(() => {
+    if (isOpen && book) {
+      console.log("=== Modal Book Data ===");
+      console.log("Book object:", book);
+      console.log("Title:", book?.title);
+      console.log("Author:", book?.Author?.name || "Unknown Author");
+      console.log("Cover:", book?.edition?.[0]?.coverImage);
+      console.log("Shelf type:", book?.shelfType);
+      console.log("========================");
+    }
+  }, [isOpen, book]);
+
   const hdlMarkAsRead = () => {
     const isAlreadyRead = readBooks.some((readBook) => readBook.id === book.id);
 
@@ -36,50 +48,74 @@ const ManageBookModal = ({
       return;
     }
 
+    const updatedBook = {
+      ...book,
+      shelfType: "READ",
+    };
+
     if (onMarkAsRead) {
-      onMarkAsRead(book);
+      onMarkAsRead(updatedBook);
+    }
+    onClose();
+  };
+
+  const hdlAddToReading = () => {
+    console.log("Add to reading:", book.title);
+
+    const updatedBook = {
+      ...book,
+      shelfType: "CURRENTLY_READING",
+    };
+
+    if (onAddToReading) {
+      onAddToReading(updatedBook);
+    }
+    onClose();
+  };
+
+  const hdlToggleFavorite = () => {
+    if (isFavorite) {
+      const updatedBook = {
+        ...book,
+        shelfType: "READ",
+      };
+
+      if (onRemoveFromFavorite) {
+        onRemoveFromFavorite(updatedBook);
+      }
+    } else {
+      const updatedBook = {
+        ...book,
+        shelfType: "FAVORITE",
+      };
+
+      if (onAddToFavorites) {
+        onAddToFavorites(updatedBook);
+      }
+    }
+    onClose();
+  };
+
+  const hdlDeleteFromShelf = () => {
+    console.log("Delete from shelf:", book.title);
+
+    if (onDeleteFromShelf) {
+      onDeleteFromShelf(book);
     }
     onClose();
   };
 
   const hdlWriteReview = () => {
+    // เขียน review - เปลี่ยนเป็น READ (เพราะต้องอ่านจบแล้วถึงจะรีวิวได้)
+    const updatedBook = {
+      ...book,
+      shelfType: "READ",
+    };
+
     if (onWriteReview) {
-      onWriteReview(book);
+      onWriteReview(updatedBook);
     }
-  };
-
-  const hdlViewReview = () => {
-    if (onViewReview) {
-      onViewReview(book);
-    }
-  };
-
-  const hdlAddToReading = (book) => {
-    console.log("Add to reading:", book.title);
-    if (onAddToReading) {
-      onAddToReading(book);
-    } else {
-      onClose();
-    }
-  };
-
-  const hdlDeleteFromShelf = () => {
-    console.log("Delete from shelf:", book.title);
-    if (onDeleteFromShelf) {
-      onDeleteFromShelf(book);
-    } else {
-      onClose();
-    }
-  };
-
-  const hdlToggleFavorite = () => {
-    if (isFavorite && onRemoveFromFavorite) {
-      onRemoveFromFavorite(book);
-      onClose();
-    } else if (!isFavorite && onAddToFavorites) {
-      onAddToFavorites(book);
-      onClose();
-    }
+    // ไม่ปิด modal เพราะจะไป review page
   };
 
   return (
@@ -99,8 +135,8 @@ const ManageBookModal = ({
           <div
             className="mb-8 h-[128px] w-[84px] rounded bg-cover bg-center bg-no-repeat shadow-lg"
             style={{
-              backgroundImage: book.coverImage
-                ? `url(${book.coverImage})`
+              backgroundImage: book?.edition?.[0]?.coverImage
+                ? `url(${book?.edition?.[0]?.coverImage})`
                 : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
             }}
           >
@@ -110,8 +146,8 @@ const ManageBookModal = ({
               </div>
             )}
           </div>
-          <h3 className="subtitle-3 text-center">{book.title}</h3>
-          <p className="body-2 mb-4 text-center">{book.author}</p>{" "}
+          <h3 className="subtitle-3 text-center">{book?.title}</h3>
+          <p className="body-2 mb-4 text-center">{book?.Author?.name}</p>{" "}
         </div>
         {/* Action buttons */}
         <div className="space-y-3">
@@ -214,7 +250,7 @@ const ManageBookModal = ({
               </Button>
             </>
           )}
-          <Button
+          {/* <Button
             onClick={hdlMarkAsRead}
             variant="contained"
             size="large"
@@ -242,7 +278,7 @@ const ManageBookModal = ({
             className="w-full"
           >
             Delete from shelf
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

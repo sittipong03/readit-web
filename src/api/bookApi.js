@@ -7,3 +7,4 @@ export const bookApi = axios.create({
 export const fetchAllBooks = () => bookApi.get("/");
 export const fetchBookById = (id) => bookApi.get(`/${id}`);
 export const fetchAiSuggestion  = (id) => bookApi.get(`/${id}/ai-suggestion`);
+export const fetchBookByAI = (body) => bookApi.post("/searchAI",body)

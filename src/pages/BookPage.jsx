@@ -38,6 +38,11 @@ function Book() {
   const { product } = productManageStore(); // สมมติว่ายังต้องใช้ product
   const { addToCart } = cartManageStore();
 
+  const latestEdition = book?.edition?.find((e) => e.isLatest === true);
+  const latestIsbn = latestEdition?.isbn;
+  const latestPages = latestEdition?.pages;
+  const productAvaliable = book?.product?.length > 0;
+
   // --- Data Fetching Effect ---
   useEffect(() => {
     const loadData = async () => {
@@ -47,9 +52,11 @@ function Book() {
       setLoadingAI(true);
 
       // เรียกข้อมูลหลักก่อน
-      await getBookById(bookId);
+      const fetchedBook = await getBookById(bookId);
       await getAllReview(bookId);
       setLoading(false);
+
+      console.log(fetchedBook);
 
       // เรียกข้อมูล AI แยกต่างหาก
       await getAiSuggestion(bookId);
@@ -126,7 +133,7 @@ function Book() {
 
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex min-h-[700px] justify-center">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-lg pb-20">
         <div className="flex gap-10 p-10">
           {/* Left Column */}
           <div className="flex w-full max-w-[480px] flex-col gap-6">
@@ -157,23 +164,60 @@ function Book() {
                     {book.reviewCount || 0} Reviews
                   </div>
                 </div>
-                <Button
-                  size="large"
-                  variant="mixed"
-                  color="secondary"
-                  type="button"
-                  onClick={hdlAddToCart}
-                  className="mt-3"
-                >
-                  <i className="fa-regular fa-cart-shopping mr-2"></i>
-                  Add to cart
-                </Button>
+                {productAvaliable ? (
+                  <Button
+                    size="large"
+                    variant="mixed"
+                    color="secondary"
+                    type="button"
+                    onClick={hdlAddToCart}
+                    className="mt-3"
+                  >
+                    <i className="fa-regular fa-cart-shopping"></i>
+                    Add to cart
+                  </Button>
+                ) : (
+                  <Button
+                    size="large"
+                    variant="mixed"
+                    color="secondary"
+                    type="button"
+                    onClick={hdlAddToCart}
+                    className="mt-3 opacity-50"
+                    disabled={true}
+                  >
+                    <i className="fa-regular fa-cart-shopping "></i>
+                    Not available
+                  </Button>
+                )}
               </div>
             </div>
 
-            <div className="mb-4 pt-4">
-              <h2>Description</h2>
+            <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-4 rounded-lg p-6">
+              <div className="subtitle-2">5 mins read</div>
               <p>{book.description || "No description available."}</p>
+              {latestIsbn ? (
+                <div className="body-2 flex gap-4">
+                  <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
+                  <div className="w-full">{latestIsbn}</div>
+                </div>
+              ) : (
+                <div className="body-2 flex gap-4">
+                  <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
+                  <div className="text-text-disabled w-full">Not available</div>
+                </div>
+              )}
+              {latestPages ? (
+                <div className="body-2 flex gap-4">
+                  <div className="w-[148px] flex-shrink-0 font-bold">Pages</div>
+                  <div className="w-full">{latestPages}</div>
+                </div>
+              ) : (
+                <div className="body-2 flex gap-4">
+                  <div className="w-[148px] flex-shrink-0 font-bold">Pages</div>
+                  <div className="text-text-disabled w-full">Not available</div>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col gap-3">

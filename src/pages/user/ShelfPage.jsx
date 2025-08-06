@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import useUserStore from "@/src/stores/userStore";
+import axiosInstance from "@/src/utils/api";
+import bookManageStore from "@/src/stores/booksManageStore";
 
 function Shelf() {
   const books = [
@@ -72,101 +74,99 @@ function Shelf() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = useUserStore((state) => state.token);
-  const userId = useUserStore((state) => state.userId);
+  const currentUserId = useUserStore((state) => state.userId);
   const navigate = useNavigate();
+  const getUserWishlist = bookManageStore((state) => state.getUserWishlist);
+  const userWishlist = bookManageStore((state) => state.userWishlist);
+
+  console.log("userWishlist-------", userWishlist);
 
   useEffect(() => {
     if (token) {
-      fetchBooks();
+      // fetchBooks();
+      getUserWishlist();
     } else {
       console.log("No token, redirecting to login");
       navigate("/login");
     }
   }, [token]);
 
-  const fetchBooks = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // const fetchBooks = async () => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
 
-      const response = await axios.get(
-        "http://localhost:6500/api/book/wishlist",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+  //     const response = await axiosInstance.get("/book/wishlist");
 
-      console.log("API Response:", response.data);
+  //     console.log("API Response:wishlist", response.data);
 
-      const data = response.data;
+  //     const data = response.data;
 
-      // Set ข้อมูลที่ได้จาก API
-      setWishlistBooks(data.wishlistBooks || []);
-      setReadingBooks(data.readingBooks || []);
-      setReadBooks(data.readBooks || []);
-      setFavoriteBooks(data.favoriteBooks || []);
-    } catch (error) {
-      console.error("Error fetching books:", error);
-      setError("Failed to load books. Please try again.");
+  //     // Set ข้อมูลที่ได้จาก API
+  //     setWishlistBooks(data.wishlistBooks || []);
+  //     setReadingBooks(data.readingBooks || []);
+  //     setReadBooks(data.readBooks || []);
+  //     setFavoriteBooks(data.favoriteBooks || []);
+  //   } catch (error) {
+  //     console.error("Error fetching books:", error);
+  //     setError("Failed to load books. Please try again.");
 
-      // fallback data
-      const sampleBooks = [
-        {
-          id: 1,
-          title: "The Wedding Crasher",
-          author: "Christina Escudéz",
-          coverImage:
-            "https://i.harperapps.com/hcanz/covers/9780062909893/y648.jpg",
-          rating: 3.2,
-          totalRatings: 12,
-          userRating: null,
-          hasUserReview: false,
-          createAt: new Date("2022-01-15"),
-        },
-        {
-          id: 2,
-          title: "The Seven Husbands of Evelyn Hugo",
-          author: "Taylor Jenkins Reid",
-          coverImage:
-            "https://www.asiabooks.com/media/catalog/product/cache/a5ac216be58c0cbce1cb04612ece96dc/9/7/9781398515697.jpg",
-          rating: 4.2,
-          totalRatings: 20,
-          userRating: 4.5,
-          hasUserReview: true,
-          createdAt: new Date("2021-01-15"),
-        },
-        {
-          id: 3,
-          title: "Atomic Habits",
-          author: "James Clear",
-          coverImage:
-            "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg",
-          rating: 4.8,
-          totalRatings: 150,
-          userRating: 5.0,
-          hasUserReview: true,
-          createdAt: new Date("2025-01-15"),
-        },
-        {
-          id: 4,
-          title: "The Midnight Library",
-          author: "Matt Haig",
-          coverImage:
-            "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1602190253i/52578297.jpg",
-          rating: 4.1,
-          totalRatings: 85,
-          userRating: null,
-          hasUserReview: false,
-          createdAt: new Date("2024-01-15"),
-        },
-      ];
-      setReadBooks(sampleBooks);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // fallback data
+  //     const sampleBooks = [
+  //       {
+  //         id: 1,
+  //         title: "The Wedding Crasher",
+  //         author: "Christina Escudéz",
+  //         coverImage:
+  //           "https://i.harperapps.com/hcanz/covers/9780062909893/y648.jpg",
+  //         rating: 3.2,
+  //         totalRatings: 12,
+  //         userRating: null,
+  //         hasUserReview: false,
+  //         createAt: new Date("2022-01-15"),
+  //       },
+  //       {
+  //         id: 2,
+  //         title: "The Seven Husbands of Evelyn Hugo",
+  //         author: "Taylor Jenkins Reid",
+  //         coverImage:
+  //           "https://www.asiabooks.com/media/catalog/product/cache/a5ac216be58c0cbce1cb04612ece96dc/9/7/9781398515697.jpg",
+  //         rating: 4.2,
+  //         totalRatings: 20,
+  //         userRating: 4.5,
+  //         hasUserReview: true,
+  //         createdAt: new Date("2021-01-15"),
+  //       },
+  //       {
+  //         id: 3,
+  //         title: "Atomic Habits",
+  //         author: "James Clear",
+  //         coverImage:
+  //           "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg",
+  //         rating: 4.8,
+  //         totalRatings: 150,
+  //         userRating: 5.0,
+  //         hasUserReview: true,
+  //         createdAt: new Date("2025-01-15"),
+  //       },
+  //       {
+  //         id: 4,
+  //         title: "The Midnight Library",
+  //         author: "Matt Haig",
+  //         coverImage:
+  //           "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1602190253i/52578297.jpg",
+  //         rating: 4.1,
+  //         totalRatings: 85,
+  //         userRating: null,
+  //         hasUserReview: false,
+  //         createdAt: new Date("2024-01-15"),
+  //       },
+  //     ];
+  //     setReadBooks(sampleBooks);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const hdlBackToFeed = () => {
     navigate("/userprofile");
@@ -258,7 +258,7 @@ function Shelf() {
     try {
       if (!book?.id || !Array.isArray(favoriteBooks)) return false;
       return favoriteBooks
-        .filter((fav) => fav && fav.id) // กรอง null และ undefined ออก
+        .filter((fav) => fav && fav.id)
         .some((fav) => fav.id === book.id);
     } catch (error) {
       console.error("Error in isFavorite:", error);
@@ -340,7 +340,7 @@ function Shelf() {
                   <p className="subtitle-2">Wishlists</p>
                 </div>
                 <div className="flex h-[128px] w-[852px] items-center">
-                  {wishlistBooks.length === 0 ? (
+                  {userWishlist.length === 0 ? (
                     <div className="flex w-full items-center justify-center">
                       <div className="text-center">
                         <p className="text-text-disabled mb-2">
@@ -358,32 +358,45 @@ function Shelf() {
                     </div>
                   ) : (
                     <div className="flex w-full gap-4 overflow-x-auto">
-                      {wishlistBooks.slice(0, 6).map((book) => (
-                        <div key={book.id} className="flex-shrink-0">
+                      {userWishlist
+                        .filter((item) => item.userId === currentUserId)
+                        .slice(0, 6)
+                        .map((item, index) => (
                           <div
-                            className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
-                            onClick={() => hdlBookClick(book)}
+                            key={`${item.book?.id || item.bookId || "book"}-${index}`}
+                            className="flex-shrink-0"
                           >
-                            {book.coverImage ? (
-                              <img
-                                src={book.coverImage}
-                                alt={book.title}
-                                className="h-full w-full object-cover"
-                              />
-                            ) : (
-                              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-                                <span className="text-xs font-bold text-white">
-                                  {book.title.substring(0, 2)}
-                                </span>
-                              </div>
-                            )}
+                            <div
+                              className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                              onClick={() => hdlBookClick(item)}
+                            >
+                              {item.book?.edition?.[0]?.coverImage ||
+                              item.book?.coverImage ? (
+                                <img
+                                  src={
+                                    item.book?.edition?.[0]?.coverImage ||
+                                    item.book?.coverImage
+                                  }
+                                  alt={item.book?.title}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+                                  <span className="text-xs font-bold text-white">
+                                    {item.book?.title}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                      {wishlistBooks.length > 6 && (
-                        <div className="flex h-28 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200">
+                        ))}
+                      {userWishlist.length > 6 && (
+                        <div
+                          key={"extra-books"}
+                          className="flex h-28 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200"
+                        >
                           <span className="text-sm text-gray-600">
-                            +{wishlistBooks.length - 6}
+                            +{userWishlist.length - 6}
                           </span>
                         </div>
                       )}

@@ -8,6 +8,7 @@ function App() {
     <ToastContainer
       position='top-right'
       />
+    <Toaster richColors />
     </>
   )
 }

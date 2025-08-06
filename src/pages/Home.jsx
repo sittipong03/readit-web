@@ -41,6 +41,8 @@ function Home() {
       console.log(error)
     }
   }
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
@@ -53,6 +55,33 @@ function Home() {
     }
     run();
   }, [aiSearch]);
+
+  const handleRating = async (e, bookId) => {
+    e.preventDefault();
+    try {
+      if (rating === 0) {
+        toast.error("Please select a star rating first.");
+        return;
+      }
+
+      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
+      // ตัวอย่าง: await api.rateBook(bookId, rating);
+      console.log(`Submitting rating ${rating} for book ${bookId}`);
+
+      toast.success("Thank you for your rating!", {
+        description: "Your feedback helps other readers.",
+      });
+
+      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
+      setRating(0);
+      setHoverRating(0);
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating.", {
+        description: "Please try again later.",
+      });
+    }
+  };
 
   console.log("Books", books);
   return (
@@ -92,7 +121,7 @@ function Home() {
             </SelectContent>
           </SelectStyled>
           <div className="flex flex-col gap-2">
-            <Label>Promt</Label>
+            <Label>Prompt</Label>
             <Textarea placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
@@ -127,29 +156,25 @@ function Home() {
                   <DialogHeader>
                     <DialogTitle>Add a book</DialogTitle>
                     <DialogDescription>
-                      Make changes to your profile here. Click save when
-                      you&apos;re done.
+                      Add it instantly with its ISBN. We'll use this unique code
+                      to find all the details for you.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4">
                     <InputX
-                      label="Name"
-                      id="name-1"
-                      name="name"
-                      defaultValue="Pedro Duarte"
-                    />
-                    <InputX
-                      label="Username"
-                      id="username-1"
-                      name="username"
-                      defaultValue="@peduarte"
+                      label="ISBN"
+                      id="ISBN"
+                      name="ISBN"
+                      placeholder="e.g., 978-0140280190"
                     />
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
                       <Button variant="text">Cancel</Button>
                     </DialogClose>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="submit">
+                      <i class="fa-solid fa-plus"></i>Add a book
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </form>
@@ -200,10 +225,58 @@ function Home() {
                           {book.averageRating}
                         </p>
                       </Badge>
-                      <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
-                        <i className="fa-regular fa-star"></i>
-                        <p className="text-text-disabled">Rate</p>
-                      </Badge>
+                      <Dialog>
+                        <form onSubmit={(e) => handleRating(e, book.id)}>
+                          <DialogTrigger asChild>
+                            <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                              <i className="fa-regular fa-star"></i>
+                              <p className="text-text-disabled">Rate</p>
+                            </Badge>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Rate this book</DialogTitle>
+                            </DialogHeader>
+                            <div className="my-4 flex justify-center gap-0">
+                              {[1, 2, 3, 4, 5].map((starValue) => (
+                                <Button
+                                  key={starValue}
+                                  type="button"
+                                  variant="text"
+                                  size="icon"
+                                  color="info"
+                                  onClick={() => setRating(starValue)}
+                                  onMouseEnter={() => setHoverRating(starValue)}
+                                  onMouseLeave={() => setHoverRating(0)}
+                                  className={
+                                    starValue <= (hoverRating || rating)
+                                      ? "text-info-main h-12 w-12 [&_svg]:text-[32px]"
+                                      : "text-text-disabled h-12 w-12 [&_svg]:text-[32px]"
+                                  }
+                                >
+                                  <i
+                                    className={
+                                      starValue <= (hoverRating || rating)
+                                        ? "fa-solid fa-star"
+                                        : "fa-regular fa-star"
+                                    }
+                                  ></i>
+                                </Button>
+                              ))}
+                            </div>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="text">Later</Button>
+                              </DialogClose>
+                              <DialogClose asChild>
+                                <Button type="submit" disabled={rating === 0}>
+                                  Submit Rating
+                                </Button>
+                              </DialogClose>
+                            </DialogFooter>
+                          </DialogContent>
+                        </form>
+                      </Dialog>
                     </div>
                     <Button
                       variant="ghost"

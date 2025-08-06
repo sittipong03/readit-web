@@ -429,7 +429,7 @@ html::-webkit-scrollbar-thumb:hover {
   --color-action-selected: #0002091f;
   --color-action-focus: #00020929;
   --color-action-disabled: #0002093d;
-  --color-action-disabledBackground: var(--Neutral-400);
+  --color-action-disabledBackground: var(--Neutral-300);
   --color-action-disabledBackground-100: var(--Neutral-800);
 
   --color-error-main: var(--Danger-500);

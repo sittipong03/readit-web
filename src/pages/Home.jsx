@@ -24,6 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { LoaderCircle, Search } from "lucide-react";
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
@@ -31,14 +32,18 @@ function Home() {
   const books = bookManageStore((state) => state.books);
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
+  const [searching, setSearching] = useState(false)
 
   const searchByAI = async() => {
+    setSearching(true)
     try {
       const data = document.getElementById("SearchBook");
       console.log('data.value', data.value)
       setAiSearch(data.value)
     } catch (error) {
       console.log(error)
+    } finally {
+      setSearching(false)
     }
   }
   const [rating, setRating] = useState(0);
@@ -46,11 +51,12 @@ function Home() {
 
   useEffect(() => {
     const run = async () => {
-      if(!aiSearch){
+      if (!aiSearch) {
         await getBooks();
-      }else{
+      } else {
         await getBookByAI(aiSearch)
       }
+      // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
     }
     run();
   }, [aiSearch]);
@@ -128,8 +134,8 @@ function Home() {
               Clear Filter
             </Button>
             <Button onClick={() => searchByAI()}>
-              <i class="fa-solid fa-magnifying-glass"></i>
-              Search
+              {searching ? <LoaderCircle className="animate-spin" /> : <Search />}
+              {searching ? "Searching..." : "Search"}
             </Button>
           </div>
         </div>

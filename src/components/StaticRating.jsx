@@ -1,4 +1,4 @@
-const StaticRating = ({ rating = 0 }) => {
+const StaticRating = ({ rating = 0, showNumber = true, size = "18px" }) => {
   const stars = [];
 
   for (let i = 1; i <= 5; i++) {
@@ -24,9 +24,11 @@ const StaticRating = ({ rating = 0 }) => {
   }
 
   return (
-    <div className="flex items-center gap-1 text-[18px]">
+    <div className="flex items-center gap-1" style={{ fontSize: size }}>
       {stars}
-      <span className="ml-2 subtitle-1">{rating.toFixed(2)}</span>
+      {showNumber && (
+        <span className="subtitle-1 ml-2">{rating.toFixed(2)}</span>
+      )}
     </div>
   );
 };

@@ -27,17 +27,34 @@ import {
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
+  const getBookByAI = bookManageStore(state => state.getBookByAI)
   const books = bookManageStore((state) => state.books);
   const [selectBook, setSelectBook] = useState(null);
+  const [aiSearch, setAiSearch] = useState("");
+
+  const searchByAI = async() => {
+    try {
+      const data = document.getElementById("SearchBook");
+      console.log('data.value', data.value)
+      setAiSearch(data.value)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
-      await getBooks();
-    };
+      
+      if(!aiSearch){
+        await getBooks();
+      }else{
+        await getBookByAI(aiSearch)
+      }
+    }
     run();
-  }, []);
+  }, [aiSearch]);
 
   const handleRating = async (e, bookId) => {
     e.preventDefault();
@@ -111,7 +128,7 @@ function Home() {
             <Button variant="outlined" color="secondary">
               Clear Filter
             </Button>
-            <Button>
+            <Button onClick={() => searchByAI()}>
               <i class="fa-solid fa-magnifying-glass"></i>
               Search
             </Button>
@@ -123,7 +140,7 @@ function Home() {
         <div className="flex items-end">
           <div className="flex flex-1 flex-col gap-0">
             <h1 className="subtitle-1">Browse a book</h1>
-            <p className="text-text-disabled caption">{`${books.length} Result was found`}</p>
+            <p className="text-text-disabled caption">{`${books?.length} Result was found`}</p>
           </div>
           <div className="flex items-center gap-2">
             <h1 className="subtitle-4">Can’t find the book?</h1>
@@ -199,7 +216,7 @@ function Home() {
                   <div className="subtitle-3 text-text-primary">
                     {book.title}
                   </div>
-                  <div className="body-3 text-text-secondary flex-1">{`${book.Author.name}`}</div>
+                  <div className="body-3 text-text-secondary flex-1">{`${book?.Author?.name}`}</div>
                   <div className="absolute bottom-2 left-0 w-full px-2">
                     <div className="flex gap-0">
                       <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">

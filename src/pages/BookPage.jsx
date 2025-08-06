@@ -67,6 +67,7 @@ function Book() {
     }
   };
 
+  
   const handleRating = async (e, bookId) => {
     e.preventDefault();
     try {

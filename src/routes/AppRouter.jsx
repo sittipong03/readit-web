@@ -68,6 +68,7 @@ const routerUser = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/home", element: <Home /> },
       { path: "/book/:bookId", element: <BookPage /> },
+      { path: "/review/:bookId", element: <ReviewPage /> },
       { path: "/userproflie", element: <UserProfilePage /> },
       {
         path: "/setting",

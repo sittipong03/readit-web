@@ -6,7 +6,7 @@ console.log(import.meta.env.VITE_PORT);
 
 
 const axiosInstance = axios.create({
-  baseURL:  `http://localhost:${import.meta.env.VITE_PORT || 8899}/api`,
+  baseURL:  `http://localhost:${import.meta.env.VITE_PORT || 6500}/api`,
   timeout: 20000,
   headers: {
     "Content-Type": "application/json",

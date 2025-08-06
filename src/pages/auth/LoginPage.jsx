@@ -13,6 +13,7 @@ import useUserStore from "../../stores/userStore.js";
 
 function Login() {
   const login = useUserStore((state) => state.login);
+  const token = useUserStore((state) => state.token);
 
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -30,6 +31,7 @@ function Login() {
       setIsError(false);
       setIsSuccess(true);
     } catch (error) {
+      console.log("error: ", error);
       setIsError(true);
     }
   };
@@ -38,6 +40,7 @@ function Login() {
   //   return <Navigate to="/home" replace />;
   // }
 
+  console.log("token: ", token);
   return (
     <div className="from-paper-elevation-2 to-tertiary-lighter flex h-[700px] w-full justify-center bg-linear-to-b">
       <div className="flex h-full w-[384px] items-center justify-center gap-10">

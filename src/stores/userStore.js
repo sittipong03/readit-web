@@ -39,6 +39,12 @@ const useUserStore = create(
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
         console.log("from login ", result);
+        // set({
+        //   token: result.data.accessToken,
+        //   userId: result.data.userId,
+        //   userName: result.data.user,
+        //   role: result.data.role,
+        // });
         set({
           token: result.data.accessToken,
           userId: result.data.userId,
@@ -84,7 +90,7 @@ const useUserStore = create(
     }),
     {
       name: "userState",
-      storage: customStorage,
+      // storage: customStorage,
     },
   ),
 );

@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import AddBookModal from "@/src/components/AddBookModal"; // BookSearchModal
+import AddBookModal from "@/src/components/AddBookModal";
 import BookCard from "@/src/components/BookCard";
-import BookManageModal from "@/src/components/BookManageModal"; // ใช้อันเดียว สำหรับทุกการจัดการหนังสือ
-import { ChevronsUpDown, ChevronsUpDownIcon, Funnel } from "lucide-react";
+import BookManageModal from "@/src/components/BookManageModal";
+import { ChevronsUpDown, Funnel } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { create } from "zustand";
 import axios from "axios";
+import useUserStore from "@/src/stores/userStore";
 
 function Shelf() {
   const books = [
@@ -71,25 +71,38 @@ function Shelf() {
   const [sortOrder, setSortOrder] = useState("latest");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token = useUserStore((state) => state.token);
+  const userId = useUserStore((state) => state.userId);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchBooks();
-  }, []);
+    if (token) {
+      fetchBooks();
+    } else {
+      console.log("No token, redirecting to login");
+      navigate("/login");
+    }
+  }, [token]);
 
   const fetchBooks = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get("/api/book/wishlist", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.get(
+        "http://localhost:6500/api/book/wishlist",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
+
+      console.log("API Response:", response.data);
 
       const data = response.data;
 
+      // Set ข้อมูลที่ได้จาก API
       setWishlistBooks(data.wishlistBooks || []);
       setReadingBooks(data.readingBooks || []);
       setReadBooks(data.readBooks || []);

@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import * as authApi from '../api/authApi'; 
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import * as authApi from "../api/authApi";
 
 const customStorage = {
   getItem: (name) => {
@@ -25,25 +25,33 @@ const customStorage = {
   },
 };
 
-
 const useUserStore = create(
   persist(
     (set, get) => ({
       userId: null,
       userName: null,
       role: null,
-      token: '',
+      avatarUrl: "",
+      token: "",
       rememberMe: false,
 
       login: async (input) => {
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
+        console.log("from login ", result);
+        // set({
+        //   token: result.data.accessToken,
+        //   userId: result.data.userId,
+        //   userName: result.data.user,
+        //   role: result.data.role,
+        // });
         set({
-          token: result.data.token,
+          token: result.data.accessToken,
           userId: result.data.userId,
-          userName: result.data.user, 
+          userName: result.data.user,
           role: result.data.role,
-          rememberMe: !!rememberMe, 
+          avatarUrl: result.data.avatarUrl,
+          rememberMe: !!rememberMe,
         });
         return result;
       },
@@ -54,14 +62,14 @@ const useUserStore = create(
 
         try {
           // 2. ใช้ token ใหม่ไปยิง API /me เพื่อดึงข้อมูล User ที่สมบูรณ์
-          const res = await authApi.getMe(); 
+          const res = await authApi.getMe();
           const userData = res.data.result;
 
           // 3. อัปเดตข้อมูล user ทั้งหมดลงใน store
           set({
             userId: userData.id,
             userName: userData.name,
-            role: userData.role
+            role: userData.role,
           });
         } catch (error) {
           console.error("Failed to fetch user data after Google login:", error);
@@ -70,19 +78,21 @@ const useUserStore = create(
         }
       },
 
-      logout: () => set({
-        token: '',
-        userId: null,
-        userName: null,
-        role: null,
-        rememberMe: false
-      }),
+      logout: () =>
+        set({
+          token: "",
+          userId: null,
+          userName: null,
+          role: null,
+          avatarUrl: "",
+          rememberMe: false,
+        }),
     }),
     {
-      name: 'userState', 
-      storage: customStorage, 
-    }
-  )
+      name: "userState",
+      // storage: customStorage,
+    },
+  ),
 );
 
 export default useUserStore;

@@ -559,6 +559,16 @@ export default function GeneralSettings() {
                     <option value="">Please select...</option>
                     <option value="KASIKORNBANK">Kasikorn Bank</option>
                     <option value="SCB">Siam Commercial Bank</option>
+                    <option value="BANGKOKBANK">Bangkok Bank</option>
+                    <option value="KRUNGTHAIBANK">Krungthai Bank</option>
+                    <option value="TTB">TMBThanachart Bank (ttb)</option>
+                    <option value="KRUNGSRI">Bank of Ayudhya (Krungsri)</option>
+                    <option value="GOVERNMENTSAVINGSBANK">
+                      Government Savings Bank
+                    </option>
+                    <option value="BACC">
+                      Bank for Agriculture and Agricultural Co-operatives (BAAC)
+                    </option>
                   </select>
                 </div>
               </div>

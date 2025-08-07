@@ -57,10 +57,7 @@ function Book() {
       const fetchedBook = await getBookById(bookId);
       await getAllReview(bookId);
       setLoading(false);
-      
-
       console.log(fetchedBook);
-
       // เรียกข้อมูล AI แยกต่างหาก
       await getAiSuggestion(bookId);
       setLoadingAI(false);
@@ -72,6 +69,8 @@ function Book() {
   const hdlReview = () => {
     setShowReview(!showReview);
   };
+
+  console.log('bookdddddd', book)
   // --- Event Handlers ---
   const hdlPostReview = async () => {
     console.log('token', token)

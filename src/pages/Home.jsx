@@ -32,7 +32,9 @@ function Home() {
   const books = bookManageStore((state) => state.books);
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
-  const [searching, setSearching] = useState(false)
+  const [searching, setSearching] = useState(false);
+
+  console.log('books', books)
 
   const searchByAI = async() => {
     setSearching(true)
@@ -46,6 +48,11 @@ function Home() {
       setSearching(false)
     }
   }
+
+  const clearFilter = async() => {
+    await getBooks();
+  }
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
@@ -130,7 +137,7 @@ function Home() {
             <Textarea placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
-            <Button variant="outlined" color="secondary">
+            <Button variant="outlined" color="secondary" onClick={() => clearFilter()}>
               Clear Filter
             </Button>
             <Button onClick={() => searchByAI()}>

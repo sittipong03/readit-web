@@ -31,10 +31,15 @@ const useUserStore = create(
       userId: null,
       userName: null,
       role: null,
+<<<<<<< HEAD
       avatarUrl: null,
       token: null,
       fullProfile: null,
       isLoading: true,
+=======
+      avatarUrl: '',
+      token: '',
+>>>>>>> origin/feature/registerbooktag
       rememberMe: false,
 
       // Actions
@@ -66,10 +71,20 @@ const useUserStore = create(
       login: async (input) => {
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
+        console.log("from login " , result)
         set({
+<<<<<<< HEAD
           token: result.data.accessToken,
           rememberMe: !!rememberMe,
           isLoading: true,
+=======
+          token: result.data.token,
+          userId: result.data.userId,
+          userName: result.data.user, 
+          role: result.data.role,
+          avatarUrl : result.data.avatarUrl ,
+          rememberMe: !!rememberMe, 
+>>>>>>> origin/feature/registerbooktag
         });
         await get().fetchUserProfile();
       },
@@ -79,6 +94,7 @@ const useUserStore = create(
         await get().fetchUserProfile();
       },
 
+<<<<<<< HEAD
       logout: () => {
         set({
           token: null,
@@ -91,6 +107,16 @@ const useUserStore = create(
           isLoading: false,
         });
       },
+=======
+      logout: () => set({
+        token: '',
+        userId: null,
+        userName: null,
+        role: null,
+        avatarUrl : "",
+        rememberMe: false
+      }),
+>>>>>>> origin/feature/registerbooktag
     }),
     {
       name: "userState",

@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 import { Await, Link } from "react-router";
 import { Navigate, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+=======
+import { Await, Link } from "react-router"
+import { Navigate } from "react-router"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+>>>>>>> origin/feature/registerbooktag
 
 // import from inside project stuff
 import * as authApi from "../../api/authApi.js";
@@ -13,8 +22,12 @@ import { Button } from "../../../components/ui/button";
 import useUserStore from "../../stores/userStore.js";
 
 function Login() {
+<<<<<<< HEAD
   const login = useUserStore((state) => state.login);
   const token = useUserStore((state) => state.token);
+=======
+  const navigate = useNavigate();
+>>>>>>> origin/feature/registerbooktag
 
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
@@ -29,6 +42,7 @@ function Login() {
 
   const handleLoginClick = async (data) => {
     try {
+<<<<<<< HEAD
       const user = await login(data);
       setIsError(false);
       setIsSuccess(true);
@@ -72,6 +86,20 @@ function Login() {
     checkAndRedirect();
   }, [token, navigate]);
 
+=======
+
+      const user = await login(data); // login sets auth and stores token
+      setIsError(false);
+      setIsSuccess(true);
+
+      const token = useUserStore.getState().token;
+
+    } catch (error) {
+      console.error("Login error:", error);
+      setIsError(true);
+    }
+  };
+>>>>>>> origin/feature/registerbooktag
 
   // if (isSuccess) {
   //   return <Navigate to="/home" replace />;
@@ -167,6 +195,7 @@ function Login() {
 
           <div>
             <a href="http://localhost:6500/api/auth/google">
+<<<<<<< HEAD
               <Button
                 color="neutral"
                 variant="outlined"
@@ -174,6 +203,11 @@ function Login() {
               >
                 Log in via Google
               </Button>
+=======
+              <Button color="neutral" variant="outlined" className="w-full h-[44px]
+              bg-primary-contrast/30 border border-[#000209]/12">
+                Log in via Google</Button>
+>>>>>>> origin/feature/registerbooktag
             </a>
           </div>
 

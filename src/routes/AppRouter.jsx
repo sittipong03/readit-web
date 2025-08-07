@@ -69,8 +69,13 @@ const routerUser = createBrowserRouter([
       { path: "/interest", element: <Interest /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/review/:bookId", element: <ReviewPage /> },
+<<<<<<< HEAD
       { path: "/userproflie", element: <UserProfile /> },
       { path: "/registerbooktag", element: <RegisterBookTag /> },
+=======
+      { path: "/registerbooktag", element: <RegisterBookTag /> },
+      { path: "/userproflie", element: <UserProfilePage /> },
+>>>>>>> origin/feature/registerbooktag
       {
         path: "/setting",
         element: <SettingPage />,

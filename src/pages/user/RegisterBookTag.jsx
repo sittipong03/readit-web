@@ -1,14 +1,39 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import useUserStore from "../../stores/userStore";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+=======
+import { useEffect, useState } from "react";
+import TagButton from "../../components/ui/TagButton";
+import axios from "axios";
+import useUserStore from "../../stores/userStore"; 
+>>>>>>> origin/feature/registerbooktag
 
 function RegisterBookTag() {
     const navigate = useNavigate();
     const [tags, setTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
+<<<<<<< HEAD
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(null); // null | true | false
+=======
+    const [tags, setTags] = useState([]);
+
+    // Fetch tags from API
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const res = await axios.get("http://localhost:6500/api/book/tags");
+                setTags(res.data);
+            } catch (error) {
+                console.error("Failed to fetch tags:", error);
+            }
+        };
+
+        fetchTags();
+    }, []);
+>>>>>>> origin/feature/registerbooktag
 
     const token = useUserStore.getState().token;
 
@@ -38,6 +63,7 @@ function RegisterBookTag() {
     };
 
     const handleSubmit = async () => {
+<<<<<<< HEAD
         if (selectedTags.length === 0) return;
 
         setIsSubmitting(true);
@@ -49,6 +75,14 @@ function RegisterBookTag() {
                 {
                     tagIds: selectedTags,
                 },
+=======
+        try {
+            const token = useUserStore.getState().token;
+
+            const res = await axios.post(
+                "http://localhost:6500/api/user/booktag-preference",
+                { tagIds: selectedTags },
+>>>>>>> origin/feature/registerbooktag
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -56,6 +90,7 @@ function RegisterBookTag() {
                 }
             );
 
+<<<<<<< HEAD
             setSubmitSuccess(true);
             console.log("Tags submitted:", res.data);
             navigate("/userproflie");
@@ -64,10 +99,19 @@ function RegisterBookTag() {
             setSubmitSuccess(false);
         } finally {
             setIsSubmitting(false);
+=======
+            console.log("Preferences saved:", res.data);
+            // Optional: Navigate to home or show success message
+            // navigate('/home');
+
+        } catch (error) {
+            console.error("Failed to save preferences:", error);
+>>>>>>> origin/feature/registerbooktag
         }
     };
 
     return (
+<<<<<<< HEAD
         <div className="space-y-4">
             <div className="text-center text-white-secondary">Add Fav Tag</div>
             <div className="flex flex-wrap gap-2">
@@ -88,6 +132,24 @@ function RegisterBookTag() {
                         </button>
                     );
                 })}
+=======
+        <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Browse Books by Tag</h2>
+
+            <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                    <TagButton
+                        key={tag.id}
+                        tag={tag}
+                        isSelected={selectedTags.includes(tag.id)}
+                        onClick={() => handleTagClick(tag.id)}
+                    />
+                ))}
+            </div>
+
+            <div className="mt-4">
+                <p>Selected Tag IDs: {JSON.stringify(selectedTags)}</p>
+>>>>>>> origin/feature/registerbooktag
             </div>
 
             <button
@@ -101,6 +163,7 @@ function RegisterBookTag() {
             >
                 {isSubmitting ? "Submitting..." : "Submit Tags"}
             </button>
+<<<<<<< HEAD
 
             {submitSuccess === true && (
                 <p className="text-green-600">Tags submitted successfully!</p>
@@ -108,6 +171,8 @@ function RegisterBookTag() {
             {submitSuccess === false && (
                 <p className="text-red-600">Failed to submit tags. Try again.</p>
             )}
+=======
+>>>>>>> origin/feature/registerbooktag
         </div>
     );
 }

@@ -35,7 +35,7 @@ function Book() {
   
   // --- Zustand Stores ---
   const { book, getBookById, getAiSuggestion } = bookManageStore();
-  const { reviews, getAllReview, addReview } = reviewManageStore();
+  const { getAllReview, addReview } = reviewManageStore();
   const { userId, token } = useUserStore();
   const { product } = productManageStore(); // สมมติว่ายังต้องใช้ product
   const { addToCart } = cartManageStore();
@@ -146,9 +146,9 @@ function Book() {
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex min-h-[700px] justify-center">
       <div className="w-full max-w-lg pb-20">
-        <div className="flex gap-10 p-10">
+        <div className="flex items-start gap-10 p-10 relative">
           {/* Left Column */}
-          <div className="flex w-full max-w-[480px] flex-col gap-6">
+          <div className="flex w-full max-w-[480px] flex-col gap-6 sticky top-20">
             <div className="flex gap-6">
               <div className="bg-secondary-lighter shadow-book-lighting h-[264px] w-[174px] flex-shrink-0">
                 <img
@@ -189,25 +189,27 @@ function Book() {
                     Add to cart
                   </Button>
                 ) : (
-                  <Button
-                    size="large"
-                    variant="mixed"
-                    color="secondary"
-                    type="button"
-                    onClick={hdlAddToCart}
-                    className="mt-3 opacity-50"
-                    disabled={true}
-                  >
-                    <i className="fa-regular fa-cart-shopping"></i>
-                    Not available
-                  </Button>
+                  <div className="opacity-50">
+                    <Button
+                      size="large"
+                      variant="mixed"
+                      color="secondary"
+                      type="button"
+                      onClick={hdlAddToCart}
+                      className="mt-3"
+                      disabled={true}
+                    >
+                      <i className="fa-regular fa-cart-shopping"></i>
+                      Not available
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
 
             <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-3 rounded-lg p-6">
-              <div className="subtitle-2 mb-1">5 mins read</div>
-              <p>{book.description || "No description available."}</p>
+              <div className="subtitle-2 mb-1">Description :</div>
+              <div className="body-2">{book.description || "No description available."}</div>
               {latestIsbn ? (
                 <div className="body-2 flex gap-4">
                   <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
@@ -384,7 +386,7 @@ function Book() {
                     >
                       <div className="flex w-[200px] flex-col gap-2">
                         <Avatar className="size-10">
-                          <AvatarImage src={r.avatarUrl} alt="@shadcn" />
+                          <AvatarImage src={r.user.avatarUrl} alt="@shadcn" />
                           <AvatarFallback className="bg-action-disabled/50">
                             <i class="fa-solid fa-user"></i>
                           </AvatarFallback>
@@ -407,14 +409,46 @@ function Book() {
                           Follow
                         </Button>
                       </div>
-                      <div className="flex flex-col gap-3 w-full">
+                      <div className="flex w-full flex-col gap-3">
                         <StaticRating
                           rating={r.reviewPoint}
                           showNumber={false}
                           size="16px"
                         />
-                        <div className="body-2 text-text-secondary">{r.content}</div>
-                        <div className="body-3 text-text-disabled pt-3 border-t border-divider w-full">Was this review helpful?</div>
+                        <div className="body-2 text-text-secondary">
+                          {r.content}
+                        </div>
+                        <div className="body-3 text-text-disabled border-divider w-full border-t pt-3">
+                          Was this review helpful?
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            size="small"
+                            className="[&_svg]:pb-0.5"
+                          >
+                            <i class="fa-regular fa-thumbs-up"></i>
+                            {r._count.likes}
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            size="small"
+                            className="[&_svg]:pb-0.5"
+                          >
+                            <i class="fa-regular fa-comment"></i>
+                            {r._count.comments}
+                          </Button>
+                          <Button
+                            variant="text"
+                            color="secondary"
+                            size="icon"
+                            className="w-7 h-7"
+                          >
+                            <i class="fa-solid fa-ellipsis"></i>
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))

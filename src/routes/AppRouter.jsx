@@ -33,32 +33,30 @@ import PaymentSuccess from "../pages/user/PaymentSuccessPage";
 import BookCard from "../components/BookCard";
 import GoogleAuthCallback from "../pages/auth/GoogleAuthCallBack";
 import UserProfile from "../pages/UserProfile";
+import Interest from "../pages/Interest";
 
 const routerGuest = createBrowserRouter([
   {
-    path: "/",
-    element: <LandingPage />,
+    element: <GuestLayout />,
+    children: [
+      { path: "/", element: <LandingPage /> }, // เปลี่ยน path จาก "/homepage" เป็น "/" เพื่อให้เป็นหน้าแรก
+      { path: "/homepage", element: <HomePage /> },
+      { path: "/book/:bookId", element: <BookPage /> },
+      { path: "/book", element: <Home /> },
+      { path: "/review/:bookId", element: <ReviewPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/Register", element: <RegisterPage /> },
+      { path: "/bookcard", element: <BookCard /> },
+      { path: "/shelf", element: <ShelfPage /> },
+    ],
   },
   {
     path: "*",
-    element: <Navigate to="/" />,
+    element: <Navigate to="/" />, // เปลี่ยนการ navigate ไปที่ "/"
   },
   {
     path: "/auth/callback",
     element: <GoogleAuthCallback />,
-  },
-
-  {
-    element: <GuestLayout />,
-    children: [
-      { path: "/homepage", element: <HomePage /> },
-      { path: "/book/:bookId", element: <BookPage /> },
-      { path: "/review/:bookId", element: <ReviewPage /> },
-      { path: "/login", element: <LoginPage /> },
-      { path: "/Register", element: <RegisterPage /> },
-      { path: "/bookcard", element: <BookCard /> }, // Example route for BookCard component
-      { path: "/shelf", element: <ShelfPage /> }, // Example route for ShelfPage component
-    ],
   },
 ]);
 
@@ -68,6 +66,7 @@ const routerUser = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/home", element: <Home /> },
+      { path: "/interest", element: <Interest /> },
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/review/:bookId", element: <ReviewPage /> },
       { path: "/userproflie", element: <UserProfile /> },

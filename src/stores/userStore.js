@@ -33,6 +33,8 @@ const useUserStore = create(
       role: null,
       avatarUrl: "",
       token: "",
+      fullProfile: null,
+      isLoading: true,
       rememberMe: false,
 
       login: async (input) => {
@@ -78,6 +80,10 @@ const useUserStore = create(
         }
       },
 
+      // Action สำหรับการอัปเดต profile ทั้งหมด
+      setFullProfile: (profileData) =>
+        set({ fullProfile: profileData, isLoading: false }),
+
       logout: () =>
         set({
           token: "",
@@ -86,6 +92,8 @@ const useUserStore = create(
           role: null,
           avatarUrl: "",
           rememberMe: false,
+          fullProfile: null,
+          isLoading: true,
         }),
     }),
     {

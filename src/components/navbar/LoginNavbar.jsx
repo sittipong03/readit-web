@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import cartManageStore from "@/src/stores/cartManageStore";
 import { Badge } from "@/components/ui/badge";
 import useThemeStore from "@/src/stores/themeStore";
+import { getAvatarFallback } from "@/src/utils/avatarFallback";
 
 function GuestNavbar() {
   const logout = useUserStore((state) => state.logout);
@@ -151,12 +152,9 @@ function GuestNavbar() {
           <NavigationMenuItem className="h-8">
             <NavigationMenuTrigger className="px-0">
               <Avatar>
-                <AvatarImage
-                  src={avatar || "https://github.com/shadcn.png"}
-                  alt="@shadcn"
-                />
-                <AvatarFallback className="bg-action-disabled/50">
-                  <i className="fa-solid fa-user"></i>
+                <AvatarImage src={avatar} alt="@shadcn" />
+                <AvatarFallback className="text-text-primary font-regular text-[14px] bg-action-focus">
+                  {getAvatarFallback(userName)}
                 </AvatarFallback>
               </Avatar>
               <div className="ml-2">{userName}</div>

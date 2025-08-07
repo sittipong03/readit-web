@@ -10,7 +10,7 @@ import useUserStore from "../../stores/userStore";
 function Navbar({ user, currentPage }) {
   const location = useLocation();
   const path = location.pathname.toLowerCase().replace(/\/$/, "");
-  const isBrowser = path === "" || path === "/home";
+  const isBrowser = path === "/book";
 
   const { userId, userName } = useUserStore();
 
@@ -42,7 +42,7 @@ function Navbar({ user, currentPage }) {
       <div className="bg-paper-elevation-2 flex items-center justify-between px-6 py-3 text-[#d5c4a1] shadow-md">
         {/* Left: Logo + Search */}
         <div className="flex flex-1 items-center gap-4">
-          <a href="/book">
+          <a href="/">
             <ReaditLogo
               className="text-secondary-main hover:text-secondary-darker transition-all"
               size={20}

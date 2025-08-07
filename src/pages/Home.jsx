@@ -43,6 +43,8 @@ function Home() {
   }
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
@@ -54,34 +56,7 @@ function Home() {
       }
     }
     run();
-  }, [aiSearch]);
-
-  const handleRating = async (e, bookId) => {
-    e.preventDefault();
-    try {
-      if (rating === 0) {
-        toast.error("Please select a star rating first.");
-        return;
-      }
-
-      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
-      // ตัวอย่าง: await api.rateBook(bookId, rating);
-      console.log(`Submitting rating ${rating} for book ${bookId}`);
-
-      toast.success("Thank you for your rating!", {
-        description: "Your feedback helps other readers.",
-      });
-
-      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
-      setRating(0);
-      setHoverRating(0);
-    } catch (error) {
-      console.error("Failed to submit rating:", error);
-      toast.error("Failed to submit rating.", {
-        description: "Please try again later.",
-      });
-    }
-  };
+  }, []);
 
   console.log("Books", books);
   return (

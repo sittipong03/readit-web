@@ -1,8 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TagButton from "../../components/ui/TagButton";
+import axios from "axios";
+import useUserStore from "../../stores/userStore"; 
 
 function BooksTagPage() {
     const [selectedTags, setSelectedTags] = useState([]);
+    const [tags, setTags] = useState([]);
+
+    // Fetch tags from API
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const res = await axios.get("http://localhost:6500/api/book/tags");
+                setTags(res.data);
+            } catch (error) {
+                console.error("Failed to fetch tags:", error);
+            }
+        };
+
+        fetchTags();
+    }, []);
 
     const handleTagClick = (tagId) => {
         setSelectedTags((prevSelected) =>
@@ -12,20 +29,43 @@ function BooksTagPage() {
         );
     };
 
-    const handleSubmit = () => {
-        // Example: Log selected tags or send to API
-        console.log("Submitting selected tags:", selectedTags);
+    const handleSubmit = async () => {
+        try {
+            const token = useUserStore.getState().token;
 
-        // Example API call
-        // axios.post("/api/books/filter", { tags: selectedTags })
-        //   .then(res => console.log(res.data))
-        //   .catch(console.error);
+            const res = await axios.post(
+                "http://localhost:6500/api/user/booktag-preference",
+                { tagIds: selectedTags },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            console.log("Preferences saved:", res.data);
+            // Optional: Navigate to home or show success message
+            // navigate('/home');
+
+        } catch (error) {
+            console.error("Failed to save preferences:", error);
+        }
     };
 
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">Browse Books by Tag</h2>
-            <TagButton onTagClick={handleTagClick} selectedTags={selectedTags} />
+
+            <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                    <TagButton
+                        key={tag.id}
+                        tag={tag}
+                        isSelected={selectedTags.includes(tag.id)}
+                        onClick={() => handleTagClick(tag.id)}
+                    />
+                ))}
+            </div>
 
             <div className="mt-4">
                 <p>Selected Tag IDs: {JSON.stringify(selectedTags)}</p>
@@ -43,7 +83,6 @@ function BooksTagPage() {
             >
                 Submit
             </button>
-
         </div>
     );
 }

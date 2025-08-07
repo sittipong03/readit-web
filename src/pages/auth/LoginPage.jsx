@@ -12,8 +12,6 @@ import { Button } from "../../../components/ui/button";
 import useUserStore from "../../stores/userStore.js";
 
 function Login() {
-  const login = useUserStore((state) => state.login);
-  const token = useUserStore((state) => state.token);
 
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
@@ -28,12 +26,11 @@ function Login() {
 
   const handleLoginClick = async (data) => {
     try {
-      const user = await login(data);
-      setIsError(false);
-      setIsSuccess(true);
+      const user = await login(data)
+      setIsError(false)
+      setIsSuccess(true)
     } catch (error) {
-      console.log("error: ", error);
-      setIsError(true);
+      setIsError(true)
     }
   };
 
@@ -138,14 +135,10 @@ function Login() {
 
           <div>
             <a href="http://localhost:6500/api/auth/google">
-              <Button
-                color="neutral"
-                variant="outlined"
-                className="bg-primary-contrast/30 h-[44px] w-full border border-[#000209]/12"
-              >
-                Log in via Google
-              </Button>
-            </a>
+            <Button color="neutral" variant="outlined" className="w-full h-[44px]
+              bg-primary-contrast/30 border border-[#000209]/12">
+              Log in via Google</Button>
+              </a>
           </div>
 
           <div>

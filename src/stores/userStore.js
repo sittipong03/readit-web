@@ -31,15 +31,21 @@ const useUserStore = create(
       userId: null,
       userName: null,
       role: null,
+<<<<<<< HEAD
       avatarUrl: "",
       token: "",
       fullProfile: null,
       isLoading: true,
+=======
+      avatarUrl: '',
+      token: '',
+>>>>>>> ebd5ba9 (registerbooktag)
       rememberMe: false,
 
       login: async (input) => {
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
+<<<<<<< HEAD
         console.log("from login ", result);
         // set({
         //   token: result.data.accessToken,
@@ -47,13 +53,21 @@ const useUserStore = create(
         //   userName: result.data.user,
         //   role: result.data.role,
         // });
+=======
+        console.log("from login " , result)
+>>>>>>> ebd5ba9 (registerbooktag)
         set({
           token: result.data.accessToken,
           userId: result.data.userId,
           userName: result.data.user,
           role: result.data.role,
+<<<<<<< HEAD
           avatarUrl: result.data.avatarUrl,
           rememberMe: !!rememberMe,
+=======
+          avatarUrl : result.data.avatarUrl ,
+          rememberMe: !!rememberMe, 
+>>>>>>> ebd5ba9 (registerbooktag)
         });
         return result;
       },
@@ -80,6 +94,7 @@ const useUserStore = create(
         }
       },
 
+<<<<<<< HEAD
       // Action สำหรับการอัปเดต profile ทั้งหมด
       setFullProfile: (profileData) =>
         set({ fullProfile: profileData, isLoading: false }),
@@ -95,6 +110,16 @@ const useUserStore = create(
           fullProfile: null,
           isLoading: true,
         }),
+=======
+      logout: () => set({
+        token: '',
+        userId: null,
+        userName: null,
+        role: null,
+        avatarUrl : "",
+        rememberMe: false
+      }),
+>>>>>>> ebd5ba9 (registerbooktag)
     }),
     {
       name: "userState",

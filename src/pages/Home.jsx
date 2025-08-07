@@ -70,15 +70,16 @@ function Home() {
 
   useEffect(() => {
     const run = async () => {
-      if (!(aiSearch || data || recommend)) {
-        console.log("1");
-        await getBooks();
-      } else if (aiSearch || data ) {
-        await getBookByAI(aiSearch || data )
-      } else{
-        await getBookByTag(recommend )
-      }
+      // if (!(aiSearch || data || recommend)) {
+      //   console.log("1");
+      //   await getBooks();
+      // } else if (aiSearch || data ) {
+      //   await getBookByAI(aiSearch || data )
+      // } else{
+      //   await getBookByTag(recommend)
+      // }
       // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
+      await getBookByTag(recommend)
     }
     run();
   }, [aiSearch]);

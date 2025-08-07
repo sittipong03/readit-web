@@ -37,6 +37,9 @@ const bookManageStore = create((set, get) => ({
 
     return result;
   },
+  getBookByTag: async (data) => {
+    
+  },
   getAiSuggestion: async (id) => {
     try {
       const result = await fetchAiSuggestion(id);

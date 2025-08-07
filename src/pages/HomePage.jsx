@@ -3,9 +3,18 @@ import { Button } from "../../components/ui/button";
 import { LoaderCircle, WandSparklesIcon } from "lucide-react";
 import { InputX } from "@/components/ui/inputX";
 import homepagePic from "../assets/homepage-pic.png";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
+
 
 function HomePage() {
+  const navigate = useNavigate();
+  const sendShimmer = () => {
+    const sendData = document.getElementById("pictureX").value
+    navigate('/home', { state: { prompt: sendData } });
+
+    console.log(sendData);
+    // return sendData
+  }
   return (
     <div className="dark">
       <div className="bg-paper-elevation-6 flex min-h-[calc(100dvh-(60px))] flex-col items-center justify-center gap-10 p-30">
@@ -28,9 +37,9 @@ function HomePage() {
               placeholder="e.g., Epic fantasy book with ancient evil, unlikely heroes, and magical journey"
               className="h-16 w-full"
               trailingComponent={
-                <Button color="tertiary" variant="contained">
+                <Button color="tertiary" variant="contained" onClick={() => sendShimmer()}>
                   <WandSparklesIcon />
-                    Shimmer
+                  Shimmer
                 </Button>
               }
             />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Person, ReviewButton, Star } from "../icons/Index";
 import { Input } from "@/components/ui/input";
 import bookManageStore from "../stores/booksManageStore";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { InputX } from "@/components/ui/inputX";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,16 +27,21 @@ import {
 import { LoaderCircle, Search } from "lucide-react";
 import rateManageStore from "../stores/rateStore";
 
-function Home({data}) {
+function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
   const getBookByAI = bookManageStore(state => state.getBookByAI);
   const books = bookManageStore((state) => state.books);
   const addRate = rateManageStore((state) => state.rate);
+  const receiveData = useLocation();
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
+  const [landingSearch, setLandingSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
+  // Got data from search landing
+  const data = receiveData?.state?.prompt;
   console.log('data', data)
+
 
   const searchByAI = async() => {
     setSearching(true)
@@ -61,10 +66,12 @@ function Home({data}) {
 
   useEffect(() => {
     const run = async () => {
-      if (!aiSearch) {
+      if (!(aiSearch || data)) {
         await getBooks();
+        console.log("1");
       } else {
-        await getBookByAI(aiSearch)
+        console.log("2");
+        await getBookByAI(aiSearch || data)
       }
       // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
     }

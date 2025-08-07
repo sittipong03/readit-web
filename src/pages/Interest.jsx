@@ -9,7 +9,10 @@ import { Check, ChevronRight } from "lucide-react";
 function Interest() {
   const [tags, setTags] = useState([]);
   const [selectedTagIds, setSelectedTagIds] = useState([]);
+  const [selectedTagNames, setSelectedTagNames] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  console.log('selectedTagNames', selectedTagNames)
 
   useEffect(() => {
     getAllTags().then((response) => {
@@ -21,9 +24,9 @@ function Interest() {
     });
   }, []);
 
-  console.log(tags);
+  // console.log(tags);
 
-  const handleTagClick = (tagId) => {
+  const handleTagClick = (tagId, tagName) => {
     // เช็คว่า tag นี้ถูกเลือกอยู่แล้วหรือไม่
     if (selectedTagIds.includes(tagId)) {
       // ถ้าถูกเลือกแล้ว -> ให้เอาออกจาก array (Deselect)
@@ -33,6 +36,7 @@ function Interest() {
       // แต่ต้องเช็คก่อนว่าเลือกครบ 8 อันหรือยัง
       if (selectedTagIds.length < 8) {
         setSelectedTagIds([...selectedTagIds, tagId]);
+        setSelectedTagNames([...selectedTagNames, tagName]);
       } else {
         toast.error("You can select a maximum of 8 genres.");
       }
@@ -77,7 +81,7 @@ function Interest() {
 
               return (
                 <Badge
-                  onClick={() => handleTagClick(tag.id)}
+                  onClick={() => handleTagClick(tag.id, tag.name)}
                   className={
                     isSelected
                       ? "text-tertiary-lighter subtitle-4 rounded-pill bg-tertiary-main h-8 cursor-pointer px-3"

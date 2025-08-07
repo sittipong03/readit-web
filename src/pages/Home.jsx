@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Person, ReviewButton, Star } from "../icons/Index";
 import { Input } from "@/components/ui/input";
 import bookManageStore from "../stores/booksManageStore";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { InputX } from "@/components/ui/inputX";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,18 +27,27 @@ import {
 import { LoaderCircle, Search } from "lucide-react";
 import rateManageStore from "../stores/rateStore";
 
-function Home({data}) {
+function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
   const getBookByAI = bookManageStore(state => state.getBookByAI);
+  const getBookByTag = bookManageStore(state => state.getBookByTag)
   const books = bookManageStore((state) => state.books);
   const addRate = rateManageStore((state) => state.rate);
+  const receiveData = useLocation();
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
+  const [landingSearch, setLandingSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
+  const recommend = receiveData?.state?.recommendPrompt;
+  console.log('recommend', recommend)
+
+  // Got data from search landing
+  const data = receiveData?.state?.prompt;
   console.log('data', data)
 
-  const searchByAI = async() => {
+
+  const searchByAI = async () => {
     setSearching(true)
     try {
       const data = document.getElementById("SearchAI");
@@ -50,7 +59,7 @@ function Home({data}) {
     }
   }
 
-  const clearFilter = async() => {
+  const clearFilter = async () => {
     const data = document.getElementById("SearchAI");
     data.value = ""
     await getBooks();
@@ -61,10 +70,13 @@ function Home({data}) {
 
   useEffect(() => {
     const run = async () => {
-      if (!aiSearch) {
+      if (!(aiSearch || data || recommend)) {
+        console.log("1");
         await getBooks();
-      } else {
-        await getBookByAI(aiSearch)
+      } else if (aiSearch || data ) {
+        await getBookByAI(aiSearch || data )
+      } else{
+        await getBookByTag(recommend )
       }
       // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
     }

@@ -73,6 +73,8 @@ function Shelf() {
   const [sortOrder, setSortOrder] = useState("latest");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   const token = useUserStore((state) => state.token);
   const currentUserId = useUserStore((state) => state.userId);
   const getUserWishlist = bookManageStore((state) => state.getUserWishlist);
@@ -80,6 +82,10 @@ function Shelf() {
   const navigate = useNavigate();
 
   console.log("userWishlist-------", userWishlist);
+
+  const refreshData = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   useEffect(() => {
     if (token) {
@@ -89,84 +95,84 @@ function Shelf() {
       console.log("No token, redirecting to login");
       navigate("/login");
     }
-  }, [token]);
+  }, [token, refreshTrigger]);
 
-  // const fetchBooks = async () => {
-  //   try {
-  //     setLoading(true);
-  //     setError(null);
+  const moveBookToSection = async (book, newShelfType) => {
+    console.log(
+      `Moving book "${book.title}" from ${book.shelfType} to ${newShelfType}`,
+    );
 
-  //     const response = await axiosInstance.get("/book/wishlist");
+    try {
+      // เรียก API เพื่ออัพเดตในฐานข้อมูล
+      const response = await axiosInstance.patch("/book/wishlist", {
+        bookId: book.id,
+        fromShelf: book.shelfType,
+        toShelf: newShelfType,
+        userId: currentUserId,
+      });
 
-  //     console.log("API Response:wishlist", response.data);
+      console.log("API Response:", response.data);
 
-  //     const data = response.data;
+      setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setFavoriteBooks((prev) => prev.filter((b) => b.id !== book.id));
 
-  //     // Set ข้อมูลที่ได้จาก API
-  //     setWishlistBooks(data.wishlistBooks || []);
-  //     setReadingBooks(data.readingBooks || []);
-  //     setReadBooks(data.readBooks || []);
-  //     setFavoriteBooks(data.favoriteBooks || []);
-  //   } catch (error) {
-  //     console.error("Error fetching books:", error);
-  //     setError("Failed to load books. Please try again.");
+      const updatedBook = { ...book, shelfType: newShelfType };
 
-  //     // fallback data
-  //     const sampleBooks = [
-  //       {
-  //         id: 1,
-  //         title: "The Wedding Crasher",
-  //         author: "Christina Escudéz",
-  //         coverImage:
-  //           "https://i.harperapps.com/hcanz/covers/9780062909893/y648.jpg",
-  //         rating: 3.2,
-  //         totalRatings: 12,
-  //         userRating: null,
-  //         hasUserReview: false,
-  //         createAt: new Date("2022-01-15"),
-  //       },
-  //       {
-  //         id: 2,
-  //         title: "The Seven Husbands of Evelyn Hugo",
-  //         author: "Taylor Jenkins Reid",
-  //         coverImage:
-  //           "https://www.asiabooks.com/media/catalog/product/cache/a5ac216be58c0cbce1cb04612ece96dc/9/7/9781398515697.jpg",
-  //         rating: 4.2,
-  //         totalRatings: 20,
-  //         userRating: 4.5,
-  //         hasUserReview: true,
-  //         createdAt: new Date("2021-01-15"),
-  //       },
-  //       {
-  //         id: 3,
-  //         title: "Atomic Habits",
-  //         author: "James Clear",
-  //         coverImage:
-  //           "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg",
-  //         rating: 4.8,
-  //         totalRatings: 150,
-  //         userRating: 5.0,
-  //         hasUserReview: true,
-  //         createdAt: new Date("2025-01-15"),
-  //       },
-  //       {
-  //         id: 4,
-  //         title: "The Midnight Library",
-  //         author: "Matt Haig",
-  //         coverImage:
-  //           "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1602190253i/52578297.jpg",
-  //         rating: 4.1,
-  //         totalRatings: 85,
-  //         userRating: null,
-  //         hasUserReview: false,
-  //         createdAt: new Date("2024-01-15"),
-  //       },
-  //     ];
-  //     setReadBooks(sampleBooks);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      switch (newShelfType) {
+        case "WISHLIST":
+          setWishlistBooks((prev) => [...prev, updatedBook]);
+          break;
+        case "CURRENTLY_READING":
+          setReadingBooks((prev) => [...prev, updatedBook]);
+          break;
+        case "READ":
+          setReadBooks((prev) => [...prev, updatedBook]);
+          break;
+        case "FAVORITE":
+          setFavoriteBooks((prev) => [...prev, updatedBook]);
+          break;
+        default:
+          console.warn(`Unknown shelf type: ${newShelfType}`);
+      }
+
+      // Refresh ข้อมูลจาก API
+      refreshData();
+    } catch (error) {
+      console.error("Error moving book:", error);
+
+      // แสดง error message
+      setError(`Failed to move book to ${newShelfType}. Please try again.`);
+
+      // Fallback: อัพเดต local state เท่านั้น
+      // ลบออกจาก section เดิมทั้งหมด
+      setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setFavoriteBooks((prev) => prev.filter((b) => b.id !== book.id));
+
+      // เพิ่มเข้า section ใหม่ตาม shelfType
+      const updatedBook = { ...book, shelfType: newShelfType };
+
+      switch (newShelfType) {
+        case "WISHLIST":
+          setWishlistBooks((prev) => [...prev, updatedBook]);
+          break;
+        case "CURRENTLY_READING":
+          setReadingBooks((prev) => [...prev, updatedBook]);
+          break;
+        case "READ":
+          setReadBooks((prev) => [...prev, updatedBook]);
+          break;
+        case "FAVORITE":
+          setFavoriteBooks((prev) => [...prev, updatedBook]);
+          break;
+        default:
+          console.warn(`Unknown shelf type: ${newShelfType}`);
+      }
+    }
+  };
 
   const hdlBackToFeed = () => {
     navigate("/userprofile");
@@ -183,6 +189,8 @@ function Shelf() {
       return;
     }
 
+    const shelfType = item.shelfType || item.ShelfType || "WISHLIST";
+
     const bookData = {
       ...item.book,
       shelfType: item.ShelfType,
@@ -191,6 +199,7 @@ function Shelf() {
     };
 
     console.log("Sending to modal:", bookData);
+    console.log("Shelf Type: ", shelfType);
 
     setSelectedBook(bookData);
     setIsManageBookModalOpen(true);
@@ -201,43 +210,88 @@ function Shelf() {
     setSelectedBook(null);
   };
 
-  const hdlAddBook = (book) => {
-    const existingBook = wishlistBooks.find((b) => b.id === book.id);
-    if (existingBook) {
-      console.log("Book already exists in wishlist");
-      return;
+  const hdlAddBook = async (book) => {
+    try {
+      const existingBook = wishlistBooks.find((b) => b.id === book.id);
+      if (existingBook) {
+        console.log("Book already exists in wishlist");
+        return;
+      }
+
+      const response = await axiosInstance.post("/book/wishlist", {
+        bookId: book.id,
+        userId: currentUserId,
+        shelfType: "WISHLIST",
+      });
+
+      console.log("Book added to wishlist:", response.data);
+
+      // Refresh ข้อมูลจาก API
+      refreshData();
+    } catch (error) {
+      console.error("Error adding book to wishlist:", error);
+      setError("Failed to add book to wishlist. Please try again.");
+      const newBook = {
+        ...book,
+        id: Date.now(),
+        rating: 0,
+        totalRatings: 0,
+        userRating: null,
+        hasUserReview: false,
+      };
+      setWishlistBooks((prev) => [...prev, newBook]);
+
+      setSelectedBook(newBook);
+      refreshData();
+      // setIsManageBookModalOpen(true);
     }
-    const newBook = {
-      ...book,
-      id: Date.now(),
-      rating: 0,
-      totalRatings: 0,
-      userRating: null,
-      hasUserReview: false,
-    };
-    setWishlistBooks((prev) => [...prev, newBook]);
-
-    setSelectedBook(newBook);
-    // setIsManageBookModalOpen(true);
   };
 
-  const hdlMarkAsRead = (book) => {
-    setReadBooks((prev) => [...prev, book]);
-    setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
-    setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+  const hdlMarkAsRead = async (book) => {
+    console.log("Marking book as read:", book.title);
+    await moveBookToSection(book, "READ");
     hdlCloseModal();
   };
 
-  const hdlAddToReading = (book) => {
-    setReadingBooks((prev) => [...prev, book]);
-    setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+  const hdlAddToReading = async (book) => {
+    console.log("Adding book as reading:", book.title);
+    await moveBookToSection(book, "CURRENTLY_READING");
     hdlCloseModal();
   };
 
-  const hdlDeleteFromShelf = (book) => {
-    setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
-    setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
-    setReadBooks((prev) => prev.filter((b) => b.id !== book.id));
+  const hdlDeleteFromShelf = async (book) => {
+    console.log("Deleting book from all shelves:", book.title);
+
+    try {
+      // เรียก API เพื่อลบหนังสือ
+      const response = await axiosInstance.delete(
+        `/book/wishlist/:${book.id}/:${book.shelfType}`,
+        {
+          data: { userId: currentUserId },
+        },
+      );
+
+      console.log("Book deleted from shelf:", response.data);
+
+      // อัพเดต local state หลังจาก API สำเร็จ
+      setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setFavoriteBooks((prev) => prev.filter((b) => b.id !== book.id));
+
+      // Refresh ข้อมูลจาก API
+      refreshData();
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      setError("Failed to delete book. Please try again.");
+
+      // Fallback: ลบใน local state
+      setWishlistBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadingBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setReadBooks((prev) => prev.filter((b) => b.id !== book.id));
+      setFavoriteBooks((prev) => prev.filter((b) => b.id !== book.id));
+    }
+
     hdlCloseModal();
   };
 
@@ -258,16 +312,23 @@ function Shelf() {
     });
   };
 
-  const hdlToggleFavorite = (book) => {
+  const hdlToggleFavorite = async (book) => {
     if (!book?.id) return;
 
     const isFavoriteBook = favoriteBooks.some((fav) => fav?.id === book.id);
 
     if (isFavoriteBook) {
-      setFavoriteBooks((prev) => prev.filter((fav) => fav?.id !== book.id));
+      // ถอนดาว - ย้ายกลับไป READ
+      console.log("Removing from favorites:", book.title);
+      await moveBookToSection(book, "READ");
     } else {
+      // เพิ่มดาว - ย้ายไป FAVORITE (เฉพาะที่มี review แล้ว)
       if (book.hasUserReview || book.userRating) {
-        setFavoriteBooks((prev) => [...prev, book]);
+        console.log("Adding to favorites:", book.title);
+        await moveBookToSection(book, "FAVORITE");
+      } else {
+        console.log("Cannot add to favorites: No review yet");
+        setError("You need to write a review before adding to favorites.");
       }
     }
   };
@@ -292,7 +353,7 @@ function Shelf() {
           <div className="flex h-full w-[900px] flex-col justify-between">
             <div className="flex h-[36px] w-full items-center justify-between">
               <div className="text-text-secondary">
-                <p className="subtitle-1">Readlist</p>
+                <p className="subtitle-1 text-text-primary">Readlist</p>
               </div>
               <Button
                 variant="contained"
@@ -301,14 +362,15 @@ function Shelf() {
                 fontWeight="Button"
                 onClick={() => setIsAddBookModalOpen(true)}
               >
-                + Add Book
+                <i class="fa-solid fa-plus"></i>
+                Add Book
               </Button>
             </div>
             <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
               <div className="flex h-[360px] flex-col items-center justify-between">
                 {/* Reading Section */}
-                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
-                  <p className="subtitle-2">
+                <div className="border-white-hover text-text-primary flex h-[44px] w-[852px] items-center border-b-2 pb-2">
+                  <p className="subtitle-2 text-text-primary">
                     Reading ({readingBooks.length}/3)
                   </p>
                 </div>
@@ -355,8 +417,8 @@ function Shelf() {
                 </div>
 
                 {/* Wishlist Section */}
-                <div className="border-white-hover flex h-[44px] w-[852px] items-center border-b-2 pb-2">
-                  <p className="subtitle-2">Wishlists</p>
+                <div className="border-white-hover text-text-primary flex h-[44px] w-[852px] items-center border-b-2 pb-2">
+                  <p className="subtitle-2 text-text-primary">Wishlists</p>
                 </div>
                 <div className="flex h-[128px] w-[852px] items-center">
                   {userWishlist.length === 0 ? (
@@ -371,7 +433,8 @@ function Shelf() {
                           size="medium"
                           onClick={() => setIsAddBookModalOpen(true)}
                         >
-                          + Add your first book
+                          <i class="fa-solid fa-plus"></i>
+                          Add your first book
                         </Button>
                       </div>
                     </div>
@@ -386,7 +449,7 @@ function Shelf() {
                             className="flex-shrink-0"
                           >
                             <div
-                              className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                              className="h-28 w-20 cursor-pointer overflow-hidden transition-shadow"
                               onClick={() => hdlBookClick(item)}
                             >
                               {item.book?.edition?.[0]?.coverImage ||
@@ -397,7 +460,7 @@ function Shelf() {
                                     item.book?.coverImage
                                   }
                                   alt={item.book?.title}
-                                  className="h-full w-full object-cover"
+                                  className="shadow-book-lighting h-full w-full object-cover"
                                 />
                               ) : (
                                 <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
@@ -432,7 +495,7 @@ function Shelf() {
           <div className="flex h-full w-[900px] flex-col justify-between">
             <div className="flex h-[36px] w-full items-center justify-between">
               <div className="text-text-secondary">
-                <p className="subtitle-1">Read</p>
+                <p className="subtitle-1 text-text-primary">Read</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -442,7 +505,7 @@ function Shelf() {
                   className="flex items-center"
                 >
                   <p>Filter</p>
-                  <Funnel className="fill-primary-main" />
+                  <Funnel className="fill-primary-main" size={13} />
                 </Button>
                 <Button
                   variant="outlined"
@@ -452,7 +515,7 @@ function Shelf() {
                 >
                   Sort by :{" "}
                   {sortOrder === "latest" ? "Latest Date" : "Oldest Date"}
-                  <ChevronsUpDown />
+                  <i class="fa-solid fa-sort"></i>
                 </Button>
                 <Button
                   variant="contained"
@@ -461,7 +524,8 @@ function Shelf() {
                   fontWeight="Button"
                   onClick={() => setIsAddBookModalOpen(true)}
                 >
-                  + Add Book
+                  <i class="fa-solid fa-plus"></i>
+                  Add Book
                 </Button>
               </div>
             </div>
@@ -504,8 +568,8 @@ function Shelf() {
           <div className="flex h-full w-[900px] flex-col justify-between gap-2">
             <div className="flex h-[64px] w-full items-center justify-between">
               <div className="text-text-secondary line-height-bodyLarge flex flex-col gap-2">
-                <p className="subtitle-1">Favorites</p>
-                <p className="body-1">
+                <p className="subtitle-1 text-text-primary">Favorites</p>
+                <p className="body-1 text-text-secondary">
                   Only books that have been reviewed can be marked as favorites.
                 </p>
               </div>
@@ -581,7 +645,7 @@ function Shelf() {
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "readlist"
                               ? "bg-primary-soft subtitle-3 text-primary-main"
-                              : "boody-1 hover:bg-primary-soft"
+                              : "body-1 text-text-primary hover:bg-primary-soft"
                           }`}
                         >
                           Readlist
@@ -593,7 +657,7 @@ function Shelf() {
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "read"
                               ? "bg-primary-soft subtitle-3 text-primary-main"
-                              : "body-1 hover:bg-primary-soft"
+                              : "body-1 text-text-primary hover:bg-primary-soft"
                           }`}
                         >
                           Read
@@ -605,7 +669,7 @@ function Shelf() {
                           className={`flex h-[48px] w-full items-center rounded-xl px-4 py-2 ${
                             activeTab === "favorites"
                               ? "bg-primary-soft subtitle-3 text-primary-main"
-                              : "body-1 hover:bg-primary-soft"
+                              : "body-1 text-text-primary hover:bg-primary-soft"
                           }`}
                         >
                           Favorites

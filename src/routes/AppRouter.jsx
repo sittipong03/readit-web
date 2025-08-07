@@ -70,6 +70,7 @@ const routerUser = createBrowserRouter([
       { path: "/book/:bookId", element: <BookPage /> },
       { path: "/review/:bookId", element: <ReviewPage /> },
       { path: "/userproflie", element: <UserProfile /> },
+      { path: "/registerbooktag", element: <RegisterBookTag /> },
       {
         path: "/setting",
         element: <SettingPage />,

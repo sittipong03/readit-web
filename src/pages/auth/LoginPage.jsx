@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 // import from inside project stuff
 import * as authApi from "../../api/authApi.js";
 
+import * as userApi from "../../api/userApi.js"
 // import component
 import { WarningIcon, HidePasswordIcon } from "@/src/icons/Index";
 import { Button } from "../../../components/ui/button";
@@ -31,18 +32,46 @@ function Login() {
       const user = await login(data);
       setIsError(false);
       setIsSuccess(true);
+      const hasTags = await userApi.checkUserHasTags();
+
+      if (hasTags) {
+        navigate("/registerbooktag", { replace: true });
+      } else {
+        navigate("/registerbooktag", { replace: true });
+      }
     } catch (error) {
       console.log("error: ", error);
       setIsError(true);
     }
   };
 
+  // useEffect(() => {
+  //   if (token) {
+  //     navigate("/userproflie", { replace: true });
+  //   }
+  // }, [token, navigate]);
+
   useEffect(() => {
-    if (token) {
-      navigate("/userproflie", { replace: true });
+    // Optional: if token already exists (refresh), check tags
+    async function checkAndRedirect() {
+      if (token) {
+        try {
+          const hasTags = await userApi.checkUserHasTags();
+
+          if (hasTags) {
+            navigate("/registerbooktag", { replace: true });
+          } else {
+            navigate("/registerbooktag", { replace: true });
+          }
+        } catch (error) {
+          console.error("Error checking tags on token", error);
+        }
+      }
     }
+
+    checkAndRedirect();
   }, [token, navigate]);
-  
+
 
   // if (isSuccess) {
   //   return <Navigate to="/home" replace />;

@@ -43,6 +43,10 @@ function LoginNavbar() {
     useCartStore.getState().clearCart();
   }
 
+  function hdltheme() {
+    toggleTheme();
+  }
+
   return (
     <nav className="flex flex-row items-center justify-between gap-1">
       <Link to="/shelf">
@@ -71,60 +75,96 @@ function LoginNavbar() {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          
+
           <Link to="/cart">
             <NavigationMenuItem>
-                <div className={cn(
+              <div
+                className={cn(
                   buttonVariants({ variant: "outlined", color: "secondary" }),
                   "relative w-9 px-0",
-                  "hover:bg-primary-focusVisible hover:text-action-active"
-                )}>
-                    <i className="fa-solid fa-cart-shopping"></i>
-                    {cartItemCount > 0 && (
-                      <Badge className="bg-primary-main text-white absolute -top-2 -right-2 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
-                        {cartItemCount}
-                      </Badge>
-                    )}
-                </div>
+                  "hover:bg-primary-focusVisible hover:text-action-active",
+                )}
+              >
+                <i className="fa-solid fa-cart-shopping"></i>
+                {cartItemCount > 0 && (
+                  <Badge className="bg-primary-main absolute -top-2 -right-2 h-5 min-w-5 rounded-full px-1 font-mono text-white tabular-nums">
+                    {cartItemCount}
+                  </Badge>
+                )}
+              </div>
             </NavigationMenuItem>
           </Link>
 
           <NavigationMenuItem className="h-8">
             <NavigationMenuTrigger className="px-0">
               <Avatar>
-                <AvatarImage src={avatarUrl} alt={userName} />
+                <AvatarImage src={avatarUrl} alt="@shadcn" />
                 <AvatarFallback className="text-text-primary font-regular bg-action-focus text-[14px]">
                   {getAvatarFallback(userName)}
                 </AvatarFallback>
               </Avatar>
               <div className="ml-2">{userName}</div>
             </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-1 p-2">
-                <NavigationMenuLink asChild>
-                  <Link to="/userprofile" className="flex items-center gap-2 rounded-md p-2 hover:bg-action-hover">
-                    Your Profile
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <div onClick={toggleTheme} className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-action-hover">
-                    <div className="flex-1">
-                      Theme: {theme === 'light' ? 'Light' : 'Dark'}
+            <NavigationMenuContent className="">
+              <ul className="grid w-[200px] gap-4">
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to="/userproflie"
+                      className="flex-row items-center gap-2"
+                    >
+                      Your Feed
+                    </Link>
+                  </NavigationMenuLink>
+                  {/* <NavigationMenuLink asChild>
+                    <Link to="/shelf" className="flex-row items-center gap-2">
+                      Your Shelves
+                    </Link>
+                  </NavigationMenuLink> */}
+                  <NavigationMenuLink asChild>
+                    <Link to="/shelf" className="flex-row items-center gap-2">
+                      Your Readlist
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <div
+                      className="flex-row items-center gap-2"
+                      onClick={hdltheme}
+                    >
+                      <div className="flex-1">
+                        Theme : {theme === "light" ? "Light" : "Dark"}
+                      </div>
+                      {theme === "light" ? (
+                        <i className="fa-solid fa-sun-bright"></i>
+                      ) : (
+                        <i className="fa-solid fa-moon"></i>
+                      )}
                     </div>
-                    {theme === 'light' ? <i className="fa-solid fa-sun"></i> : <i className="fa-solid fa-moon"></i>}
-                  </div>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/setting" className="flex items-center gap-2 rounded-md p-2 hover:bg-action-hover">
-                    Settings
-                  </Link>
-                </NavigationMenuLink>
-                <div className="bg-divider my-1 h-[1px] w-full"></div>
-                <NavigationMenuLink asChild>
-                  <div onClick={handleLogout} className="text-error-main flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-error-main hover:text-white">
-                    Sign Out
-                  </div>
-                </NavigationMenuLink>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to="/setting/affiliate"
+                      className="flex-row items-center gap-2"
+                    >
+                      Affiliate Program
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link to="/setting" className="flex-row items-center gap-2">
+                      Setting
+                    </Link>
+                  </NavigationMenuLink>
+                  <div className="bg-divider my-2 h-[1px] w-full"></div>
+                  <NavigationMenuLink asChild className="hover:bg-error-dark">
+                    <Link
+                      href="#"
+                      className="text-error-main flex-row items-center gap-2"
+                      onClick={handleLogout}
+                    >
+                      Sign out
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>

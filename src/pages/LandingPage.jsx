@@ -3,15 +3,16 @@ import { WandSparklesIcon } from "lucide-react";
 import { Link } from "react-router";
 import { InputX } from "@/components/ui/inputX";
 import homepagePic from "../assets/homepage-pic.png";
+import { useNavigate } from "react-router";
 
-
-const sendShimmer = () => {
-  const sendData = document.getElementById("pictureX").value
-  return sendData
-
-}
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const sendShimmer = () => {
+    const sendData = document.getElementById("pictureX").value
+    navigate('/home', { state: { prompt: sendData } });
+
+  }
   return (
     <div className="dark">
       <div className="bg-paper-elevation-6 flex min-h-[calc(100dvh-(60px))] flex-col items-center justify-end gap-10 p-30">
@@ -35,13 +36,8 @@ function LandingPage() {
               className="h-16 w-full"
               trailingComponent={
                 <Button color="tertiary" variant="contained" onClick={() => sendShimmer()}>
-                  <Link to={{
-                    pathname: `/book`,
-                    state : {data : "sendData"}
-                  }}>
-                    <WandSparklesIcon />
-                    Shimmer
-                  </Link>
+                  <WandSparklesIcon />
+                  Shimmer
                 </Button>
               }
             />

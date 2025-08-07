@@ -13,13 +13,16 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useNavigate } from "react-router";
 
 function UserProfile() {
+  const navigate = useNavigate();
   const [loadingAI, setLoadingAI] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [getRecommand, setGetRecommand] = useState(false)
 
   // --- Zustand Stores ---
-  const { book, getBookById, getAiSuggestion } = bookManageStore();
+  const { book, books, getBookById, getAiSuggestion, getBookByTag } = bookManageStore();
   const { getAllReview, addReview } = reviewManageStore();
   const {
     userId,
@@ -33,6 +36,7 @@ function UserProfile() {
   console.log("avatarStore:", avatarUrl)
   console.log("userId:", userId)
   console.log("fullProfile:", fullProfile)
+  console.log('books', books)
 
   const joinDate = new Date(fullProfile?.createdAt).toLocaleDateString(
     "en-EN",
@@ -45,7 +49,11 @@ function UserProfile() {
 
   useEffect(() => {
     const loadData = async () => {
-      if (userId) {
+      if(getRecommand) {
+        // await getBookByTag(fullProfile.bookTagPreference)
+        navigate('/home', { state: { recommendPrompt: fullProfile.bookTagPreference } });
+      }
+      else if (userId) {
         try {
           const data = await getMyFullProfile(userId);
           console.log("Full data fetched successfully:", data.data.result);
@@ -57,7 +65,11 @@ function UserProfile() {
     };
 
     loadData();
-  }, [userId, setFullProfile]);
+  }, [userId, setFullProfile, getRecommand]);
+
+  const hdlSurprise = () => {
+    setGetRecommand(!getRecommand)
+  }
 
   return (
     <>
@@ -213,6 +225,7 @@ function UserProfile() {
                     color="tertiary"
                     size="medium"
                     className="mt-2 w-fit"
+                    onClick={() => hdlSurprise()}
                   >
                     <i className="fa-solid fa-sparkles"></i>
                     Surprise Me

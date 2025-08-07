@@ -30,8 +30,8 @@ import rateManageStore from "../stores/rateStore";
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
-  const getBookByAI = bookManageStore((state) => state.getBookByAI);
-  const getBookByTag = bookManageStore((state) => state.getBookByTag);
+  const getBookByAI = bookManageStore(state => state.getBookByAI);
+  const getBookByTag = bookManageStore(state => state.getBookByTag)
   const books = bookManageStore((state) => state.books);
   const addRate = rateManageStore((state) => state.rate);
   const receiveData = useLocation();
@@ -39,34 +39,34 @@ function Home() {
   const [aiSearch, setAiSearch] = useState("");
   const [landingSearch, setLandingSearch] = useState("");
   const [searching, setSearching] = useState(false);
-
-  const recommend = receiveData?.state?.recommendPrompt;
-  console.log("recommend", recommend);
-
-  // Got data from search landing
-  const data = receiveData?.state?.prompt;
-  console.log("data", data);
-
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
 
+  const recommend = receiveData?.state?.recommendPrompt;
+  console.log('recommend', recommend)
+
+  // Got data from search landing
+  const data = receiveData?.state?.prompt;
+  console.log('data', data)
+
+
   const searchByAI = async () => {
-    setSearching(true);
+    setSearching(true)
     try {
       const data = document.getElementById("SearchAI");
-      setAiSearch(data.value);
+      setAiSearch(data.value)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setSearching(false);
+      setSearching(false)
     }
-  };
+  }
 
   const clearFilter = async () => {
     const data = document.getElementById("SearchAI");
-    data.value = "";
+    data.value = ""
     await getBooks();
-  };
+  }
 
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -76,11 +76,13 @@ function Home() {
       if (!(aiSearch || data || recommend)) {
         console.log("1");
         await getBooks();
-      } else {
-        await getBookByAI(aiSearch);
+      } else if (aiSearch || data ) {
+        await getBookByAI(aiSearch || data )
+      } else{
+        await getBookByTag(recommend )
       }
       // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
-    };
+    }
     run();
   }, [aiSearch, getBooks, getBookByAI]);
 
@@ -156,25 +158,14 @@ function Home() {
           </SelectStyled>
           <div className="flex flex-col gap-2">
             <Label>Prompt</Label>
-            <Textarea
-              id="SearchAI"
-              placeholder="Start your AI-assisted search. "
-            />
+            <Textarea id="SearchAI" placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => clearFilter()}
-            >
+            <Button variant="outlined" color="secondary" onClick={() => clearFilter()}>
               Clear Filter
             </Button>
             <Button onClick={() => searchByAI()}>
-              {searching ? (
-                <LoaderCircle className="animate-spin" />
-              ) : (
-                <Search />
-              )}
+              {searching ? <LoaderCircle className="animate-spin" /> : <Search />}
               {searching ? "Searching..." : "Search"}
             </Button>
           </div>

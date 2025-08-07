@@ -3,6 +3,7 @@ import { Button } from "../../components/ui/button";
 import { LoaderCircle, WandSparklesIcon } from "lucide-react";
 import { InputX } from "@/components/ui/inputX";
 import homepagePic from "../assets/homepage-pic.png";
+import { Link } from "react-router";
 
 function HomePage() {
   return (
@@ -29,7 +30,7 @@ function HomePage() {
               trailingComponent={
                 <Button color="tertiary" variant="contained">
                   <WandSparklesIcon />
-                  Shimmer
+                    Shimmer
                 </Button>
               }
             />

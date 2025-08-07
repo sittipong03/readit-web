@@ -40,13 +40,14 @@ const bookManageStore = create((set, get) => ({
   getAiSuggestion: async (id) => {
     try {
       const result = await fetchAiSuggestion(id);
-
+      console.log('id', id)
       set((state) => ({
         book: {
           ...state.book,
           aiSuggestion: result.data.suggestion,
         },
       }));
+      get().getBookById(id)
       return result;
     } catch (error) {
       console.error("Failed to fetch AI suggestion:", error);

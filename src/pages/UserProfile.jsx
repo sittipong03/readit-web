@@ -34,6 +34,8 @@ function UserProfile() {
   } = useUserStore();
 
   console.log("avatarStore:", avatarUrl)
+  console.log("userId:", userId)
+  console.log("fullProfile:", fullProfile)
 
 
   const joinDate = new Date(fullProfile?.createdAt).toLocaleDateString(
@@ -110,7 +112,7 @@ function UserProfile() {
                 <div className="flex gap-6">
                   <div className="flex gap-2">
                     <div className="subtitle-3">
-                      {fullProfile?._count.following}
+                      {fullProfile?._count?.following}
                     </div>
                     <div className="text-text-disabled">Following</div>
                   </div>
@@ -137,7 +139,7 @@ function UserProfile() {
                   className="flex h-8 px-3 text-secondary-main subtitle-4"
                 >
                   <i className="fa-solid fa-heart"></i>
-                  {fullProfile?._count.likes}
+                  {fullProfile?._count?.likes}
                   <div className="">likes</div>
                 </Badge>
               </div>

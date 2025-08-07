@@ -8,4 +8,4 @@ export const fetchAllBooks = () => api.get("/book/");
 export const fetchBookById = (id) => api.get(`/book/${id}`);
 export const fetchAiSuggestion = (id) => api.get(`/book/${id}/ai-suggestion`);
 export const fetchBookByAI = (body) => api.post("/book/searchAI", body);
-export const fetchBookByTag = (body) => api.post("",body)
+export const fetchBookByTag = (body) => api.post("/book/searchTagAI",body)

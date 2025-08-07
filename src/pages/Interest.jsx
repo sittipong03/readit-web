@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { updateUserPreferences } from "../api/userApi";
 import { toast, Toaster } from "sonner";
 import { Check, ChevronRight } from "lucide-react";
+import bookManageStore from "../stores/booksManageStore";
+
 
 function Interest() {
   const [tags, setTags] = useState([]);
@@ -12,19 +14,20 @@ function Interest() {
   const [selectedTagNames, setSelectedTagNames] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  
   console.log('selectedTagNames', selectedTagNames)
 
   useEffect(() => {
-    getAllTags().then((response) => {
-      if (Array.isArray(response)) {
-        setTags(response);
-      } else if (response && Array.isArray(response.data)) {
-        setTags(response.data);
-      }
-    });
-  }, []);
+     getAllTags().then((response) => {
+        if (Array.isArray(response)) {
+          setTags(response);
+        } else if (response && Array.isArray(response.data)) {
+          setTags(response.data);
+        }
+      });
+    
+  }, [isSubmitting]);
 
-  // console.log(tags);
 
   const handleTagClick = (tagId, tagName) => {
     // เช็คว่า tag นี้ถูกเลือกอยู่แล้วหรือไม่
@@ -44,6 +47,7 @@ function Interest() {
   };
 
   const handleNextClick = async () => {
+    
     // กันการกดปุ่มซ้ำ
     if (selectedTagIds.length < 5) {
       toast.error("Please select at least 5 genres.");
@@ -53,8 +57,10 @@ function Interest() {
     setIsSubmitting(true);
     try {
       await updateUserPreferences(selectedTagIds);
+      // await getBookByTag(selectedTagNames)
       toast.success("Preferences saved successfully!");
-      window.location.href = "/home";
+      navigate('/home');
+      // window.location.href = "/home";
     } catch (error) {
       toast.error("Failed to save preferences. Please try again.");
       console.error(error);

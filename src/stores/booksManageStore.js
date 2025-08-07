@@ -5,10 +5,12 @@ import {
   fetchAllBooks,
   fetchBookByAI,
   fetchBookById,
+  fetchBookByTag,
 } from "../api/bookApi.js";
 
 const bookManageStore = create((set, get) => ({
   books: [],
+  tags: [],
   book: null,
   userWishlist: [],
   getUserWishlist: async () => {
@@ -38,7 +40,11 @@ const bookManageStore = create((set, get) => ({
     return result;
   },
   getBookByTag: async (data) => {
-    
+    // console.log(data);
+    const result = await fetchBookByTag({ books: data });
+    console.log("result", result);
+    set({ books: result.data.books});
+    return result;
   },
   getAiSuggestion: async (id) => {
     try {

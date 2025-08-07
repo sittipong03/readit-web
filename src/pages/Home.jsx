@@ -25,22 +25,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LoaderCircle, Search } from "lucide-react";
+import rateManageStore from "../stores/rateStore";
 
-function Home() {
+function Home({data}) {
   const getBooks = bookManageStore((state) => state.getAllBooks);
-  const getBookByAI = bookManageStore(state => state.getBookByAI)
+  const getBookByAI = bookManageStore(state => state.getBookByAI);
   const books = bookManageStore((state) => state.books);
+  const addRate = rateManageStore((state) => state.rate);
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
-  console.log('books', books)
+  console.log('data', data)
 
   const searchByAI = async() => {
     setSearching(true)
     try {
       const data = document.getElementById("SearchBook");
-      console.log('data.value', data.value)
       setAiSearch(data.value)
     } catch (error) {
       console.log(error)
@@ -50,6 +51,8 @@ function Home() {
   }
 
   const clearFilter = async() => {
+    const data = document.getElementById("SearchBook");
+    data.value = ""
     await getBooks();
   }
 
@@ -95,7 +98,7 @@ function Home() {
     }
   };
 
-  console.log("Books", books);
+
   return (
     <div className="flex justify-center gap-4 pt-8 pb-24 bg-paper-elevation-2 text-text-primary">
       <div className="flex flex-col gap-4 p-4 w-fit">

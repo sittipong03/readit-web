@@ -1,7 +1,15 @@
 import { Button } from "../../components/ui/button";
 import { WandSparklesIcon } from "lucide-react";
+import { Link } from "react-router";
 import { InputX } from "@/components/ui/inputX";
 import homepagePic from "../assets/homepage-pic.png";
+
+
+const sendShimmer = () => {
+  const sendData = document.getElementById("pictureX").value
+  return sendData
+
+}
 
 function LandingPage() {
   return (
@@ -26,9 +34,14 @@ function LandingPage() {
               placeholder="e.g., Epic fantasy book with ancient evil, unlikely heroes, and magical journey"
               className="h-16 w-full"
               trailingComponent={
-                <Button color="tertiary" variant="contained">
-                  <WandSparklesIcon />
-                  Shimmer
+                <Button color="tertiary" variant="contained" onClick={() => sendShimmer()}>
+                  <Link to={{
+                    pathname: `/book`,
+                    state : {data : "sendData"}
+                  }}>
+                    <WandSparklesIcon />
+                    Shimmer
+                  </Link>
                 </Button>
               }
             />

@@ -1,16 +1,14 @@
 import { Link } from "react-router"
 import { WarningIcon, HidePasswordIcon } from "@/src/icons/Index"
 import { useState } from "react"
-import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
-import * as authApi from '../../api/authApi';
+import * as authApi from '../../api/authApi'; 
 
 
 
 function Register() {
   const [isError, setIsError] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false);
-  const navigate = useNavigate();
 
   const { handleSubmit, register, formState: { errors, isSubmitting }, reset } = useForm()
 
@@ -25,6 +23,7 @@ function Register() {
     } catch (error) {
       setIsError(true)
     }
+
   };
 
 

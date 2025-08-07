@@ -32,6 +32,7 @@ const useUserStore = create(
       userName: null,
       role: null,
 <<<<<<< HEAD
+<<<<<<< HEAD
       avatarUrl: "",
       token: "",
       fullProfile: null,
@@ -40,12 +41,19 @@ const useUserStore = create(
       avatarUrl: '',
       token: '',
 >>>>>>> ebd5ba9 (registerbooktag)
+=======
+      avatarUrl: "",
+      token: "",
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
       rememberMe: false,
 
       login: async (input) => {
         const { rememberMe, ...credentials } = input;
         const result = await authApi.loginUser(credentials);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
         console.log("from login ", result);
         // set({
         //   token: result.data.accessToken,
@@ -53,14 +61,18 @@ const useUserStore = create(
         //   userName: result.data.user,
         //   role: result.data.role,
         // });
+<<<<<<< HEAD
 =======
         console.log("from login " , result)
 >>>>>>> ebd5ba9 (registerbooktag)
+=======
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
         set({
           token: result.data.accessToken,
           userId: result.data.userId,
           userName: result.data.user,
           role: result.data.role,
+<<<<<<< HEAD
 <<<<<<< HEAD
           avatarUrl: result.data.avatarUrl,
           rememberMe: !!rememberMe,
@@ -68,6 +80,10 @@ const useUserStore = create(
           avatarUrl : result.data.avatarUrl ,
           rememberMe: !!rememberMe, 
 >>>>>>> ebd5ba9 (registerbooktag)
+=======
+          avatarUrl: result.data.avatarUrl,
+          rememberMe: !!rememberMe,
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
         });
         return result;
       },
@@ -95,10 +111,13 @@ const useUserStore = create(
       },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       // Action สำหรับการอัปเดต profile ทั้งหมด
       setFullProfile: (profileData) =>
         set({ fullProfile: profileData, isLoading: false }),
 
+=======
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
       logout: () =>
         set({
           token: "",
@@ -107,6 +126,7 @@ const useUserStore = create(
           role: null,
           avatarUrl: "",
           rememberMe: false,
+<<<<<<< HEAD
           fullProfile: null,
           isLoading: true,
         }),
@@ -120,6 +140,9 @@ const useUserStore = create(
         rememberMe: false
       }),
 >>>>>>> ebd5ba9 (registerbooktag)
+=======
+        }),
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
     }),
     {
       name: "userState",

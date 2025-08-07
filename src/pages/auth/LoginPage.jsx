@@ -26,11 +26,20 @@ function Login() {
 
   const handleLoginClick = async (data) => {
     try {
+<<<<<<< HEAD
       const user = await login(data)
       setIsError(false)
       setIsSuccess(true)
     } catch (error) {
       setIsError(true)
+=======
+      const user = await login(data);
+      setIsError(false);
+      setIsSuccess(true);
+    } catch (error) {
+      console.log("error: ", error);
+      setIsError(true);
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
     }
   };
 

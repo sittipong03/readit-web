@@ -68,9 +68,13 @@ const routerUser = createBrowserRouter([
       { path: "/home", element: <Home /> },
       { path: "/interest", element: <Interest /> },
       { path: "/book/:bookId", element: <BookPage /> },
+<<<<<<< HEAD
       { path: "/review/:bookId", element: <ReviewPage /> },
       { path: "/registerbooktag", element: <RegisterBookTag /> },
       { path: "/userproflie", element: <UserProfile /> },
+=======
+      { path: "/userproflie", element: <UserProfilePage /> },
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
       {
         path: "/setting",
         element: <SettingPage />,

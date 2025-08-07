@@ -56,7 +56,38 @@ function Home() {
       }
     }
     run();
+<<<<<<< HEAD
   }, []);
+=======
+  }, [aiSearch]);
+
+  const handleRating = async (e, bookId) => {
+    e.preventDefault();
+    try {
+      if (rating === 0) {
+        toast.error("Please select a star rating first.");
+        return;
+      }
+
+      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
+      // ตัวอย่าง: await api.rateBook(bookId, rating);
+      console.log(`Submitting rating ${rating} for book ${bookId}`);
+
+      toast.success("Thank you for your rating!", {
+        description: "Your feedback helps other readers.",
+      });
+
+      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
+      setRating(0);
+      setHoverRating(0);
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating.", {
+        description: "Please try again later.",
+      });
+    }
+  };
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
 
   console.log("Books", books);
   return (

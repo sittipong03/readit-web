@@ -76,7 +76,13 @@ function Book() {
     }
   }
 
+<<<<<<< HEAD
   const cartData = async(data) => {
+=======
+  
+  const handleRating = async (e, bookId) => {
+    e.preventDefault();
+>>>>>>> 158eec5 (Revert "Merge branch 'dev' into feature/registerbooktag")
     try {
       const sendData = {userId: user, productId: product.id, quantity: 1 }
       const response = await addToCart(sendData, token);

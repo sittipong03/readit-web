@@ -24,71 +24,56 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { StarIcon } from "lucide-react";
+import { createRating } from "../api/rateApi";
+import { StarRating } from "../components/StarRating";
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
-  const getBookByAI = bookManageStore(state => state.getBookByAI)
+  const getBookByAI = bookManageStore((state) => state.getBookByAI);
   const books = bookManageStore((state) => state.books);
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
 
-  const searchByAI = async() => {
+  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
+  const [selectedBookForRating, setSelectedBookForRating] = useState(null);
+
+  const searchByAI = async () => {
     try {
       const data = document.getElementById("SearchBook");
-      console.log('data.value', data.value)
-      setAiSearch(data.value)
+      console.log("data.value", data.value);
+      setAiSearch(data.value);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
-      
-      if(!aiSearch){
+      if (!aiSearch) {
         await getBooks();
-      }else{
-        await getBookByAI(aiSearch)
+      } else {
+        await getBookByAI(aiSearch);
       }
-    }
+    };
     run();
-  }, [aiSearch]);
+  }, [aiSearch, getBooks, getBookByAI]);
 
-  const handleRating = async (e, bookId) => {
-    e.preventDefault();
-    try {
-      if (rating === 0) {
-        toast.error("Please select a star rating first.");
-        return;
-      }
-
-      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
-      // ตัวอย่าง: await api.rateBook(bookId, rating);
-      console.log(`Submitting rating ${rating} for book ${bookId}`);
-
-      toast.success("Thank you for your rating!", {
-        description: "Your feedback helps other readers.",
-      });
-
-      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
-      setRating(0);
-      setHoverRating(0);
-    } catch (error) {
-      console.error("Failed to submit rating:", error);
-      toast.error("Failed to submit rating.", {
-        description: "Please try again later.",
-      });
-    }
+  const handleRatingSubmitted = () => {
+    console.log("Rating submitted! Closing dialog and refreshing books.");
+    setIsRatingDialogOpen(false); // ปิด Dialog
+    setSelectedBookForRating(null); // ล้างค่าหนังสือที่เลือก
+    getBooks(); // ดึงข้อมูลหนังสือใหม่เพื่ออัปเดต averageRating
   };
 
   console.log("Books", books);
   return (
-    <div className="flex justify-center gap-4 pt-8 pb-24 bg-paper-elevation-2 text-text-primary">
-      <div className="flex flex-col gap-4 p-4 w-fit">
-        <div className="from-secondary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
-          <div className="grid items-center w-full max-w-sm gap-2">
+    <div className="bg-paper-elevation-6 text-text-primary flex justify-center gap-4 pt-8 pb-24">
+      <div className="flex w-fit flex-col gap-4 p-4">
+        <div className="from-secondary-lighter to-paper-elevation-6 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Search"
               size="small"
@@ -135,10 +120,10 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-full max-w-lg min-h-screen gap-6 p-10">
+      <div className="flex min-h-screen w-full max-w-lg flex-col gap-6 p-10">
         {/* <Person className="w-50 mb-15" /> */}
-        <div className="flex items-end w-full">
-          <div className="flex flex-col flex-1 gap-0">
+        <div className="flex w-full items-end">
+          <div className="flex flex-1 flex-col gap-0">
             <h1 className="subtitle-1">Browse a book</h1>
             <p className="text-text-disabled caption">{`${books?.length} Result was found`}</p>
           </div>
@@ -199,7 +184,7 @@ function Home() {
                       <img
                         src={` ${book?.edition[0]?.coverImage} || "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg`}
                         alt="Book Cover Title"
-                        className="object-cover w-full h-full"
+                        className="h-full w-full object-cover"
                       />
                     </div>
                   </div>
@@ -216,73 +201,62 @@ function Home() {
                   <div className="subtitle-3 text-text-primary">
                     {book.title}
                   </div>
-                  <div className="flex-1 body-3 text-text-secondary">{`${book?.Author?.name}`}</div>
-                  <div className="absolute left-0 w-full px-2 bottom-2">
+                  <div className="body-3 text-text-secondary flex-1">{`${book?.Author?.name}`}</div>
+                  <div className="absolute bottom-2 left-0 w-full px-2">
                     <div className="flex gap-0">
-                      <Badge className="h-5 px-1 transition-all bg-transparent rounded-sm text-warning-main body-2 min-w-5 tabular-nums">
+                      <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
                         <i className="fa-solid fa-star"></i>
                         <p className="text-warning-main">
                           {book.averageRating}
                         </p>
                       </Badge>
-                      <Dialog>
-                        <form onSubmit={(e) => handleRating(e, book.id)}>
-                          <DialogTrigger asChild>
-                            <Badge className="h-5 px-1 transition-all bg-transparent rounded-sm cursor-pointer text-info-main body-2 hover:bg-info-hover min-w-5 tabular-nums">
-                              <i className="fa-regular fa-star"></i>
-                              <p className="text-text-disabled">Rate</p>
-                            </Badge>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                              <DialogTitle>Rate this book</DialogTitle>
-                            </DialogHeader>
-                            <div className="flex justify-center gap-0 my-4">
-                              {[1, 2, 3, 4, 5].map((starValue) => (
-                                <Button
-                                  key={starValue}
-                                  type="button"
-                                  variant="text"
-                                  size="icon"
-                                  color="info"
-                                  onClick={() => setRating(starValue)}
-                                  onMouseEnter={() => setHoverRating(starValue)}
-                                  onMouseLeave={() => setHoverRating(0)}
-                                  className={
-                                    starValue <= (hoverRating || rating)
-                                      ? "text-info-main h-12 w-12 [&_svg]:text-[32px]"
-                                      : "text-text-disabled h-12 w-12 [&_svg]:text-[32px]"
-                                  }
-                                >
-                                  <i
-                                    className={
-                                      starValue <= (hoverRating || rating)
-                                        ? "fa-solid fa-star"
-                                        : "fa-regular fa-star"
-                                    }
-                                  ></i>
-                                </Button>
-                              ))}
-                            </div>
-                            <DialogFooter>
-                              <DialogClose asChild>
-                                <Button variant="text">Later</Button>
-                              </DialogClose>
-                              <DialogClose asChild>
-                                <Button type="submit" disabled={rating === 0}>
-                                  Submit Rating
-                                </Button>
-                              </DialogClose>
-                            </DialogFooter>
-                          </DialogContent>
-                        </form>
+                      <Dialog
+                        open={
+                          isRatingDialogOpen &&
+                          selectedBookForRating?.id === book.id
+                        }
+                        onOpenChange={(open) => {
+                          if (!open) {
+                            setIsRatingDialogOpen(false);
+                            setSelectedBookForRating(null);
+                          }
+                        }}
+                      >
+                        <DialogTrigger asChild>
+                          <Badge
+                            onClick={() => {
+                              setSelectedBookForRating(book);
+                              setIsRatingDialogOpen(true);
+                            }}
+                            className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 tabular-nums transition-all"
+                          >
+                            <i className="fa-regular fa-star"></i>
+                            <p className="text-text-disabled">Rate</p>
+                          </Badge>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>
+                              Rate: {selectedBookForRating?.title}
+                            </DialogTitle>
+                            <DialogDescription>
+                              Your feedback helps other readers.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="my-4 flex justify-center gap-0">
+                            <StarRating
+                              bookId={selectedBookForRating?.id}
+                              onRatingSubmitted={handleRatingSubmitted}
+                            />
+                          </div>
+                        </DialogContent>
                       </Dialog>
                     </div>
                     <Button
                       variant="ghost"
                       size="small"
                       color="secondary"
-                      className="w-full mt-1 rounded-sm"
+                      className="mt-1 w-full rounded-sm"
                     >
                       <i class="fa-solid fa-pen-to-square"></i>
                       <Link

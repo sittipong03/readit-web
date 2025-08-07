@@ -1,12 +1,4 @@
-import axios from "axios";
+import api from "../utils/api";
 
-export const reviewApi = axios.create({
-  baseURL: "http://localhost:6500/api/review"
-});
-
-const addToken = (token) => ({
-  headers : {Authorization : `Bearer ${token}`}
-})
-
-export const getAllReview = (id) => reviewApi.get(id)
-export const createReview = (id, body, token) => reviewApi.post(`/${id}`, body, addToken(token))
+export const getAllReview = (bookId) => api.get(`/review/${bookId}`);
+export const createReview = (bookId, body) => api.post(`/review/${bookId}`, body);

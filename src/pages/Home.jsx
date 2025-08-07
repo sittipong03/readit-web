@@ -41,7 +41,7 @@ function Home({data}) {
   const searchByAI = async() => {
     setSearching(true)
     try {
-      const data = document.getElementById("SearchBook");
+      const data = document.getElementById("SearchAI");
       setAiSearch(data.value)
     } catch (error) {
       console.log(error)
@@ -51,7 +51,7 @@ function Home({data}) {
   }
 
   const clearFilter = async() => {
-    const data = document.getElementById("SearchBook");
+    const data = document.getElementById("SearchAI");
     data.value = ""
     await getBooks();
   }
@@ -137,7 +137,7 @@ function Home({data}) {
           </SelectStyled>
           <div className="flex flex-col gap-2">
             <Label>Prompt</Label>
-            <Textarea placeholder="Start your AI-assisted search. " />
+            <Textarea id="SearchAI" placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
             <Button variant="outlined" color="secondary" onClick={() => clearFilter()}>

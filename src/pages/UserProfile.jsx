@@ -31,6 +31,8 @@ function UserProfile() {
   } = useUserStore();
 
   console.log("avatarStore:", avatarUrl)
+  console.log("userId:", userId)
+  console.log("fullProfile:", fullProfile)
 
   const joinDate = new Date(fullProfile?.createdAt).toLocaleDateString(
     "en-EN",
@@ -43,17 +45,19 @@ function UserProfile() {
 
   useEffect(() => {
     const loadData = async () => {
-      try {
-        const data = await getMyFullProfile(userId);
-        console.log("Full data:", data.data.result);
-        setFullProfile(data.data.result);
-      } catch (error) {
-        console.error("Can't getMyFullProfile");
+      if (userId) {
+        try {
+          const data = await getMyFullProfile(userId);
+          console.log("Full data fetched successfully:", data.data.result);
+          setFullProfile(data.data.result);
+        } catch (error) {
+          console.error("Error fetching full profile:", error);
+        }
       }
     };
 
     loadData();
-  }, []);
+  }, [userId, setFullProfile]);
 
   return (
     <>
@@ -81,7 +85,7 @@ function UserProfile() {
                 <div className="flex gap-6">
                   <div className="flex gap-2">
                     <div className="subtitle-3">
-                      {fullProfile?._count.following}
+                      {fullProfile?._count?.following}
                     </div>
                     <div className="text-text-disabled">Following</div>
                   </div>
@@ -108,7 +112,7 @@ function UserProfile() {
                   className="text-secondary-main subtitle-4 flex h-8 px-3"
                 >
                   <i className="fa-solid fa-heart"></i>
-                  {fullProfile?._count.likes}
+                  {fullProfile?._count?.likes}
                   <div className="">likes</div>
                 </Badge>
               </div>

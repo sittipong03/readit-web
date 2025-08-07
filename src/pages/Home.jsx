@@ -24,34 +24,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { LoaderCircle, Search } from "lucide-react";
+import rateManageStore from "../stores/rateStore";
 
-function Home() {
+function Home({data}) {
   const getBooks = bookManageStore((state) => state.getAllBooks);
-  const getBookByAI = bookManageStore(state => state.getBookByAI)
+  const getBookByAI = bookManageStore(state => state.getBookByAI);
   const books = bookManageStore((state) => state.books);
+  const addRate = rateManageStore((state) => state.rate);
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
+  const [searching, setSearching] = useState(false);
+
+  console.log('data', data)
 
   const searchByAI = async() => {
+    setSearching(true)
     try {
-      const data = document.getElementById("SearchBook");
-      console.log('data.value', data.value)
+      const data = document.getElementById("SearchAI");
       setAiSearch(data.value)
     } catch (error) {
       console.log(error)
+    } finally {
+      setSearching(false)
     }
   }
+
+  const clearFilter = async() => {
+    const data = document.getElementById("SearchAI");
+    data.value = ""
+    await getBooks();
+  }
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
-      
-      if(!aiSearch){
+      if (!aiSearch) {
         await getBooks();
-      }else{
+      } else {
         await getBookByAI(aiSearch)
       }
+      // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
     }
     run();
   }, [aiSearch]);
@@ -83,7 +98,7 @@ function Home() {
     }
   };
 
-  console.log("Books", books);
+
   return (
     <div className="flex justify-center gap-4 pt-8 pb-24 bg-paper-elevation-2 text-text-primary">
       <div className="flex flex-col gap-4 p-4 w-fit">
@@ -122,15 +137,15 @@ function Home() {
           </SelectStyled>
           <div className="flex flex-col gap-2">
             <Label>Prompt</Label>
-            <Textarea placeholder="Start your AI-assisted search. " />
+            <Textarea id="SearchAI" placeholder="Start your AI-assisted search. " />
           </div>
           <div className="flex flex-col gap-3">
-            <Button variant="outlined" color="secondary">
+            <Button variant="outlined" color="secondary" onClick={() => clearFilter()}>
               Clear Filter
             </Button>
             <Button onClick={() => searchByAI()}>
-              <i class="fa-solid fa-magnifying-glass"></i>
-              Search
+              {searching ? <LoaderCircle className="animate-spin" /> : <Search />}
+              {searching ? "Searching..." : "Search"}
             </Button>
           </div>
         </div>

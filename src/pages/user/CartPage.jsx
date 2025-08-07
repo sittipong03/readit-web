@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import CartItem from '../../components/CartItem';
 import cartManageStore from '@/src/stores/cartManageStore';
 import useUserStore from '@/src/stores/userStore';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]); // array of bookIds
-  const { carts, getAllCart } = cartManageStore(); 
+  const { carts, getAllCart } = cartManageStore();
   const token = useUserStore(state => state.token)
 
   // console.log("token",token);
@@ -22,7 +24,7 @@ function Cart() {
   }, [])
 
 
-    console.log(cartItems);
+  console.log(cartItems);
 
   const handleRemove = (id) => {
     setCartItems(items => items.filter(bookId => bookId !== id));
@@ -46,7 +48,7 @@ function Cart() {
         {/* Cart Items */}
         {cartItems.length > 0 ? (
           cartItems.map(cart => (
-            <CartItem key={cart.id} bookId={cart.product.bookId} onRemove={handleRemove} cart={cart}/>
+            <CartItem key={cart.id} bookId={cart.product.bookId} onRemove={handleRemove} cart={cart} />
           ))
         ) : (
           <p className="text-center text-gray-500 py-6">Your cart is empty.</p>
@@ -58,9 +60,17 @@ function Cart() {
           <span className="text-orange-600 font-bold text-xl">
             ${cartItems.length * 23.01 /* placeholder */.toFixed(2)}
           </span>
-          <button className="ml-auto px-6 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
-            Check out →
-          </button>
+          <Button
+            variant="mixed"
+            color="primary"
+            size="large"
+            className="w-1/8 "
+            onClick={() => hdlReview()}
+          >
+            <Link to="/checkout">
+              Check out →
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

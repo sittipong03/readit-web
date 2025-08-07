@@ -97,10 +97,10 @@ function Home() {
 
   console.log("Books", books);
   return (
-    <div className="bg-paper-elevation-2 text-text-primary flex justify-center gap-4 pt-8 pb-24">
-      <div className="flex w-fit flex-col gap-4 p-4">
+    <div className="flex justify-center gap-4 pt-8 pb-24 bg-paper-elevation-2 text-text-primary">
+      <div className="flex flex-col gap-4 p-4 w-fit">
         <div className="from-secondary-lighter to-paper-elevation-2 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
-          <div className="grid w-full max-w-sm items-center gap-2">
+          <div className="grid items-center w-full max-w-sm gap-2">
             <InputX
               label="Search"
               size="small"
@@ -147,10 +147,10 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-screen max-w-lg flex-col gap-6 p-10 w-full">
+      <div className="flex flex-col w-full max-w-lg min-h-screen gap-6 p-10">
         {/* <Person className="w-50 mb-15" /> */}
         <div className="flex items-end w-full">
-          <div className="flex flex-1 flex-col gap-0">
+          <div className="flex flex-col flex-1 gap-0">
             <h1 className="subtitle-1">Browse a book</h1>
             <p className="text-text-disabled caption">{`${books?.length} Result was found`}</p>
           </div>
@@ -209,9 +209,9 @@ function Home() {
                   <div className="bg-secondary-hover flex h-[162px] items-center justify-center">
                     <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
                       <img
-                        src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
+                        src={` ${book?.edition[0]?.coverImage} || "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg`}
                         alt="Book Cover Title"
-                        className="h-full w-full object-cover"
+                        className="object-cover w-full h-full"
                       />
                     </div>
                   </div>
@@ -221,17 +221,17 @@ function Home() {
                     variant="text"
                     color="neutral"
                     size="icon"
-                    className="text-action-active-icon absolute top-1 left-1 w-7 h-7 opacity-60"
+                    className="absolute text-action-active-icon top-1 left-1 w-7 h-7 opacity-60"
                   >
                     <i className="fa-regular fa-bookmark"></i>
                   </Button> */}
                   <div className="subtitle-3 text-text-primary">
                     {book.title}
                   </div>
-                  <div className="body-3 text-text-secondary flex-1">{`${book?.Author?.name}`}</div>
-                  <div className="absolute bottom-2 left-0 w-full px-2">
+                  <div className="flex-1 body-3 text-text-secondary">{`${book?.Author?.name}`}</div>
+                  <div className="absolute left-0 w-full px-2 bottom-2">
                     <div className="flex gap-0">
-                      <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                      <Badge className="h-5 px-1 transition-all bg-transparent rounded-sm text-warning-main body-2 min-w-5 tabular-nums">
                         <i className="fa-solid fa-star"></i>
                         <p className="text-warning-main">
                           {book.averageRating}
@@ -240,7 +240,7 @@ function Home() {
                       <Dialog>
                         <form onSubmit={(e) => handleRating(e, book.id)}>
                           <DialogTrigger asChild>
-                            <Badge className="text-info-main body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 tabular-nums transition-all">
+                            <Badge className="h-5 px-1 transition-all bg-transparent rounded-sm cursor-pointer text-info-main body-2 hover:bg-info-hover min-w-5 tabular-nums">
                               <i className="fa-regular fa-star"></i>
                               <p className="text-text-disabled">Rate</p>
                             </Badge>
@@ -249,7 +249,7 @@ function Home() {
                             <DialogHeader>
                               <DialogTitle>Rate this book</DialogTitle>
                             </DialogHeader>
-                            <div className="my-4 flex justify-center gap-0">
+                            <div className="flex justify-center gap-0 my-4">
                               {[1, 2, 3, 4, 5].map((starValue) => (
                                 <Button
                                   key={starValue}
@@ -294,7 +294,7 @@ function Home() {
                       variant="ghost"
                       size="small"
                       color="secondary"
-                      className="mt-1 w-full rounded-sm"
+                      className="w-full mt-1 rounded-sm"
                     >
                       <i class="fa-solid fa-pen-to-square"></i>
                       <Link

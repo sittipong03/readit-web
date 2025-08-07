@@ -146,18 +146,18 @@ function Book() {
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex min-h-[700px] justify-center">
       <div className="w-full max-w-lg pb-20">
-        <div className="flex items-start gap-10 p-10 relative">
+        <div className="relative flex items-start gap-10 p-10">
           {/* Left Column */}
           <div className="flex w-full max-w-[480px] flex-col gap-6 sticky top-20">
             <div className="flex gap-6">
               <div className="bg-secondary-lighter shadow-book-lighting h-[264px] w-[174px] flex-shrink-0">
                 <img
                   src={
-                    book.coverImage ||
+                    book?.edition[0]?.coverImage  ||
                     "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
                   }
                   alt={book.title}
-                  className="h-full w-full object-cover"
+                  className="object-cover w-full h-full"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -207,29 +207,29 @@ function Book() {
               </div>
             </div>
 
-            <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-3 rounded-lg p-6">
-              <div className="subtitle-2 mb-1">Description :</div>
+            <div className="flex flex-col gap-3 p-6 rounded-lg text-text-secondary shadow-card-3d bg-paper-elevation-8">
+              <div className="mb-1 subtitle-2">Description :</div>
               <div className="body-2">{book.description || "No description available."}</div>
               {latestIsbn ? (
-                <div className="body-2 flex gap-4">
+                <div className="flex gap-4 body-2">
                   <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
                   <div className="w-full">{latestIsbn}</div>
                 </div>
               ) : (
-                <div className="body-2 flex gap-4">
+                <div className="flex gap-4 body-2">
                   <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
-                  <div className="text-text-disabled w-full">Not available</div>
+                  <div className="w-full text-text-disabled">Not available</div>
                 </div>
               )}
               {latestPages ? (
-                <div className="body-2 flex gap-4">
+                <div className="flex gap-4 body-2">
                   <div className="w-[148px] flex-shrink-0 font-bold">Pages</div>
                   <div className="w-full">{latestPages}</div>
                 </div>
               ) : (
-                <div className="body-2 flex gap-4">
+                <div className="flex gap-4 body-2">
                   <div className="w-[148px] flex-shrink-0 font-bold">Pages</div>
-                  <div className="text-text-disabled w-full">Not available</div>
+                  <div className="w-full text-text-disabled">Not available</div>
                 </div>
               )}
             </div>
@@ -240,7 +240,7 @@ function Book() {
                 {book.bookTag?.map((tag) => (
                   <Badge
                     variant="secondary"
-                    className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3"
+                    className="h-8 px-3 text-secondary-lighter subtitle-4 rounded-pill"
                     key={tag.id}
                   >
                     {tag.tag?.name}
@@ -251,9 +251,9 @@ function Book() {
           </div>
 
           {/* Right Column */}
-          <div className="flex w-full flex-col gap-6">
-            <div className="text-tertiary-darker border-tertiary-outlinedBorder bg-tertiary-selected rounded-lg border p-6">
-              <div className="mb-4 flex gap-4">
+          <div className="flex flex-col w-full gap-6">
+            <div className="p-6 border rounded-lg text-tertiary-darker border-tertiary-outlinedBorder bg-tertiary-selected">
+              <div className="flex gap-4 mb-4">
                 <div className="subtitle-1 text-tertiary-main">
                   Do you know?
                 </div>
@@ -273,7 +273,7 @@ function Book() {
                 )}
               </div>
               {loadingAI ? (
-                <div className="body-2 flex items-center gap-2">
+                <div className="flex items-center gap-2 body-2">
                   <LoaderCircle size={16} className="animate-spin" />
                   AI is thinking...
                 </div>
@@ -285,7 +285,7 @@ function Book() {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="subtitle-1 w-full">Reviews</div>
+              <div className="w-full subtitle-1">Reviews</div>
               <div className="w-[200px]">
                 <SelectStyled
                   variant="outlined"
@@ -303,10 +303,10 @@ function Book() {
               </div>
             </div>
 
-            <div className="bg-paper-elevation-8 shadow-card-3d rounded-lg p-6">
+            <div className="p-6 rounded-lg bg-paper-elevation-8 shadow-card-3d">
               <div className="flex flex-col gap-5">
                 {/* Review Form */}
-                <div className="shadow-card-3d bg-paper-elevation-6 flex flex-col gap-4 rounded-lg p-6">
+                <div className="flex flex-col gap-4 p-6 rounded-lg shadow-card-3d bg-paper-elevation-6">
                   {showReview && (
                     <Textarea
                       placeholder="Write a review..."
@@ -357,7 +357,7 @@ function Book() {
                         showReview ? hdlPostReview : () => setShowReview(true)
                       }
                     >
-                      <i className="fa-solid fa-edit mr-2"></i>
+                      <i className="mr-2 fa-solid fa-edit"></i>
                       {showReview ? "Post" : "Write a review"}
                     </Button>
                   </div>
@@ -381,7 +381,7 @@ function Book() {
                 ) : (
                   book.review?.map((r) => (
                     <div
-                      className="bg-paper-elevation-6 shadow-card-3d flex flex-row gap-4 rounded-lg p-6"
+                      className="flex flex-row gap-4 p-6 rounded-lg bg-paper-elevation-6 shadow-card-3d"
                       key={r.id}
                     >
                       <div className="flex w-[200px] flex-col gap-2">
@@ -409,7 +409,7 @@ function Book() {
                           Follow
                         </Button>
                       </div>
-                      <div className="flex w-full flex-col gap-3">
+                      <div className="flex flex-col w-full gap-3">
                         <StaticRating
                           rating={r.reviewPoint}
                           showNumber={false}
@@ -418,7 +418,7 @@ function Book() {
                         <div className="body-2 text-text-secondary">
                           {r.content}
                         </div>
-                        <div className="body-3 text-text-disabled border-divider w-full border-t pt-3">
+                        <div className="w-full pt-3 border-t body-3 text-text-disabled border-divider">
                           Was this review helpful?
                         </div>
                         <div className="flex gap-2">

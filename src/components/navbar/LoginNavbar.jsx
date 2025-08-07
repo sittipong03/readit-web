@@ -127,7 +127,7 @@ function GuestNavbar() {
               >
                 <i className="fa-solid fa-cart-shopping"></i>
                 {(cartItem?.length ?? 0) > 0 && (
-                  <Badge className="bg-primary-main text-action-active absolute -top-2 -right-2 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
+                  <Badge className="absolute h-5 px-1 font-mono rounded-full bg-primary-main text-action-active -top-2 -right-2 min-w-5 tabular-nums">
                     {cartItem?.length}
                   </Badge>
                 )}
@@ -212,7 +212,7 @@ function GuestNavbar() {
                   <NavigationMenuLink asChild className="hover:bg-error-dark">
                     <Link
                       href="#"
-                      className="text-error-main flex-row items-center gap-2"
+                      className="flex-row items-center gap-2 text-error-main"
                       onClick={hdllogout}
                     >
                       Sign out

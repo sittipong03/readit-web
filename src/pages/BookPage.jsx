@@ -29,9 +29,10 @@ function Book() {
   const [reviewContent, setReviewContent] = useState(""); // State สำหรับ Textarea
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-
+  const [switchDoYouKnow, setSwitchDoYouKnow] = useState(0)
+  
   const { bookId } = useParams();
-
+  
   // --- Zustand Stores ---
   const { book, getBookById, getAiSuggestion } = bookManageStore();
   const { getAllReview, addReview } = reviewManageStore();
@@ -48,41 +49,31 @@ function Book() {
   useEffect(() => {
     const loadData = async () => {
       if (!bookId) return;
-
+      
       setLoading(true);
       setLoadingAI(true);
-
-      try {
-        // ดึงข้อมูลที่รวดเร็วก่อน
-        await Promise.all([getBookById(bookId), getAllReview(bookId)]);
-      } catch (error) {
-        console.error("Failed to load main book data:", error);
-        toast.error("Could not load book details.");
-      } finally {
-        setLoading(false);
-      }
-
-      // --- จังหวะที่ 2: เริ่มโหลดข้อมูล AI ที่ช้า ---
-      try {
-        await getAiSuggestion(bookId);
-      } catch (error) {
-        console.error("Failed to load AI suggestion:", error);
-      } finally {
-        setLoadingAI(false);
-      }
+      
+      // เรียกข้อมูลหลักก่อน
+      const fetchedBook = await getBookById(bookId);
+      await getAllReview(bookId);
+      setLoading(false);
+      console.log(fetchedBook);
+      // เรียกข้อมูล AI แยกต่างหาก
+      await getAiSuggestion(bookId);
+      setLoadingAI(false);
     };
-
+    
     loadData();
-  }, [bookId, getBookById, getAiSuggestion]);
+  }, [bookId, getBookById, getAllReview, getAiSuggestion]);
+  
+  const hdlReview = () => {
+    setShowReview(!showReview);
+  };
 
-  useEffect(() => {
-    if (book) {
-      console.log("Book data has been updated:", book);
-    }
-  }, [book]);
-
+  console.log('bookdddddd', book)
   // --- Event Handlers ---
   const hdlPostReview = async () => {
+    console.log('token', token)
     if (rating === 0) {
       return toast.error("กรุณาให้คะแนนดาวก่อนโพสต์");
     }
@@ -127,6 +118,12 @@ function Book() {
       toast.error("เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า");
     }
   };
+
+  // Function for shuffle do you know
+  const listOfDoYouKnow = book?.aiSuggestion?.split("|")
+  const shuffleDoYouKnow = () => {
+    setSwitchDoYouKnow(Math.floor(Math.random() * 9))
+  }
 
   // --- Render ---
   if (loading) {
@@ -268,6 +265,7 @@ function Book() {
                     color="tertiary"
                     size="medium"
                     disabled={loadingAI ? true : false}
+                    onClick={() => shuffleDoYouKnow()}
                   >
                     <i className="fa-solid fa-shuffle"></i>
                     {loadingAI ? "Thinking..." : "Shuffle"}
@@ -281,7 +279,7 @@ function Book() {
                 </div>
               ) : (
                 <div className="body-2">
-                  {book.aiSuggestion || "AI suggestion is not available."}
+                  {listOfDoYouKnow?.length > 0 ? listOfDoYouKnow[switchDoYouKnow] : "AI suggestion is not available."}
                 </div>
               )}
             </div>

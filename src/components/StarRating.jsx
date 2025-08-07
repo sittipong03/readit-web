@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { createRating } from "../api/rateApi";
+import { addRate } from "../api/rateApi";
 import { toast } from "sonner";
 
 export const StarRating = ({ bookId, onRatingSubmitted }) => {
@@ -23,7 +23,7 @@ export const StarRating = ({ bookId, onRatingSubmitted }) => {
     try {
       console.log("bookId2:", bookId);
       console.log("rating2:", rating);
-      await createRating({ bookId, rating });
+      await addRate({ bookId, rating });
       toast.success("Thank you for your rating!");
 
       // Notify the parent component that the rating was submitted

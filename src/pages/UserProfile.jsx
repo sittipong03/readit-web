@@ -13,10 +13,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Link } from "react-router";
+import { getAllShelf } from "../api/shelfApi";
 
 function UserProfile() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [allshelf, setAllShelf] = useState([]);
 
   // --- Zustand Stores ---
   const { book, getBookById, getAiSuggestion } = bookManageStore();
@@ -34,6 +37,7 @@ function UserProfile() {
   console.log("userId:", userId)
   console.log("fullProfile:", fullProfile)
 
+
   const joinDate = new Date(fullProfile?.createdAt).toLocaleDateString(
     "en-EN",
     {
@@ -45,19 +49,42 @@ function UserProfile() {
 
   useEffect(() => {
     const loadData = async () => {
-      if (userId) {
-        try {
-          const data = await getMyFullProfile(userId);
-          console.log("Full data fetched successfully:", data.data.result);
-          setFullProfile(data.data.result);
-        } catch (error) {
-          console.error("Error fetching full profile:", error);
+      try {
+        // CHANGED: แก้ไขการดึงและตั้งค่า State ให้ถูกต้องและปลอดภัยขึ้น
+        const response = await getAllShelf();
+        // ตรวจสอบให้แน่ใจว่า response.data เป็น array ก่อนจะ set state
+        if (Array.isArray(response.data)) {
+          setAllShelf(response.data);
         }
+
+        const profileResponse = await getMyFullProfile(userId);
+        setFullProfile(profileResponse.data.result);
+      } catch (error) {
+        console.error("Can't get data:", error);
       }
     };
 
-    loadData();
-  }, [userId, setFullProfile]);
+    if (userId) {
+      loadData();
+    }
+  }, [userId, setFullProfile]); // เพิ่ม dependency ให้ครบถ้วน
+
+  // --- CHANGED: กรองข้อมูลหนังสือตามประเภทของชั้น ---
+  // หมายเหตุ: แก้ไขค่า 'CURRENTLY_READING', 'FAVORITES', 'READ' ให้ตรงกับข้อมูลจริงจาก API ของคุณ
+  const currentlyReadingBooks = allshelf.filter(
+    (item) => item.shelfType === "CURRENTLY_READING",
+  );
+  const favoriteBooks = allshelf.filter(
+    (item) => item.shelfType === "WISHLIST"
+  );
+  const alreadyReadBooks = allshelf.filter(
+    (item) => item.shelfType === "READ"
+  );
+  // ตัวอย่างสำหรับ Wishlist จากข้อมูลที่คุณให้มา
+  const wishlistBooks = allshelf.filter(
+    (item) => item.shelfType === "WISHLIST"
+  );
+
 
   return (
     <>
@@ -101,7 +128,7 @@ function UserProfile() {
               <div className="flex gap-2">
                 <Badge
                   variant="outline"
-                  className="text-secondary-main subtitle-4 flex h-8 px-3"
+                  className="flex h-8 px-3 text-secondary-main subtitle-4"
                 >
                   <i className="fa-solid fa-edit"></i>
                   {fullProfile?.reviewCount}
@@ -109,83 +136,122 @@ function UserProfile() {
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="text-secondary-main subtitle-4 flex h-8 px-3"
+                  className="flex h-8 px-3 text-secondary-main subtitle-4"
                 >
                   <i className="fa-solid fa-heart"></i>
                   {fullProfile?._count?.likes}
                   <div className="">likes</div>
                 </Badge>
               </div>
-              <div className="bg-paper-elevation-8 shadow-card-3d text-text-secondary relative flex flex-col gap-8 rounded-lg p-6">
+              <div className="relative flex flex-col gap-8 p-6 rounded-lg bg-paper-elevation-8 shadow-card-3d text-text-secondary">
+
                 <Button
                   variant="link"
                   color="secondary"
                   size="medium"
-                  className="hover:text-primary-main absolute top-5 right-6 w-fit underline"
+                  className="absolute underline hover:text-primary-main top-5 right-6 w-fit"
                 >
-                  See all
+                  <Link to="/shelf">
+                    See all
+                  </Link>
                 </Button>
+
                 <div className="flex flex-col gap-4">
-                  <div className="subtitle-2 flex items-center gap-2">
+                  <div className="flex items-center gap-2 subtitle-2">
                     {" "}
                     <div className="text-[16px]">
                       <i className="fa-solid fa-glasses text-10"></i>
                     </div>
                     Currently Reading
                   </div>
-                  <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
-                    <img
-                      src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
-                      alt="Book Cover Title"
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="flex flex-wrap gap-4">
+                    {currentlyReadingBooks.length > 0 ? (
+                      currentlyReadingBooks.map((item) => (
+                        <div
+                          key={item.bookId}
+                          className="bg-secondary-lighter rounded shadow-book-lighting h-[128px] w-[84px]"
+                        >
+                          <img
+                            src={item.book?.edition?.[0]?.coverImage} // Correct ✅
+                            alt={item.book?.title}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="h-[128px] w-[84px] border rounded-lg flex items-center p-2 caption text-text-disabled">
+                        No Currently Reading books yet.
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <div className="subtitle-2 flex items-center gap-2">
-                    {" "}
+                  <div className="flex items-center gap-2 subtitle-2">
                     <div className="text-[16px]">
                       <i className="fa-solid fa-book-heart text-10"></i>
                     </div>
                     Favorites
                   </div>
-                  <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
-                    <img
-                      src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
-                      alt="Book Cover Title"
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="flex flex-wrap gap-4">
+                    {favoriteBooks.length > 0 ? (
+                      favoriteBooks.map((item) => (
+                        <div
+                          key={item.bookId}
+                          className="bg-secondary-lighter rounded shadow-book-lighting h-[128px] w-[84px]"
+                        >
+                          <img
+                            src={item.book?.edition?.[0]?.coverImage} // Correct ✅
+                            alt={item.book?.title}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="h-[128px] w-[84px] border rounded-lg flex items-center p-2 caption text-text-disabled">
+                        No favorite books yet.
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <div className="subtitle-2 flex items-center gap-2">
+                  <div className="flex items-center gap-2 subtitle-2">
                     {" "}
                     <div className="text-[16px]">
                       <i className="fa-solid fa-clock-rotate-left text-10"></i>
                     </div>
                     Already Read
                   </div>
-                  <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
-                    <img
-                      src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
-                      alt="Book Cover Title"
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="flex flex-wrap gap-4">
+                    {alreadyReadBooks.length > 0 ? (
+                      alreadyReadBooks.map((item) => (
+                        <div
+                          key={item.bookId}
+                          className="bg-secondary-lighter rounded shadow-book-lighting h-[128px] w-[84px]"
+                        >
+                          <img
+                            src={item.book?.edition?.[0]?.coverImage} // Correct ✅
+                            alt={item.book?.title}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="h-[128px] w-[84px] border rounded-lg flex items-center p-2 caption text-text-disabled">
+                        No Read books yet.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
               <div>
-                <div className="subtitle-3 flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-3 subtitle-3">
                   Interested In
                 </div>
-                <div className="flex gap-2 flex-wrap w-full">
+                <div className="flex flex-wrap w-full gap-2">
                   {fullProfile?.bookTagPreference &&
-                  fullProfile.bookTagPreference.length > 0 ? (
+                    fullProfile.bookTagPreference.length > 0 ? (
                     fullProfile.bookTagPreference.map((preference) => (
                       <Badge
                         key={preference.tag.id}
                         variant="secondary"
-                        className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3"
+                        className="h-8 px-3 text-secondary-lighter subtitle-4 rounded-pill"
                       >
                         {preference.tag.name}
                       </Badge>
@@ -201,9 +267,9 @@ function UserProfile() {
             </div>
 
             {/* Right Column */}
-            <div className="flex w-full flex-col gap-6">
+            <div className="flex flex-col w-full gap-6">
               <div className="flex w-full gap-6">
-                <div className="text-tertiary-dark border-tertiary-outlinedBorder bg-tertiary-selected flex flex-1 flex-col justify-end gap-1 rounded-lg border p-6">
+                <div className="flex flex-col justify-end flex-1 gap-1 p-6 border rounded-lg text-tertiary-dark border-tertiary-outlinedBorder bg-tertiary-selected">
                   <div className="subtitle-2">Daily book recommendations</div>
                   <div className="body-2">
                     Allow our AI to recommend books tailored just for you.
@@ -218,7 +284,7 @@ function UserProfile() {
                     Surprise Me
                   </Button>
                 </div>
-                <div className="text-secondary-dark border-secondary-outlinedBorder bg-secondary-selected flex flex-1 flex-col justify-end gap-1 rounded-lg border p-6">
+                <div className="flex flex-col justify-end flex-1 gap-1 p-6 border rounded-lg text-secondary-dark border-secondary-outlinedBorder bg-secondary-selected">
                   <div className="subtitle-2">Find a book to review?</div>
                   <div className="body-2">
                     Share your insights, earn your share!
@@ -235,7 +301,7 @@ function UserProfile() {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div className="subtitle-1 text-text-secondary w-full">
+                <div className="w-full subtitle-1 text-text-secondary">
                   Activities
                 </div>
                 <div className="w-[200px]">
@@ -253,7 +319,7 @@ function UserProfile() {
                   </SelectStyled>
                 </div>
               </div>
-              <div className="bg-paper-elevation-8 shadow-card-3d rounded-lg p-6">
+              <div className="p-6 rounded-lg bg-paper-elevation-8 shadow-card-3d">
                 <div className="flex flex-col items-center gap-4 p-4">
                   <img
                     src={nothingPic}

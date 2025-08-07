@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Person, ReviewButton, Star } from "../icons/Index";
 import { Input } from "@/components/ui/input";
 import bookManageStore from "../stores/booksManageStore";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { InputX } from "@/components/ui/inputX";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,42 +24,92 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { StarIcon } from "lucide-react";
-import { createRating } from "../api/rateApi";
 import { StarRating } from "../components/StarRating";
+import { LoaderCircle, Search } from "lucide-react";
+import rateManageStore from "../stores/rateStore";
 
 function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
   const getBookByAI = bookManageStore((state) => state.getBookByAI);
+  const getBookByTag = bookManageStore((state) => state.getBookByTag);
   const books = bookManageStore((state) => state.books);
+  const addRate = rateManageStore((state) => state.rate);
+  const receiveData = useLocation();
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
+  const [landingSearch, setLandingSearch] = useState("");
+  const [searching, setSearching] = useState(false);
+
+  const recommend = receiveData?.state?.recommendPrompt;
+  console.log("recommend", recommend);
+
+  // Got data from search landing
+  const data = receiveData?.state?.prompt;
+  console.log("data", data);
 
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
 
   const searchByAI = async () => {
+    setSearching(true);
     try {
-      const data = document.getElementById("SearchBook");
-      console.log("data.value", data.value);
+      const data = document.getElementById("SearchAI");
       setAiSearch(data.value);
     } catch (error) {
       console.log(error);
+    } finally {
+      setSearching(false);
     }
   };
+
+  const clearFilter = async () => {
+    const data = document.getElementById("SearchAI");
+    data.value = "";
+    await getBooks();
+  };
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const run = async () => {
-      if (!aiSearch) {
+      if (!(aiSearch || data || recommend)) {
+        console.log("1");
         await getBooks();
       } else {
         await getBookByAI(aiSearch);
       }
+      // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
     };
     run();
   }, [aiSearch, getBooks, getBookByAI]);
+
+  const handleRating = async (e, bookId) => {
+    e.preventDefault();
+    try {
+      if (rating === 0) {
+        toast.error("Please select a star rating first.");
+        return;
+      }
+
+      // TODO: ใส่โค้ดเรียก API สำหรับส่งคะแนนที่นี่
+      // ตัวอย่าง: await api.rateBook(bookId, rating);
+      console.log(`Submitting rating ${rating} for book ${bookId}`);
+
+      toast.success("Thank you for your rating!", {
+        description: "Your feedback helps other readers.",
+      });
+
+      // รีเซ็ตค่าคะแนนหลังจากการส่งสำเร็จ
+      setRating(0);
+      setHoverRating(0);
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating.", {
+        description: "Please try again later.",
+      });
+    }
+  };
 
   const handleRatingSubmitted = () => {
     console.log("Rating submitted! Closing dialog and refreshing books.");
@@ -68,7 +118,6 @@ function Home() {
     getBooks(); // ดึงข้อมูลหนังสือใหม่เพื่ออัปเดต averageRating
   };
 
-  console.log("Books", books);
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex justify-center gap-4 pt-8 pb-24">
       <div className="flex w-fit flex-col gap-4 p-4">
@@ -107,15 +156,26 @@ function Home() {
           </SelectStyled>
           <div className="flex flex-col gap-2">
             <Label>Prompt</Label>
-            <Textarea placeholder="Start your AI-assisted search. " />
+            <Textarea
+              id="SearchAI"
+              placeholder="Start your AI-assisted search. "
+            />
           </div>
           <div className="flex flex-col gap-3">
-            <Button variant="outlined" color="secondary">
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => clearFilter()}
+            >
               Clear Filter
             </Button>
             <Button onClick={() => searchByAI()}>
-              <i class="fa-solid fa-magnifying-glass"></i>
-              Search
+              {searching ? (
+                <LoaderCircle className="animate-spin" />
+              ) : (
+                <Search />
+              )}
+              {searching ? "Searching..." : "Search"}
             </Button>
           </div>
         </div>

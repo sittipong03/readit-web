@@ -1,13 +1,9 @@
-import axios from "axios";
+import api from "../utils/api"; // 1. เปลี่ยนมาใช้ api กลาง
 
-export const productApi = axios.create({
-  baseURL: "http://localhost:6500/api/product"
-});
+// Endpoint ที่ต้องใช้สิทธิ์ Admin (เช่น createProduct)
+// จะถูกจัดการโดย Interceptor และ Middleware ที่เราทำไว้
+export const createProduct = (body) => api.post(`/product/`, body);
 
-// const addToken = (token) => ({
-//   headers : {Authorization : `Bearer ${token}`}
-// });
-
-export const createProduct = (body) => productApi.post(`/`, body);
-export const getAllProduct = () => productApi.get(`/`);
-export const getProductId = (id) => productApi.get(`/by-book/${id}`);
+// Endpoint ที่ไม่ต้องยืนยันตัวตน
+export const getAllProduct = () => api.get(`/product/`);
+export const getProductId = (id) => api.get(`/product/by-book/${id}`);

@@ -1,12 +1,10 @@
-import axios from "axios";
-import axiosInstance from "../utils/api";
+import api from "../utils/api"; // 1. เปลี่ยนมาใช้ api กลาง
 
-export const bookApi = axios.create({
-  baseURL: "http://localhost:6500/api/book",
-});
+// Endpoint ที่ต้องยืนยันตัวตน (เช่น wishlist) จะทำงานได้ทันที
+export const getUserWishlist = () => api.get("/book/wishlist");
 
-export const getUserWishlist = () => axiosInstance.get("/book/wishlist");
-export const fetchAllBooks = () => bookApi.get("/");
-export const fetchBookById = (id) => bookApi.get(`/${id}`);
-export const fetchAiSuggestion = (id) => bookApi.get(`/${id}/ai-suggestion`);
-export const fetchBookByAI = (body) => bookApi.post("/searchAI", body);
+// Endpoint ที่ไม่ต้องยืนยันตัวตนก็ยังใช้ได้เหมือนเดิม
+export const fetchAllBooks = () => api.get("/book/");
+export const fetchBookById = (id) => api.get(`/book/${id}`);
+export const fetchAiSuggestion = (id) => api.get(`/book/${id}/ai-suggestion`);
+export const fetchBookByAI = (body) => api.post("/book/searchAI", body);

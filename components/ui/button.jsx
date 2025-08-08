@@ -16,9 +16,9 @@ const buttonVariants = cva(
         link: "bg-transparent underline-offset-4 hover:underline",
       },
       size: {
-        small: "h-[28px] px-3 button-small [&_svg]:text-[14px] ",
-        medium: "h-[36px] px-4 button-medium [&_svg]:text-[15px] ",
-        large: "h-[44px] px-6 button-large [&_svg]:text-[16px] ",
+        small: "h-[28px] px-3 button-small [&_svg]:size-3.5 ",
+        medium: "h-[36px] px-4 button-medium [&_svg]:size-4 ",
+        large: "h-[44px] px-6 button-large [&_svg]:size-4.5",
         icon: "h-9 w-9",
       },
       color: {

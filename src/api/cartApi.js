@@ -1,15 +1,6 @@
-import axios from "axios";
+import api from "../utils/api"; // 1. เปลี่ยนมาใช้ api กลาง
 
-export const cartApi = axios.create({
-  baseURL: "http://localhost:6500/api/cart",
-});
 
-const addToken = (token) => ({
-  headers: { Authorization: `Bearer ${token}` },
-});
-
-export const getCart = (token) => cartApi.get("/", addToken(token));
-export const addToCart = (body, token) =>
-  cartApi.post("/", body, addToken(token));
-export const editCart = (body, token) =>
-  cartApi.patch("/", body, addToken(token));
+export const getCart = () => api.get("/cart/");
+export const addToCart = (body) => api.post("/cart/", body);
+export const editCart = (body) => api.patch("/cart/", body);

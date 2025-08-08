@@ -10,7 +10,6 @@ const customStorage = {
   },
   setItem: (name, value) => {
     const { rememberMe } = value.state;
-
     if (rememberMe) {
       localStorage.setItem(name, JSON.stringify(value));
       sessionStorage.removeItem(name);
@@ -28,77 +27,72 @@ const customStorage = {
 const useUserStore = create(
   persist(
     (set, get) => ({
+      // State
       userId: null,
       userName: null,
       role: null,
-      avatarUrl: "",
-      token: "",
+      avatarUrl: null,
+      token: null,
       fullProfile: null,
       isLoading: true,
       rememberMe: false,
 
-      login: async (input) => {
-        const { rememberMe, ...credentials } = input;
-        const result = await authApi.loginUser(credentials);
-        console.log("from login ", result);
-        // set({
-        //   token: result.data.accessToken,
-        //   userId: result.data.userId,
-        //   userName: result.data.user,
-        //   role: result.data.role,
-        // });
-        set({
-          token: result.data.accessToken,
-          userId: result.data.userId,
-          userName: result.data.user,
-          role: result.data.role,
-          avatarUrl: result.data.avatarUrl,
-          rememberMe: !!rememberMe,
-        });
-        return result;
-      },
-
-      setTokenFromGoogle: async (googletoken) => {
-        // 1. ตั้งค่า token ใน state ทันที
-        set({ token: googletoken, rememberMe: true }); // Social login มักจะให้ remember ไว้เลย
-
+      // Actions
+      fetchUserProfile: async () => {
         try {
-          // 2. ใช้ token ใหม่ไปยิง API /me เพื่อดึงข้อมูล User ที่สมบูรณ์
           const res = await authApi.getMe();
           const userData = res.data.result;
 
-          // 3. อัปเดตข้อมูล user ทั้งหมดลงใน store
           set({
             userId: userData.id,
             userName: userData.name,
             role: userData.role,
+            avatarUrl: userData.avatarUrl,
+            fullProfile: userData,
+            isLoading: false,
           });
         } catch (error) {
-          console.error("Failed to fetch user data after Google login:", error);
-          // ถ้าล้มเหลว ให้ logout เพื่อเคลียร์ token ที่อาจจะใช้ไม่ได้
+          console.error("Failed to fetch user profile:", error);
           get().logout();
         }
       },
 
-      // Action สำหรับการอัปเดต profile ทั้งหมด
-      setFullProfile: (profileData) =>
-        set({ fullProfile: profileData, isLoading: false }),
+      setFullProfile: (profileData) => {
+        set({ fullProfile: profileData });
+      },
 
-      logout: () =>
+      login: async (input) => {
+        const { rememberMe, ...credentials } = input;
+        const result = await authApi.loginUser(credentials);
         set({
-          token: "",
+          token: result.data.accessToken,
+          rememberMe: !!rememberMe,
+          isLoading: true,
+        });
+        await get().fetchUserProfile();
+      },
+
+      setTokenFromGoogle: async (googletoken) => {
+        set({ token: googletoken, rememberMe: true, isLoading: true });
+        await get().fetchUserProfile();
+      },
+
+      logout: () => {
+        set({
+          token: null,
           userId: null,
           userName: null,
           role: null,
-          avatarUrl: "",
+          avatarUrl: null,
           rememberMe: false,
           fullProfile: null,
-          isLoading: true,
-        }),
+          isLoading: false,
+        });
+      },
     }),
     {
       name: "userState",
-      // storage: customStorage,
+      storage: customStorage,
     },
   ),
 );

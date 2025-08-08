@@ -215,37 +215,52 @@ function Home() {
         {/* --- แสดงผลหนังสือจาก `books` โดยตรง --- */}
         <div className="flex flex-row flex-wrap gap-5 rounded-md">
           {books.map((book, index) => {
-            const cardContent = (
+            // Determine if this is the last element
+            const isLastElement = books.length === index + 1;
+
+            return (
               <div
+                // The key is always on the root element
                 key={book.id}
+                // Conditionally apply the ref to the last element
+                ref={isLastElement ? lastBookElementRef : null}
                 className="bg-secondary-lighter border-divider relative w-[180px] overflow-hidden rounded-md border pb-15 transition-all hover:scale-105"
               >
+                {/* All the original card content goes directly inside here */}
                 <Link to={`/book/${book.id}`}>
                   <div className="bg-secondary-hover flex h-[162px] items-center justify-center">
                     <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
                       <img
-                        src={` ${book?.edition[0]?.coverImage} || "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg`}
-                        alt="Book Cover Title"
+                        src={
+                          book?.edition[0]?.coverImage ||
+                          "https://via.placeholder.com/84x128"
+                        }
+                        alt={book.title}
                         className="h-full w-full object-cover"
                       />
                     </div>
                   </div>
                 </Link>
                 <div className="flex flex-col p-2">
-                  <div className="subtitle-3 text-text-primary truncate max-h-48">
+                  <div className="subtitle-3 text-text-primary max-h-48 truncate">
                     {book.title}
                   </div>
-                  <div className="body-3 text-text-secondary flex-1 truncate">
+                  <div className="body-3 text-text-disabled flex-1 truncate">
                     {book?.Author?.name}
                   </div>
                   <div className="absolute bottom-2 left-0 w-full px-2">
                     <div className="flex gap-0">
                       <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
-                        <i className="fa-solid fa-star"></i>
-                        <p className="text-warning-main">
-                          {book.averageRating}
+                        <Star
+                          className="fill-warning-main text-warning-main"
+                          size={14}
+                        />
+                        <p className="text-warning-main font-semibold">
+                          {book.averageRating.toFixed(1)}
                         </p>
-                        <div>({formatNumber(book.ratingCount)})</div>
+                        <div className="text-text-disabled">
+                          ({formatNumber(book.ratingCount)})
+                        </div>
                       </Badge>
                       <Dialog
                         open={
@@ -330,12 +345,6 @@ function Home() {
                 </div>
               </div>
             );
-
-            // กำหนด ref ให้กับ element สุดท้ายเพื่อ trigger infinite scroll
-            if (books.length === index + 1) {
-              return <div ref={lastBookElementRef}>{cardContent}</div>;
-            }
-            return cardContent;
           })}
         </div>
 

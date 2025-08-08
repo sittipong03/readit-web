@@ -57,11 +57,9 @@ const useUserStore = create(
         }
       },
 
-      // --- FIX: เพิ่ม Action ที่ขาดไป ---
       setFullProfile: (profileData) => {
         set({ fullProfile: profileData });
       },
-      // ------------------------------------
 
       login: async (input) => {
         const { rememberMe, ...credentials } = input;

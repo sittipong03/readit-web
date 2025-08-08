@@ -104,8 +104,8 @@ function ButtonTest() {
 
         <div className="h6 text-text-secondary">Buttons</div>
         <div className="flex flex-wrap gap-4">
-          <Button variant="contained" className="rounded-md">
-            <SparklesIcon /> Test{" "}
+          <Button variant="contained" className="rounded-md ">
+            <SparklesIcon/> Test{" "}
           </Button>
           <Button variant="contained">
             <i className="fa-solid fa-sparkles"></i> Test{" "}

@@ -36,11 +36,23 @@ function Home() {
   const receiveData = useLocation();
   const [selectBook, setSelectBook] = useState(null);
   const [aiSearch, setAiSearch] = useState("");
+  const [aiRecommand, setAiRecommand] = useState(false);
   const [landingSearch, setLandingSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
   const recommend = receiveData?.state?.recommendPrompt;
   console.log('recommend', recommend)
+  let gettagsFromUser = []
+  let userTag = ""
+  for (let i = 0; i < recommend.length; i++){
+    gettagsFromUser.push(recommend[i].tag.name)
+    userTag += (recommend[i].tag.name + " ") 
+  }
+
+  // console.log('userTag', userTag)
+
+  // setAiRecommand(gettagsFromUser)
+  console.log(gettagsFromUser);
 
   // Got data from search landing
   const data = receiveData?.state?.prompt;
@@ -70,16 +82,18 @@ function Home() {
 
   useEffect(() => {
     const run = async () => {
-      // if (!(aiSearch || data || recommend)) {
-      //   console.log("1");
-      //   await getBooks();
-      // } else if (aiSearch || data ) {
-      //   await getBookByAI(aiSearch || data )
-      // } else{
-      //   await getBookByTag(recommend)
-      // }
+      if (!(aiSearch || data || recommend)) {
+        console.log("1");
+        await getBooks();
+      } else if (aiSearch || data ) {
+        console.log("2");
+        await getBookByAI(aiSearch || data )
+      } else{
+        console.log("3");
+        await getBookByTag(userTag)
+      }
       // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
-      await getBookByTag(recommend)
+      // await getBookByTag(recommend)
     }
     run();
   }, [aiSearch]);

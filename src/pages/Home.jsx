@@ -275,7 +275,7 @@ function Home() {
                         }}
                       >
                         <DialogTrigger asChild>
-                          {book.rating && book.rating.length > 0 ? (
+                          {book.rating && book.rating?.length > 0 ? (
                             // ---- กรณีที่เคยให้คะแนนแล้ว ----
                             <Badge
                               onClick={() => {
@@ -320,7 +320,7 @@ function Home() {
                             <StarRating
                               bookId={selectedBookForRating?.id}
                               onRatingSubmitted={handleRatingSubmitted}
-                              rated={book?.rating[0]?.rating}
+                              rated={book?.rating?.[0]?.rating}
                             />
                           </div>
                         </DialogContent>

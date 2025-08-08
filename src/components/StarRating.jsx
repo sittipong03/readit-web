@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { addRate } from "../api/rateApi";
 import { toast } from "sonner";
 
-export const StarRating = ({ bookId, onRatingSubmitted }) => {
-  const [rating, setRating] = useState(0);
+export const StarRating = ({ bookId, onRatingSubmitted, rated = 0 }) => {
+  const [rating, setRating] = useState(rated);
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

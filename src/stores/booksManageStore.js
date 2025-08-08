@@ -6,6 +6,7 @@ import {
   fetchBookByAI,
   fetchBookById,
   fetchBookByTag,
+  fetchBooks,
 } from "../api/bookApi.js";
 
 const bookManageStore = create((set, get) => ({
@@ -13,6 +14,12 @@ const bookManageStore = create((set, get) => ({
   tags: [],
   book: null,
   userWishlist: [],
+  page: 1,
+  hasNextPage: true,
+  isFetching: false,
+  sortBy: "popularity",
+  currentSearchType: "normal", // 'normal', 'ai', 'tag'
+  currentSearchQuery: "",
   getUserWishlist: async () => {
     const result = await getUserWishlist();
     console.log("result-------", result);
@@ -43,20 +50,20 @@ const bookManageStore = create((set, get) => ({
     // console.log(data);
     const result = await fetchBookByTag({ books: data });
     console.log("result", result);
-    set({ books: result.data.books});
+    set({ books: result.data.books });
     return result;
   },
   getAiSuggestion: async (id) => {
     try {
       const result = await fetchAiSuggestion(id);
-      console.log('id', id)
+      console.log("id", id);
       set((state) => ({
         book: {
           ...state.book,
           aiSuggestion: result.data.suggestion,
         },
       }));
-      get().getBookById(id)
+      get().getBookById(id);
       return result;
     } catch (error) {
       console.error("Failed to fetch AI suggestion:", error);
@@ -67,6 +74,103 @@ const bookManageStore = create((set, get) => ({
         },
       }));
     }
+  },
+  setSortByAndFetch: async (newSortBy) => {
+    set({
+      books: [],
+      page: 1,
+      sortBy: newSortBy,
+      isFetching: true,
+    });
+    try {
+      const response = await api.get(
+        `/book?sortBy=${newSortBy}&page=1&limit=24`,
+      );
+      set({
+        books: response.data.books,
+        hasNextPage: response.data.pagination.hasNextPage,
+        isFetching: false,
+      });
+    } catch (error) {
+      console.error("Failed to fetch initial books:", error);
+      set({ isFetching: false });
+    }
+  },
+  fetchNewBooks: async (options = {}) => {
+    // กำหนดค่า default และรับค่าใหม่
+    const { type = "normal", query = "", sortBy = get().sortBy } = options;
+
+    set({ isFetching: true, books: [], page: 1, hasNextPage: true });
+
+    try {
+      let response;
+      if (type === "ai") {
+        response = await fetchBookByAI({ books: query });
+        set({ currentSearchType: "ai", currentSearchQuery: query });
+      } else if (type === "tag") {
+        response = await fetchBookByTag({ books: query });
+        set({ currentSearchType: "tag", currentSearchQuery: query });
+      } else {
+        // การค้นหาปกติ (พร้อม sorting)
+        response = await fetchBooks({ sortBy, page: 1 });
+        set({ currentSearchType: "normal", sortBy });
+      }
+
+      set({
+        books: response.data.books,
+        hasNextPage: response.data.pagination?.hasNextPage ?? false, // ใช้ optional chaining และกำหนด default
+      });
+    } catch (error) {
+      console.error(`Failed to fetch new books for type "${type}":`, error);
+      set({ hasNextPage: false }); // หยุดการโหลดเมื่อมี error
+    } finally {
+      set({ isFetching: false });
+    }
+  },
+  fetchMoreBooks: async () => {
+    const {
+      isFetching,
+      hasNextPage,
+      page,
+      books,
+      currentSearchType,
+      currentSearchQuery,
+      sortBy,
+    } = get();
+
+    if (isFetching || !hasNextPage) return;
+
+    set({ isFetching: true });
+    const nextPage = page + 1;
+
+    try {
+      let response;
+      // การโหลดเพิ่มจะขึ้นอยู่กับประเภทการค้นหาล่าสุด
+      if (currentSearchType === "normal") {
+        response = await fetchBooks({ sortBy, page: nextPage });
+      } else {
+        // Backend ปัจจุบันของคุณยังไม่รองรับ pagination สำหรับ AI/Tag search
+        // ดังนั้นส่วนนี้จะยังไม่ทำงาน แต่เตรียมโครงสร้างไว้
+        console.log("Pagination for AI/Tag search is not yet supported.");
+        set({ hasNextPage: false });
+        return;
+      }
+
+      set({
+        books: [...books, ...response.data.books],
+        page: nextPage,
+        hasNextPage: response.data.pagination.hasNextPage,
+      });
+    } catch (error) {
+      console.error("Failed to fetch more books:", error);
+      set({ hasNextPage: false });
+    } finally {
+      set({ isFetching: false });
+    }
+  },
+  setSortBy: (newSortBy) => {
+    set({ sortBy: newSortBy });
+    get().fetchNewBooks({ type: "normal", sortBy: newSortBy });
   },
 }));
 

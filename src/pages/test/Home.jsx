@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import bookManageStore from "../stores/booksManageStore";
@@ -33,70 +33,69 @@ function Home() {
   const getBooks = bookManageStore((state) => state.getAllBooks);
   const getBookByAI = bookManageStore((state) => state.getBookByAI);
   const getBookByTag = bookManageStore((state) => state.getBookByTag);
-  const {
-    books,
-    hasNextPage,
-    isFetching,
-    sortBy,
-    fetchNewBooks,
-    fetchMoreBooks,
-    setSortBy,
-  } = bookManageStore();
-
+  const books = bookManageStore((state) => state.books);
   const receiveData = useLocation();
-
-  // Initial Fetch ---
-  useEffect(() => {
-    const landingPageQuery = receiveData?.state?.prompt;
-    if (landingPageQuery) {
-      fetchNewBooks({ type: "ai", query: landingPageQuery });
-    } else {
-      fetchNewBooks({ type: "normal", sortBy: "popularity" });
-    }
-  }, []);
-
-  // --- Infinite Scroll Logic ---
-  const observer = useRef();
-  const lastBookElementRef = useCallback(
-    (node) => {
-      if (isFetching) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchMoreBooks();
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [isFetching, hasNextPage, fetchMoreBooks],
-  );
-
-  // --- Handlers สำหรับ UI ---
-  const handleSortChange = (newSortValue) => {
-    setSortBy(newSortValue);
-  };
-
-  const handleSearchByAI = () => {
-    const query = document.getElementById("SearchAI").value;
-    if (query) {
-      fetchNewBooks({ type: "ai", query });
-    }
-  };
-
-  const handleClearFilter = () => {
-    const searchInput = document.getElementById("SearchAI");
-    if (searchInput) searchInput.value = "";
-    // กลับไปค้นหาแบบปกติ
-    fetchNewBooks({ type: "normal", sortBy: "popularity" });
-  };
-
+  const [selectBook, setSelectBook] = useState(null);
+  const [aiSearch, setAiSearch] = useState("");
+  const [landingSearch, setLandingSearch] = useState("");
+  const [searching, setSearching] = useState(false);
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
-  const handleRatingSubmitted = () => {
-    setIsRatingDialogOpen(false);
-    setSelectedBookForRating(null);
-    fetchNewBooks({ type: "normal", sortBy });
+
+  const { userId, token } = useUserStore();
+
+  const recommend = receiveData?.state?.recommendPrompt;
+  console.log("recommend", recommend);
+
+  // Got data from search landing
+  const data = receiveData?.state?.prompt;
+  console.log("data", data);
+  console.log("userId", userId);
+
+  const searchByAI = async () => {
+    setSearching(true);
+    try {
+      const data = document.getElementById("SearchAI");
+      setAiSearch(data.value);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSearching(false);
+    }
   };
+
+  const clearFilter = async () => {
+    const data = document.getElementById("SearchAI");
+    data.value = "";
+    await getBooks();
+  };
+
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+
+  useEffect(() => {
+    const run = async () => {
+      if (!(aiSearch || data || recommend)) {
+        console.log("1");
+        await getBooks();
+      } else if (aiSearch || data) {
+        await getBookByAI(aiSearch || data);
+      } else {
+        await getBookByTag(recommend);
+      }
+      // await (!aiSearch ? getBooks() : getBookByAI(aiSearch));
+    };
+    run();
+  }, [aiSearch, getBooks, getBookByAI]);
+
+  const handleRatingSubmitted = () => {
+    console.log("Rating submitted! Closing dialog and refreshing books.");
+    setIsRatingDialogOpen(false); // ปิด Dialog
+    setSelectedBookForRating(null); // ล้างค่าหนังสือที่เลือก
+    getBooks(); // ดึงข้อมูลหนังสือใหม่เพื่ออัปเดต averageRating
+  };
+
+  console.log("books:", books);
 
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex justify-center gap-4 pt-8 pb-24">
@@ -115,15 +114,11 @@ function Home() {
             label="Sort by:"
             variant="outlined"
             size="small"
-            defaultValue="popularity"
-            value={sortBy}
-            onValueChange={handleSortChange}
+            defaultValue="option1"
           >
             <SelectContent>
-              <SelectItem value="popularity">Popularity</SelectItem>
-              <SelectItem value="rating">Average Rating</SelectItem>
-              <SelectItem value="title_asc">Title (A-Z)</SelectItem>
-              <SelectItem value="title_desc">Title (Z-A)</SelectItem>
+              <SelectItem value="option1">Popularity</SelectItem>
+              <SelectItem value="option2">Reviewed</SelectItem>
             </SelectContent>
           </SelectStyled>
           <SelectStyled
@@ -139,38 +134,37 @@ function Home() {
             </SelectContent>
           </SelectStyled>
           <div className="flex flex-col gap-2">
-            <Label>AI-Powered Prompt</Label>
+            <Label>Prompt</Label>
             <Textarea
               id="SearchAI"
-              placeholder="e.g., A thriller set in snowy mountains with a detective who has a dark past..."
+              placeholder="Start your AI-assisted search. "
             />
           </div>
           <div className="flex flex-col gap-3">
             <Button
               variant="outlined"
               color="secondary"
-              onClick={handleClearFilter}
+              onClick={() => clearFilter()}
             >
               Clear Filter
             </Button>
-            <Button onClick={handleSearchByAI} disabled={isFetching}>
-              {isFetching ? (
+            <Button onClick={() => searchByAI()}>
+              {searching ? (
                 <LoaderCircle className="animate-spin" />
               ) : (
                 <Search />
               )}
-              {isFetching ? "Searching..." : "Search"}
+              {searching ? "Searching..." : "Search"}
             </Button>
           </div>
         </div>
       </div>
-
-      {/* Main Content */}
       <div className="flex min-h-screen w-full max-w-lg flex-col gap-6 p-10">
+        {/* <Person className="w-50 mb-15" /> */}
         <div className="flex w-full items-end">
           <div className="flex flex-1 flex-col gap-0">
             <h1 className="subtitle-1">Browse a book</h1>
-            <p className="text-text-disabled text-sm">{`${books.length} results shown`}</p>
+            <p className="text-text-disabled caption">{`${books?.length} Result was found`}</p>
           </div>
           <div className="flex items-center gap-2">
             <h1 className="subtitle-4">Can’t find the book?</h1>
@@ -211,16 +205,22 @@ function Home() {
             </Dialog>
           </div>
         </div>
-
-        {/* --- แสดงผลหนังสือจาก `books` โดยตรง --- */}
         <div className="flex flex-row flex-wrap gap-5 rounded-md">
-          {books.map((book, index) => {
-            const cardContent = (
+          {books.map((book) => {
+            const hdlSelectBook = () => {
+              setSelectBook(book.id);
+            };
+            return (
               <div
                 key={book.id}
                 className="bg-secondary-lighter border-divider relative w-[180px] overflow-hidden rounded-md border pb-15 transition-all hover:scale-105"
               >
-                <Link to={`/book/${book.id}`}>
+                <Link
+                  to={{
+                    pathname: `/book/${book.id}`,
+                    state: { id: selectBook },
+                  }}
+                >
                   <div className="bg-secondary-hover flex h-[162px] items-center justify-center">
                     <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
                       <img
@@ -232,12 +232,18 @@ function Home() {
                   </div>
                 </Link>
                 <div className="flex flex-col p-2">
-                  <div className="subtitle-3 text-text-primary truncate max-h-48">
+                  {/* <Button
+                    variant="text"
+                    color="neutral"
+                    size="icon"
+                    className="absolute text-action-active-icon top-1 left-1 w-7 h-7 opacity-60"
+                  >
+                    <i className="fa-regular fa-bookmark"></i>
+                  </Button> */}
+                  <div className="subtitle-3 text-text-primary">
                     {book.title}
                   </div>
-                  <div className="body-3 text-text-secondary flex-1 truncate">
-                    {book?.Author?.name}
-                  </div>
+                  <div className="body-3 text-text-secondary flex-1">{`${book?.Author?.name}`}</div>
                   <div className="absolute bottom-2 left-0 w-full px-2">
                     <div className="flex gap-0">
                       <Badge className="text-warning-main body-2 h-5 min-w-5 rounded-sm bg-transparent px-1 tabular-nums transition-all">
@@ -321,6 +327,7 @@ function Home() {
                       <Link
                         to={{
                           pathname: `/book/${book.id}`,
+                          state: { id: selectBook },
                         }}
                       >
                         Write a review
@@ -330,21 +337,7 @@ function Home() {
                 </div>
               </div>
             );
-
-            // กำหนด ref ให้กับ element สุดท้ายเพื่อ trigger infinite scroll
-            if (books.length === index + 1) {
-              return <div ref={lastBookElementRef}>{cardContent}</div>;
-            }
-            return cardContent;
           })}
-        </div>
-
-        {/* แสดงสถานะ Loading และ End of Results --- */}
-        <div className="flex w-full justify-center py-8">
-          {isFetching && <LoaderCircle className="animate-spin" />}
-          {!isFetching && !hasNextPage && books.length > 0 && (
-            <p className="text-text-disabled">End of results.</p>
-          )}
         </div>
       </div>
     </div>

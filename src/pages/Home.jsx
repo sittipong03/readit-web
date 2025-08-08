@@ -44,15 +44,55 @@ function Home() {
   } = bookManageStore();
 
   const receiveData = useLocation();
+  const [selectBook, setSelectBook] = useState(null);
+  const [aiSearch, setAiSearch] = useState("");
+  const [aiRecommand, setAiRecommand] = useState(false);
+  const [landingSearch, setLandingSearch] = useState("");
+  const [searching, setSearching] = useState(false);
+
+  // const recommend = receiveData?.state?.recommendPrompt;
+  // console.log('recommend', recommend)
+  // let gettagsFromUser = []
+  // let userTag = ""
+  // for (let i = 0; i < recommend?.length; i++){
+  //   gettagsFromUser.push(recommend[i].tag.name)
+  //   userTag += (recommend[i].tag.name + " ") 
+  // }
+
+  // Got data from search landing
+  // const data = receiveData?.state?.prompt;
+  // console.log('data', data)
+
+
+  // const searchByAI = async () => {
+  //   setSearching(true)
+  //   try {
+  //     const data = document.getElementById("SearchAI");
+  //     setAiSearch(data.value)
+  //   } catch (error) {
+  //     console.log(error)
+  //   } finally {
+  //     setSearching(false)
+  //   }
+  // }
+
+  // const clearFilter = async () => {
+  //   const data = document.getElementById("SearchAI");
+  //   data.value = ""
+  //   await getBooks();
+  // }
+
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   // Initial Fetch ---
-  useEffect(() => {
+  useEffect(() => {  
     const landingPageQuery = receiveData?.state?.prompt;
     if (landingPageQuery) {
       fetchNewBooks({ type: "ai", query: landingPageQuery });
     } else {
       fetchNewBooks({ type: "normal", sortBy: "popularity" });
-    }
+    } 
   }, []);
 
   // --- Infinite Scroll Logic ---

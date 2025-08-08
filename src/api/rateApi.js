@@ -1,11 +1,9 @@
-import axios from "axios";
+import api from "../utils/api";
 
-export const rateApi = axios.create({
-  baseURL: "http://localhost:6500/api/rate",
-});
-
-const addToken = (token) => ({
-  headers: { Authorization: `Bearer ${token}` },
-});
-
-export const addRate = (id, body, token) => rateApi.post(`/${id}/rating`,body, addToken(token))
+export const addRate = ({ bookId, rating }) => {
+  if (!bookId || typeof bookId === 'object') {
+    console.error("Invalid bookId provided to createRating:", bookId);
+    return Promise.reject(new Error("Invalid Book ID"));
+  }
+  return api.post(`/rate/${bookId}`, { rating });
+};

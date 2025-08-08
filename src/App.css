@@ -1,0 +1,48 @@
+/* Lava Lamp Effect */
+.lava-lamp-background {
+  --color-1: hsl(318, 85%, 13%);
+  --color-2: #5c0c81;
+  --color-3: #22044F;
+  --color-bg: #111827; 
+
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  z-index: 5; 
+}
+
+/* สร้าง pseudo-element เพื่อเป็น Layer ของ Gradient */
+.lava-lamp-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1; /* ส่งไปอยู่ข้างหลังสุด */
+
+  /* สร้าง "เซลล์" ด้วย radial-gradient หลายๆ อัน */
+  background-image:
+    radial-gradient(circle at 20% 25%, var(--color-1), transparent 25%),
+    radial-gradient(circle at 80% 15%, var(--color-2), transparent 25%),
+    radial-gradient(circle at 40% 80%, var(--color-3), transparent 25%);
+
+  /* ทำให้เซลล์เบลอและฟุ้ง */
+  filter: blur(80px);
+
+  /* กำหนด Animation */
+  animation: lava-animation 20s ease-in-out infinite alternate;
+}
+
+/* สร้างการเคลื่อนไหว */
+@keyframes lava-animation {
+  0% {
+    transform: scale(1) translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) translate(40px, -60px) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) translate(0, 0) rotate(360deg);
+  }
+}

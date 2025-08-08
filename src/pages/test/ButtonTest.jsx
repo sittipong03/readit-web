@@ -41,6 +41,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MultiSelectStyled } from "@/components/ui/multi-select";
 
 const components = [
   {
@@ -83,10 +84,27 @@ const components = [
 //http://localhost:5173/buttontest
 
 function ButtonTest() {
+  const [selectedGenres, setSelectedGenres] = React.useState([]);
+
+  const genreOptions = [
+  { value: "drama", label: "Drama" },
+  { value: "horror", label: "Horror" },
+  { value: "comedy", label: "Comedy" },
+  { value: "sci-fi", label: "Sci-Fi" },
+  { value: "romance", label: "Romance" },
+  { value: "action", label: "Action" },
+  { value: "thriller", label: "Thriller" },
+  { value: "fantasy", label: "Fantasy" },
+  { value: "animation", label: "Animation" },
+  { value: "documentary", label: "Documentary" },
+  { value: "mystery", label: "Mystery" },
+  { value: "musical", label: "Musical" },
+];
+
   return (
-    <div className="w-full dark">
-      <div className="flex flex-col items-center min-h-screen gap-10 p-8 bg-paper-elevation-6">
-        <div className="flex items-center gap-4 text-center text-text-primary w-fit">
+    <div className="dark w-full">
+      <div className="bg-paper-elevation-6 flex min-h-screen flex-col items-center gap-10 p-8">
+        <div className="text-text-primary flex w-fit items-center gap-4 text-center">
           <div className="display-3">DesignSystem Test</div>
           <Button variant="outlined" asChild color="tertiary">
             <a href="https://lucide.dev/icons/" target="_blank">
@@ -235,7 +253,7 @@ function ButtonTest() {
 
         <div className="h6 text-text-secondary">Input</div>
         <div className="flex flex-wrap justify-center gap-4">
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               id="pictureX"
               label="Test"
@@ -247,7 +265,7 @@ function ButtonTest() {
             />
           </div>
 
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <Label htmlFor="pictureX">Picture</Label>
             <InputX
               id="pictureX"
@@ -255,7 +273,7 @@ function ButtonTest() {
               trailingComponent={<i className="fa-solid fa-file-image"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -265,7 +283,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -275,7 +293,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -284,7 +302,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -294,7 +312,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -304,7 +322,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -315,7 +333,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -325,7 +343,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -336,7 +354,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -346,7 +364,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -357,7 +375,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -368,7 +386,7 @@ function ButtonTest() {
               leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
             />
           </div>
-          <div className="grid items-center w-full max-w-sm gap-2">
+          <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Test"
               id="pictureX"
@@ -532,25 +550,25 @@ function ButtonTest() {
           <Badge variant="secondary">Secondary</Badge>
           <Badge variant="error">Destructive</Badge>
           <Badge variant="outline">Outline</Badge>
-          <div className="flex flex-wrap w-full gap-2">
+          <div className="flex w-full flex-wrap gap-2">
             <Badge
               variant="secondary"
-              className="text-white bg-info-main dark:bg-blue-600"
+              className="bg-info-main text-white dark:bg-blue-600"
             >
-              <BadgeCheckIcon />
+              <BadgeCheckIcon className="w-4" />
               Verified
             </Badge>
-            <Badge className="h-5 px-1 font-mono rounded-full min-w-5 tabular-nums">
+            <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
               9
             </Badge>
             <Badge
-              className="h-5 px-1 font-mono rounded-full min-w-5 tabular-nums"
+              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
               variant="error"
             >
               99
             </Badge>
             <Badge
-              className="h-5 px-1 font-mono rounded-full min-w-5 tabular-nums"
+              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
               variant="outline"
             >
               20+
@@ -658,6 +676,16 @@ function ButtonTest() {
             </DialogContent>
           </form>
         </Dialog>
+        <div className="h6 text-text-secondary">Multi Select</div>
+        <div className="max-w-lg space-y-6 p-8 w-full">
+          <MultiSelectStyled
+            label="Genres"
+            options={genreOptions}
+            onValueChange={(values) => console.log(values)}
+            defaultValue={["drama", "horror", "comedy", "sci-fi"]}
+            maxDisplay={3} 
+          />
+        </div>
       </div>
     </div>
   );

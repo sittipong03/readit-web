@@ -40,7 +40,8 @@ function UserProfile() {
   console.log("fullProfile:", fullProfile)
   // console.log("booktag:", fullProfile.bookTagPreference)
   const getSuprise = () => {
-    navigate('/home', { state: { recommendPrompt: fullProfile.bookTagPreference } });
+    // navigate('/home', { state: { recommendPrompt: fullProfile.bookTagPreference } });
+    navigate('/home', { state: { prompt: fullProfile.bookTagPreference } });
   }
 
 

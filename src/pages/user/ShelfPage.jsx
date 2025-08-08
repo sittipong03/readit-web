@@ -2,10 +2,9 @@ import { Button } from "@/components/ui/button";
 import AddBookModal from "@/src/components/AddBookModal";
 import BookCard from "@/src/components/BookCard";
 import BookManageModal from "@/src/components/BookManageModal";
-import { ChevronsUpDown, Funnel } from "lucide-react";
+import { Funnel } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios";
 import useUserStore from "@/src/stores/userStore";
 import axiosInstance from "@/src/utils/api";
 import bookManageStore from "@/src/stores/booksManageStore";
@@ -14,23 +13,23 @@ function Shelf() {
   const books = [
     {
       id: 1,
-      title: "The Wedding Crasher",
-      author: "Christina Escudéz",
+      title: "Yellow Face",
+      author: "R. F. Kuang",
       coverImage:
-        "https://i.harperapps.com/hcanz/covers/9780062909893/y648.jpg",
-      rating: 3.2,
-      totalRatings: 12,
+        "https://m.media-amazon.com/images/I/51hxRAoHuxL._SL1500_.jpg",
+      rating: 4.13,
+      totalRatings: 1532,
       userRating: null,
       hasUserReview: false,
       createdAt: "2025-08-03 04:49:24.558",
     },
     {
       id: 2,
-      title: "The Seven Husbands of Evelyn Hugo",
-      author: "Taylor Jenkins Reid",
+      title: "Educated: A Memoir",
+      author: "Tara Westover",
       coverImage:
-        "https://www.asiabooks.com/media/catalog/product/cache/a5ac216be58c0cbce1cb04612ece96dc/9/7/9781398515697.jpg",
-      rating: 4.2,
+        "https://m.media-amazon.com/images/I/71-4MkLN5jL.jp…oto.goodreads.com/books/1721918653l/198902277.jpg",
+      rating: 4.39,
       totalRatings: 20,
       userRating: 4.5,
       hasUserReview: true,
@@ -41,8 +40,8 @@ function Shelf() {
       title: "Atomic Habits",
       author: "James Clear",
       coverImage:
-        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535115320i/40121378.jpg",
-      rating: 4.8,
+        "https://m.media-amazon.com/images/I/81ANaVZk5LL._U…oto.goodreads.com/books/1721918653l/198902277.jpg",
+      rating: 4.15,
       totalRatings: 150,
       userRating: 5.0,
       hasUserReview: true,
@@ -50,11 +49,11 @@ function Shelf() {
     },
     {
       id: 4,
-      title: "The Midnight Library",
-      author: "Matt Haig",
+      title: "1984",
+      author: "George Orwell",
       coverImage:
-        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1602190253i/52578297.jpg",
-      rating: 4.1,
+        "https://m.media-amazon.com/images/I/71wANojhEKL.jp…oto.goodreads.com/books/1721918653l/198902277.jpg",
+      rating: 4.02,
       totalRatings: 85,
       userRating: null,
       hasUserReview: false,
@@ -98,9 +97,27 @@ function Shelf() {
   }, [token, refreshTrigger]);
 
   const moveBookToSection = async (book, newShelfType) => {
+    let actualShelfType = "WISHLIST";
+
+    if (userWishlist.some((item) => item.book?.id === book.id)) {
+      actualShelfType = "WISHLIST";
+    } else if (readingBooks.some((b) => b.id === book.id)) {
+      actualShelfType = "CURRENTLY_READING";
+    } else if (readBooks.some((b) => b.id === book.id)) {
+      actualShelfType = "READ";
+    } else if (favoriteBooks.some((b) => b.id === book.id)) {
+      actualShelfType = "FAVORITE";
+    }
+
     console.log(
       `Moving book "${book.title}" from ${book.shelfType} to ${newShelfType}`,
     );
+
+    if (actualShelfType === newShelfType) {
+      console.log("Same shelf detected, skipping API call");
+      hdlCloseModal();
+      return;
+    }
 
     try {
       // เรียก API เพื่ออัพเดตในฐานข้อมูล
@@ -175,31 +192,56 @@ function Shelf() {
   };
 
   const hdlBackToFeed = () => {
-    navigate("/userprofile");
+    navigate("/home");
   };
 
   const hdlBookClick = (item) => {
     console.log("=== Before sending to modal ===");
     console.log("Original item:", item);
-    console.log("item.book:", item.book);
+    console.log("item.shelfType:", item.shelfType);
 
     // ตรวจสอบว่ามีข้อมูลหรือไม่
-    if (!item || !item.book) {
+    if (!item) {
       console.error("No book data found!");
       return;
     }
 
-    const shelfType = item.shelfType || item.ShelfType || "WISHLIST";
+    let bookObject;
+    let shelfType;
+
+    if (item.book) {
+      // กรณีจาก API (userWishlist): {book: {...}, shelfType: "..."}
+      bookObject = item.book;
+      shelfType = item.shelfType || item.ShelfType || "WISHLIST";
+      console.log("API case - bookObject:", bookObject.title);
+    } else if (item.id && item.title) {
+      // กรณีจาก local state: {id: "...", title: "...", shelfType: "..."}
+      bookObject = item;
+      shelfType = item.shelfType || "WISHLIST";
+      console.log("Local state case - bookObject:", bookObject.title);
+    } else {
+      console.error("No valid book data found!");
+      console.log("item keys:", Object.keys(item));
+      console.log("item.book exists:", !!item.book);
+      console.log("item.id exists:", !!item.id);
+      console.log("item.title exists:", !!item.title);
+      return;
+    }
+
+    // ลบ shelfType ออกจาก book object ก่อน spread เพื่อไม่ให้ override
+    const { shelfType: bookShelfType, ...bookWithoutShelfType } = bookObject;
 
     const bookData = {
-      ...item.book,
-      shelfType: item.ShelfType,
-      shelfId: item.id,
+      ...bookWithoutShelfType,
+      shelfType: shelfType, // ใส่ shelfType ที่ถูกต้องหลังจาก spread
+      shelfId: item.id || bookObject.id,
       addedAt: item.addedAt,
     };
 
     console.log("Sending to modal:", bookData);
-    console.log("Shelf Type: ", shelfType);
+    console.log("Final shelfType:", shelfType);
+    console.log("bookData.shelfType:", bookData.shelfType);
+    console.log("Original book.shelfType:", bookShelfType);
 
     setSelectedBook(bookData);
     setIsManageBookModalOpen(true);
@@ -238,6 +280,7 @@ function Shelf() {
         totalRatings: 0,
         userRating: null,
         hasUserReview: false,
+        shelfType: "WISHLIST",
       };
       setWishlistBooks((prev) => [...prev, newBook]);
 
@@ -248,8 +291,12 @@ function Shelf() {
   };
 
   const hdlMarkAsRead = async (book) => {
-    console.log("Marking book as read:", book.title);
-    await moveBookToSection(book, "READ");
+    if (!book) {
+      console.warn("Book is undefined");
+      return;
+    }
+
+    moveBookToSection(book, "READ");
     hdlCloseModal();
   };
 
@@ -265,7 +312,7 @@ function Shelf() {
     try {
       // เรียก API เพื่อลบหนังสือ
       const response = await axiosInstance.delete(
-        `/book/wishlist/:${book.id}/:${book.shelfType}`,
+        `/book/wishlist/${book.id}/${book.shelfType}`,
         {
           data: { userId: currentUserId },
         },
@@ -362,7 +409,7 @@ function Shelf() {
                 fontWeight="Button"
                 onClick={() => setIsAddBookModalOpen(true)}
               >
-                <i class="fa-solid fa-plus"></i>
+                <i className="fa-solid fa-plus"></i>
                 Add Book
               </Button>
             </div>
@@ -389,9 +436,12 @@ function Shelf() {
                             className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
                             onClick={() => hdlBookClick(book)}
                           >
-                            {book.coverImage ? (
+                            {book.book?.edition?.[0]?.coverImage ? (
                               <img
-                                src={book.coverImage}
+                                src={
+                                  book.book?.edition?.[0]?.coverImage ||
+                                  book.book?.coverImage
+                                }
                                 alt={book.title}
                                 className="h-full w-full object-cover"
                               />
@@ -433,7 +483,7 @@ function Shelf() {
                           size="medium"
                           onClick={() => setIsAddBookModalOpen(true)}
                         >
-                          <i class="fa-solid fa-plus"></i>
+                          <i className="fa-solid fa-plus"></i>
                           Add your first book
                         </Button>
                       </div>
@@ -515,7 +565,7 @@ function Shelf() {
                 >
                   Sort by :{" "}
                   {sortOrder === "latest" ? "Latest Date" : "Oldest Date"}
-                  <i class="fa-solid fa-sort"></i>
+                  <i className="fa-solid fa-sort"></i>
                 </Button>
                 <Button
                   variant="contained"
@@ -524,7 +574,7 @@ function Shelf() {
                   fontWeight="Button"
                   onClick={() => setIsAddBookModalOpen(true)}
                 >
-                  <i class="fa-solid fa-plus"></i>
+                  <i className="fa-solid fa-plus"></i>
                   Add Book
                 </Button>
               </div>
@@ -588,7 +638,7 @@ function Shelf() {
                 </div>
               ) : (
                 <div
-                  className="scrollbar-hide grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  className="scrollbar-hide grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",

@@ -25,11 +25,11 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
   };
 
   const hdlGoWriteReview = () => {
-    navigate("/review");
+    navigate("/book/cme1064jo002x9kukym9t50o1");
   };
 
   const hdlGoViewOwnReview = () => {
-    navigate("/userprofile");
+    navigate("/userproflie");
   };
 
   const hasReview = book.userReview || book.userRating;

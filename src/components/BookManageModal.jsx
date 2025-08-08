@@ -41,16 +41,8 @@ const ManageBookModal = ({
   }, [isOpen, book]);
 
   const hdlMarkAsRead = () => {
-    // const isAlreadyRead = readBooks.some((readBook) => readBook.id === book.id);
-
-    // if (isAlreadyRead) {
-    //   onClose();
-    //   return;
-    // }
-
     const updatedBook = {
       ...book,
-      shelfType: "READ",
     };
 
     if (onMarkAsRead) {
@@ -246,14 +238,13 @@ const ManageBookModal = ({
           </Button>
 
           <Button
-            onClick={hdlAddToWishlist}
+            onClick={hdlToggleFavorite}
             variant="outlined"
             size="large"
             color="primary"
             className="w-full"
           >
-            <i className="fa-solid fa-bookmark"></i>
-            Move to wishlist
+            Add to favorite
           </Button>
 
           <Button

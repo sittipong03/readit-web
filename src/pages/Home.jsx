@@ -44,7 +44,7 @@ function Home() {
   console.log('recommend', recommend)
   let gettagsFromUser = []
   let userTag = ""
-  for (let i = 0; i < recommend.length; i++){
+  for (let i = 0; i < recommend?.length; i++){
     gettagsFromUser.push(recommend[i].tag.name)
     userTag += (recommend[i].tag.name + " ") 
   }

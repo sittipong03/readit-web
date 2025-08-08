@@ -6,6 +6,7 @@ import { updateUserPreferences } from "../api/userApi";
 import { toast, Toaster } from "sonner";
 import { Check, ChevronRight } from "lucide-react";
 import bookManageStore from "../stores/booksManageStore";
+import { Navigate } from "react-router";
 
 
 function Interest() {
@@ -59,7 +60,7 @@ function Interest() {
       await updateUserPreferences(selectedTagIds);
       // await getBookByTag(selectedTagNames)
       toast.success("Preferences saved successfully!");
-      navigate('/home');
+      Navigate('/home');
       // window.location.href = "/home";
     } catch (error) {
       toast.error("Failed to save preferences. Please try again.");

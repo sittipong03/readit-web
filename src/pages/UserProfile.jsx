@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Link } from "react-router";
 import { getAllShelf } from "../api/shelfApi";
+import { useNavigate } from "react-router";
 
 function UserProfile() {
   const [loadingAI, setLoadingAI] = useState(false);
@@ -32,10 +33,16 @@ function UserProfile() {
     avatarUrl,
     userName,
   } = useUserStore();
+  const navigate = useNavigate();
 
   console.log("avatarStore:", avatarUrl)
   console.log("userId:", userId)
   console.log("fullProfile:", fullProfile)
+  // console.log("booktag:", fullProfile.bookTagPreference)
+  const getSuprise = () => {
+    // navigate('/home', { state: { recommendPrompt: fullProfile.bookTagPreference } });
+    navigate('/home', { state: { prompt: fullProfile.bookTagPreference } });
+  }
 
 
   const joinDate = new Date(fullProfile?.createdAt).toLocaleDateString(
@@ -279,6 +286,7 @@ function UserProfile() {
                     color="tertiary"
                     size="medium"
                     className="mt-2 w-fit"
+                    onClick = {() => getSuprise()}
                   >
                     <i className="fa-solid fa-sparkles"></i>
                     Surprise Me

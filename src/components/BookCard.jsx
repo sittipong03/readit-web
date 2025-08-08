@@ -25,11 +25,11 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
   };
 
   const hdlGoWriteReview = () => {
-    navigate("/review");
+    navigate("/book/cme1064jo002x9kukym9t50o1");
   };
 
   const hdlGoViewOwnReview = () => {
-    navigate("/userprofile");
+    navigate("/userproflie");
   };
 
   const hasReview = book.userReview || book.userRating;
@@ -49,7 +49,7 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
           >
             <StarIcon
               size={20}
-              className={`h-5 w-5 ${isFavorite ? "fill-secondary-main stroke-secondary-main" : "stroke-action-active-icon fill-none"} hover:fill-secondary-main stroke-action-active-icon`}
+              className={`h-5 w-5 ${isFavorite ? "fill-action-active-icon stroke-action-active-icon" : "stroke-action-active-icon fill-none"} hover:fill-action-active-icon stroke-action-active-icon`}
             />
           </button>
         )}
@@ -64,8 +64,8 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
       <div className="min-h-[116px] w-full">
         <div className="flex flex-col items-center justify-center gap-1">
           <div className="flex w-full flex-col items-start gap-1">
-            <p className="subtitle-3">{book.title}</p>
-            <p className="body-2">{book.author}</p>
+            <p className="subtitle-3 text-text-primary">{book.title}</p>
+            <p className="body-2 text-text-secondary">{book.author}</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <StarIcon
@@ -90,10 +90,10 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
                 color="secondary"
                 size="small"
                 borderColor="secondary-outlinedBorder"
-                className="mt-2 w-full rounded-xs"
+                className="text-text-secondary mt-2 w-full rounded-xs"
                 onClick={hdlGoViewOwnReview}
               >
-                <EyeIcon size={16} />
+                <i class="fa-solid fa-eye"></i>
                 {buttonText}
               </Button>
             ) : (
@@ -101,11 +101,10 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
                 variant="outlined"
                 color="secondary"
                 size="small"
-                borderColor="secondary-outlinedBorder"
-                className="mt-2 w-full rounded-xs"
+                className="text-text-secondary mt-2 w-full rounded-xs"
                 onClick={hdlGoWriteReview}
               >
-                <EditIcon size={16} />
+                <i class="fa-solid fa-pen-to-square"></i>
                 {buttonText}
               </Button>
             )}

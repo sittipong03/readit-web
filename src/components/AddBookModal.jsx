@@ -7,6 +7,7 @@ import { set } from "zod";
 import useUserStore from "../stores/userStore.js";
 import axiosInstance from "../utils/api";
 import bookManageStore from "../stores/booksManageStore";
+import { toast } from "sonner";
 
 const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -117,13 +118,13 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
       onClose();
     } catch (error) {
       if (error.response?.status === 401) {
-        alert("Session expired. Please login again.");
+        toast.error("Session expired. Please login again.");
         localStorage.removeItem("token");
       } else if (error.response?.status === 409) {
-        alert("Book is already in your wishlist!");
+        toast.error("Book is already in your wishlist!");
       } else {
         console.error("Error adding book to wishlist:", error);
-        alert(
+        toast.error(
           `Failed to add book: ${error.response?.data?.message || error.message}`,
         );
       }
@@ -142,36 +143,33 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/80">
       <div className="bg-paper-elevation-6 relative h-[444px] w-[438px] max-w-[90vw] rounded-lg bg-white p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="subtitle-2">Add a book</h2>
+          <h2 className="subtitle-2 text-text-primary">Add a book</h2>
           <button
             onClick={hdlClose}
             className="rounded-full p-1 transition-colors hover:bg-gray-100"
           >
-            <XIcon className="h-6 w-6" />
+            <XIcon className="text-action-active-icon h-6 w-6" />
           </button>
         </div>
 
         <div className="flex flex-col">
           <div className="mb-1">
-            <label className="subtitle-4">Search</label>
+            <label className="subtitle-4 text-text-primary">Search</label>
           </div>
           <div className="flex w-full items-center justify-between gap-3">
-            <div className="relative flex w-full items-center justify-between gap-3">
-              <div className="absolute top-1/2 left-4 -translate-y-1/2 transform">
-                <i
-                  className="fa-solid fa-book"
-                  style={{ color: "action-disabled" }}
-                ></i>
+            <div className="relative flex w-full items-center justify-between gap-4">
+              <div className="absolute top-1/2 left-5 -translate-y-1/2 transform">
+                <i className="fa-solid fa-book-open-cover text-text-action-disabled"></i>
               </div>
               <Input
                 type="text"
                 placeholder="Title, author, or ISBN..."
                 value={searchQuery}
                 onChange={(evt) => setSearchQuery(evt.target.value)}
-                className="border-divider w-full rounded-full border px-12 py-6 placeholder-gray-500 focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="border-divider text-text-disabled w-full rounded-full border px-12 py-6 placeholder-gray-500 focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none"
               />
               <button className="border-divider hover:bg-paper-elevation-7 rounded-full border p-4 shadow-inner transition-colors">
-                <Search className="h-5 w-5 text-gray-600" />
+                <Search className="text-secondary-main h-5 w-5" />
               </button>
             </div>
           </div>
@@ -181,8 +179,8 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
           {loading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2 border-purple-500"></div>
-                <p className="text-gray-500">Loading books...</p>
+                <div className="text-text-secondary mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+                <p className="text-text-secondary">Loading books...</p>
               </div>
             </div>
           ) : error ? (
@@ -228,8 +226,10 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
                   </div>
 
                   <div className="min-w-0 flex-1 items-center overflow-hidden">
-                    <h3 className="subtitle-4">{book.title}</h3>
-                    <p className="body-3">{book.author}</p>
+                    <h3 className="subtitle-4 text-text-primary">
+                      {book.title}
+                    </h3>
+                    <p className="body-3 text-text-secondary">{book.author}</p>
                   </div>
                 </div>
               ))}

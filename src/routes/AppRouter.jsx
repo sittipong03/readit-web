@@ -46,8 +46,6 @@ const routerGuest = createBrowserRouter([
       { path: "/review/:bookId", element: <ReviewPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/Register", element: <RegisterPage /> },
-      { path: "/bookcard", element: <BookCard /> },
-      { path: "/shelf", element: <ShelfPage /> },
     ],
   },
   {

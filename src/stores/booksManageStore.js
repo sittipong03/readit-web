@@ -8,8 +8,11 @@ import {
   fetchBookByTag,
   fetchBooks,
 } from "../api/bookApi.js";
+import { getAllTags } from "../api/tagApi.js";
 
 const bookManageStore = create((set, get) => ({
+  // --- STATE ---
+
   books: [],
   tags: [],
   book: null,
@@ -17,12 +20,32 @@ const bookManageStore = create((set, get) => ({
   userRead: [],
   userReading: [],
   userFavorite: [],
-  page: 1,
-  hasNextPage: true,
   isFetching: false,
-  sortBy: "popularity",
   currentSearchType: "normal", // 'normal', 'ai', 'tag'
   currentSearchQuery: "",
+
+  // State สำหรับ Normal Search (Backend-driven)
+  normalBooks: [],
+  page: 1,
+  hasNextPage: true,
+  isFetchingNormal: false,
+  sortBy: "popularity",
+  selectedTagIds: [],
+  allTags: [],
+  keyword: "",
+
+  // --- State สำหรับ AI Search (Frontend-driven) ---
+  aiBooks: [],
+  isFetchingAi: false,
+
+  // --- ACTIONS ---
+  getBookById: async (id) => {
+    const result = await fetchBookById(id);
+    set({ book: result.data });
+    // console.log(result);
+    return result;
+  },
+
   getUserWishlist: async () => {
     const result = await getUserWishlist();
     console.log("result-------", result);
@@ -42,33 +65,6 @@ const bookManageStore = create((set, get) => ({
   getUserFavorite: async () => {
     const result = await getUserWishlist();
     set({ userFavorite: result.data });
-    return result;
-  },
-  getAllBooks: async () => {
-    const result = await fetchAllBooks();
-    console.log(result);
-    set({ books: result.data });
-    return result;
-  },
-  getBookById: async (id) => {
-    const result = await fetchBookById(id);
-    set({ book: result.data });
-    // console.log(result);
-    return result;
-  },
-  getBookByAI: async (data) => {
-    console.log("dataaaa", data);
-    const result = await fetchBookByAI({ books: data });
-    console.log("result", result);
-    set({ books: result.data.books });
-
-    return result;
-  },
-  getBookByTag: async (data) => {
-    // console.log(data);
-    const result = await fetchBookByTag({ books: data });
-    console.log("result", result);
-    set({ books: result.data.books });
     return result;
   },
   getAiSuggestion: async (id) => {
@@ -150,81 +146,105 @@ const bookManageStore = create((set, get) => ({
       set({ isFetching: false });
     }
   },
-  fetchNewBooks: async (options = {}) => {
-    // กำหนดค่า default และรับค่าใหม่
-    const { type = "normal", query = "", sortBy = get().sortBy } = options;
 
-    set({ isFetching: true, books: [], page: 1, hasNextPage: true });
+  replaceSelectedTags: (newTagIds) => {
+    set({ selectedTagIds: newTagIds });
+  },
 
+  // == Actions for Normal Search Tab ==
+  fetchNormalBooks: async () => {
+    const { sortBy, selectedTagIds, keyword } = get();
+    set({ isFetchingNormal: true, normalBooks: [], page: 1 });
     try {
-      let response;
-      if (type === "ai") {
-        response = await fetchBookByAI({ books: query });
-        set({ currentSearchType: "ai", currentSearchQuery: query });
-      } else if (type === "tag") {
-        response = await fetchBookByTag({ books: query });
-        set({ currentSearchType: "tag", currentSearchQuery: query });
-      } else {
-        // การค้นหาปกติ (พร้อม sorting)
-        response = await fetchBooks({ sortBy, page: 1 });
-        set({ currentSearchType: "normal", sortBy });
-      }
-
+      const response = await fetchBooks({
+        sortBy,
+        page: 1,
+        tagIds: selectedTagIds,
+        keyword,
+      });
       set({
-        books: response.data.books,
-        hasNextPage: response.data.pagination?.hasNextPage ?? false, // ใช้ optional chaining และกำหนด default
+        normalBooks: response.data.books || [],
+        hasNextPage: response.data.pagination?.hasNextPage ?? false,
       });
     } catch (error) {
-      console.error(`Failed to fetch new books for type "${type}":`, error);
-      set({ hasNextPage: false }); // หยุดการโหลดเมื่อมี error
+      console.error("Failed to fetch normal books:", error);
     } finally {
-      set({ isFetching: false });
+      set({ isFetchingNormal: false });
     }
   },
-  fetchMoreBooks: async () => {
+
+  fetchMoreNormalBooks: async () => {
     const {
-      isFetching,
-      hasNextPage,
-      page,
-      books,
-      currentSearchType,
-      currentSearchQuery,
       sortBy,
+      selectedTagIds,
+      page,
+      normalBooks,
+      isFetchingNormal,
+      hasNextPage,
+      keyword,
     } = get();
+    if (isFetchingNormal || !hasNextPage) return;
 
-    if (isFetching || !hasNextPage) return;
-
-    set({ isFetching: true });
+    set({ isFetchingNormal: true });
     const nextPage = page + 1;
-
     try {
-      let response;
-      // การโหลดเพิ่มจะขึ้นอยู่กับประเภทการค้นหาล่าสุด
-      if (currentSearchType === "normal") {
-        response = await fetchBooks({ sortBy, page: nextPage });
-      } else {
-        // Backend ปัจจุบันของคุณยังไม่รองรับ pagination สำหรับ AI/Tag search
-        // ดังนั้นส่วนนี้จะยังไม่ทำงาน แต่เตรียมโครงสร้างไว้
-        console.log("Pagination for AI/Tag search is not yet supported.");
-        set({ hasNextPage: false });
-        return;
-      }
-
+      const response = await fetchBooks({
+        sortBy,
+        page: nextPage,
+        tagIds: selectedTagIds,
+        keyword,
+      });
       set({
-        books: [...books, ...response.data.books],
+        normalBooks: [...normalBooks, ...(response.data.books || [])],
         page: nextPage,
         hasNextPage: response.data.pagination.hasNextPage,
       });
     } catch (error) {
       console.error("Failed to fetch more books:", error);
-      set({ hasNextPage: false });
     } finally {
-      set({ isFetching: false });
+      set({ isFetchingNormal: false });
     }
   },
+
   setSortBy: (newSortBy) => {
     set({ sortBy: newSortBy });
-    get().fetchNewBooks({ type: "normal", sortBy: newSortBy });
+    // get().fetchNormalBooks(); // Fetch ใหม่เมื่อเปลี่ยนการเรียง
+  },
+
+  setSelectedTags: (tagId) => {
+    const { selectedTagIds } = get();
+    const newSelected = selectedTagIds.includes(tagId)
+      ? selectedTagIds.filter((id) => id !== tagId)
+      : [...selectedTagIds, tagId];
+    set({ selectedTagIds: newSelected });
+    get().fetchNormalBooks(); // Fetch ใหม่เมื่อเปลี่ยน Tag
+  },
+
+  setKeyword: (newKeyword) => {
+    set({ keyword: newKeyword });
+    // ไม่ fetch ทันที แต่จะรอให้ user กดปุ่ม search
+  },
+
+  fetchAllTags: async () => {
+    try {
+      const response = await getAllTags();
+      set({ allTags: response.data });
+    } catch (error) {
+      console.error("Failed to fetch tags:", error);
+    }
+  },
+
+  // == Actions for AI Search Tab ==
+  fetchAiBooks: async (query) => {
+    set({ isFetchingAi: true, aiBooks: [] });
+    try {
+      const response = await fetchBookByAI({ books: query });
+      set({ aiBooks: response.data.books || [] });
+    } catch (error) {
+      console.error("Failed to fetch AI books:", error);
+    } finally {
+      set({ isFetchingAi: false });
+    }
   },
 }));
 

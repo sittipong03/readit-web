@@ -124,7 +124,7 @@ const MultiSelectStyled = React.forwardRef(
               className={cn(
                 inputVariants({ variant, color, size, className, disabled }),
                 "w-full justify-between rounded-lg",
-                selectedValues.length > 0 ? "pr-1 pl-1" : "px-2",
+                selectedValues.length > 0 ? "pr-1 pl-1 py-1" : "px-2",
               )}
               {...props}
             >

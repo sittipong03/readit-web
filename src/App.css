@@ -23,13 +23,13 @@
 
   /* สร้าง "เซลล์" ด้วย radial-gradient หลายๆ อัน */
   background-image:
-    radial-gradient(circle at 20% 25%, var(--color-1), transparent 15%),
-    radial-gradient(circle at 10% 0%, var(--color-3), transparent 15%),
+    radial-gradient(circle at 20% 25%, var(--color-1), transparent 40%),
+    radial-gradient(circle at 10% 0%, var(--color-3), transparent 20%),
     radial-gradient(circle at 50% 80%, var(--color-2), transparent 8%),
     radial-gradient(circle at 40% 80%, var(--color-3), transparent 25%);
 
   /* ทำให้เซลล์เบลอและฟุ้ง */
-  filter: blur(80px);
+  filter: blur(96px);
 
   /* กำหนด Animation */
   animation: lava-animation 20s ease-in-out infinite alternate;
@@ -55,7 +55,7 @@
   filter: blur(120px);
 
   /* กำหนด Animation */
-  animation: lava-animation-2 32s ease-in-out infinite alternate;
+  animation: lava-animation-2 56s ease-in-out infinite alternate;
 }
 
 /* สร้างการเคลื่อนไหว */
@@ -80,5 +80,30 @@
   }
   100% {
     transform: scale(1.5) translate(0, 0) rotate(360deg);
+  }
+}
+
+
+.book-flex-container {
+  display: flex;
+  flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่ */
+  gap: 1rem;
+}
+.book-card-wrapper {
+  /* Mobile (Default): 2 คอลัมน์ */
+  /* 100% / 2 = 50% แล้วลบด้วยครึ่งหนึ่งของ gap */
+  width: calc(50% - 0.5rem); 
+}
+
+@media (min-width: 1024px) {
+  .book-card-wrapper {
+    /* 4 คอลัมน์: 100% / 4 = 25% */
+    width: calc(25% - 0.75rem); /* การคำนวณ gap จะซับซ้อนขึ้นเล็กน้อย */
+  }
+}
+
+@media (min-width: 1440px) { /* หรือขนาดที่ต้องการ */
+  .book-card-wrapper {
+    width: calc(12.5% - 0.875rem);
   }
 }

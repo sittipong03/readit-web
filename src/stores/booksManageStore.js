@@ -246,6 +246,17 @@ const bookManageStore = create((set, get) => ({
       set({ isFetchingAi: false });
     }
   },
+
+  updateSingleBookInList: (updatedBook) => {
+    set((state) => ({
+      normalBooks: state.normalBooks.map((book) =>
+        book.id === updatedBook.id ? updatedBook : book,
+      ),
+      aiBooks: state.aiBooks.map((book) =>
+        book.id === updatedBook.id ? updatedBook : book,
+      ),
+    }));
+  },
 }));
 
 export default bookManageStore;

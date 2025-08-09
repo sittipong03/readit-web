@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,10 @@ export const StarRating = ({ bookId, onRatingSubmitted, rated = 0 }) => {
   const [rating, setRating] = useState(rated);
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setRating(rated);
+  }, [rated]);
 
   const handleSubmitRating = async () => {
     if (rating === 0) {
@@ -23,12 +27,12 @@ export const StarRating = ({ bookId, onRatingSubmitted, rated = 0 }) => {
     try {
       console.log("bookId2:", bookId);
       console.log("rating2:", rating);
-      await addRate({ bookId, rating });
+      const updatedBook = await addRate(bookId, rating);
       toast.success("Thank you for your rating!");
 
       // Notify the parent component that the rating was submitted
-      if (onRatingSubmitted) {
-        onRatingSubmitted();
+       if (onRatingSubmitted) {
+        onRatingSubmitted(updatedBook);
       }
 
       // Reset state after successful submission

@@ -48,6 +48,7 @@ export function NormalSearchTab() {
     keyword,
     setKeyword,
     replaceSelectedTags,
+    updateSingleBookInList,
   } = useBookManageStore();
 
   const [localKeyword, setLocalKeyword] = useState(keyword);
@@ -90,9 +91,11 @@ export function NormalSearchTab() {
     setIsRatingDialogOpen(true);
   };
 
-  const handleRatingSubmitted = () => {
+  const handleRatingSubmitted = (updatedBook) => {
     setIsRatingDialogOpen(false);
-    // อาจจะมีการ fetch ข้อมูลใหม่ที่นี่
+    if (updatedBook) {
+      updateSingleBookInList(updatedBook);
+    }
   };
 
   console.log("allTags");
@@ -150,7 +153,7 @@ export function NormalSearchTab() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen">
+      <main className="min-h-screen flex-1">
         <div className="book-flex-container mt-[-64px] flex flex-row flex-wrap gap-5">
           {normalBooks.map((book, index) => (
             <BookMainCard

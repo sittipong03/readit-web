@@ -150,8 +150,8 @@ export function NormalSearchTab() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1">
-        <div className="book-flex-container mt-[-64px] flex min-h-screen flex-row flex-wrap gap-5">
+      <main className="flex-1 min-h-screen">
+        <div className="book-flex-container mt-[-64px] flex flex-row flex-wrap gap-5">
           {normalBooks.map((book, index) => (
             <BookMainCard
               key={book.id}

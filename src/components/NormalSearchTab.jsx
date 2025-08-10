@@ -50,6 +50,7 @@ export function NormalSearchTab() {
     replaceSelectedTags,
     updateSingleBookInList,
     normalSearchStatus,
+    clearNormalFilters,
   } = useBookManageStore();
 
   const [localKeyword, setLocalKeyword] = useState(keyword);
@@ -144,10 +145,24 @@ export function NormalSearchTab() {
               label="Genres"
               options={tagOptions}
               onValueChange={replaceSelectedTags}
+              value={selectedTagIds}
               placeholder="Select genres..."
               maxCount={5}
             />
           </div>
+          <Button
+            onClick={() => {
+              setLocalKeyword(""); 
+              clearNormalFilters();
+            }}
+            variant="outlined"
+            color="secondary"
+            size="large"
+            disabled={isFetchingNormal}
+            className="mt-2"
+          >
+            Clear
+          </Button>
           <Button onClick={handleSearch} size="large">
             Search
           </Button>
@@ -159,7 +174,7 @@ export function NormalSearchTab() {
         <div>
           {/* กรณี: กำลังโหลดข้อมูลครั้งแรก */}
           {normalSearchStatus === "loading" && (
-            <div className="flex h-full min-h-[50vh] items-center justify-center ">
+            <div className="flex h-full min-h-[50vh] items-center justify-center">
               <LoaderCircle
                 className="text-text-secondary animate-spin"
                 size={48}
@@ -195,7 +210,9 @@ export function NormalSearchTab() {
 
               {/* Infinite scroll loader / End of results message */}
               <div className="flex w-full justify-center py-8">
-                {isFetchingNormal && <LoaderCircle className="animate-spin mt-20" />}
+                {isFetchingNormal && (
+                  <LoaderCircle className="mt-20 animate-spin" />
+                )}
                 {!isFetchingNormal &&
                   !hasNextPage &&
                   normalBooks.length > 0 && (

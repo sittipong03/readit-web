@@ -287,6 +287,15 @@ const bookManageStore = create((set, get) => ({
       ),
     }));
   },
+
+  clearNormalFilters: () => {
+    set({
+      keyword: "",
+      selectedTagIds: [],
+      sortBy: "popularity",
+    });
+    get().fetchNormalBooks();
+  },
 }));
 
 export default bookManageStore;

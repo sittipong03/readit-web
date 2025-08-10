@@ -14,7 +14,7 @@ function Home() {
   };
 
   return (
-    <div className="bg-paper-elevation-6 text-text-primary relative flex min-h-screen h-full justify-center gap-4 pb-24 mt-[-60px]">
+    <div className="bg-paper-elevation-6 text-text-primary relative flex min-h-screen h-full justify-center gap-4 pb-10 mt-[-60px]">
       <div className="w-full pt-20 min-h-screen">
         {/* ถ้ามี query ส่งมา ให้เปิดแท็บ AI เป็น default */}
         <Tabs

@@ -152,7 +152,7 @@ export function NormalSearchTab() {
           </div>
           <Button
             onClick={() => {
-              setLocalKeyword(""); 
+              setLocalKeyword("");
               clearNormalFilters();
             }}
             variant="outlined"
@@ -193,30 +193,76 @@ export function NormalSearchTab() {
           {/* กรณี: ค้นหาเจอ */}
           {normalSearchStatus === "success" && (
             <>
-              <div className="book-flex-container mt-[-64px] flex flex-row flex-wrap gap-5">
-                {normalBooks.map((book, index) => (
-                  <BookMainCard
-                    key={book.id}
-                    book={book}
-                    onRateClick={handleRateClick}
-                    innerRef={
-                      normalBooks.length === index + 1
-                        ? lastBookElementRef
-                        : null
-                    }
-                  />
-                ))}
+              <div className="mt-[-64px] flex flex-col gap-6">
+                <div className="flex w-full items-end">
+                  <div className="flex flex-1 flex-col gap-0">
+                    <h1 className="subtitle-1">Browse a book</h1>
+                    <p className="text-text-disabled text-sm">{`${normalBooks.length} results shown`}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="subtitle-4">Can’t find the book?</h1>
+                    <Dialog>
+                      <form>
+                        <DialogTrigger asChild>
+                          <Button size="small" color="secondary">
+                            <i className="fa-solid fa-plus"></i>
+                            Add a book
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Add a book</DialogTitle>
+                            <DialogDescription>
+                              Add it instantly with its ISBN. We'll use this
+                              unique code to find all the details for you.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="grid gap-4">
+                            <InputX
+                              label="ISBN"
+                              id="ISBN"
+                              name="ISBN"
+                              placeholder="e.g., 978-0140280190"
+                            />
+                          </div>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button variant="text">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit">
+                              <i className="fa-solid fa-plus"></i>Add a book
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </form>
+                    </Dialog>
+                  </div>
+                </div>
+                <div className="book-flex-container flex flex-row flex-wrap gap-5">
+                  {normalBooks.map((book, index) => (
+                    <BookMainCard
+                      key={book.id}
+                      book={book}
+                      onRateClick={handleRateClick}
+                      innerRef={
+                        normalBooks.length === index + 1
+                          ? lastBookElementRef
+                          : null
+                      }
+                    />
+                  ))}
+                </div>
               </div>
 
               {/* Infinite scroll loader / End of results message */}
-              <div className="flex w-full justify-center py-8">
+              <div className="flex w-full justify-center py-8 mb-10">
                 {isFetchingNormal && (
                   <LoaderCircle className="mt-20 animate-spin" />
                 )}
                 {!isFetchingNormal &&
                   !hasNextPage &&
                   normalBooks.length > 0 && (
-                    <p className="text-text-disabled">End of results.</p>
+                    <p className="text-text-disabled pt-20">End of results.</p>
                   )}
               </div>
             </>

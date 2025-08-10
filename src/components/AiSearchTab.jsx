@@ -47,7 +47,7 @@ const suggestionPrompts = [
 ];
 
 export function AiSearchTab({ initialPrompt }) {
-  const { aiBooks, isFetchingAi, fetchAiBooks, clearAiBooks, aiSearchStatus } =
+  const { aiBooks, isFetchingAi, fetchAiBooks, clearAiBooks, aiSearchStatus, updateSingleBookInList  } =
     useBookManageStore();
   const { userName } = useUserStore();
   const [prompt, setPrompt] = useState(initialPrompt || "");
@@ -71,9 +71,11 @@ export function AiSearchTab({ initialPrompt }) {
     setIsRatingDialogOpen(true);
   };
 
-  const handleRatingSubmitted = () => {
-    setIsRatingDialogOpen(false);
-    // อาจจะมีการ fetch ข้อมูลใหม่ที่นี่
+  const handleRatingSubmitted = (updatedBook) => {
+    setIsRatingDialogOpen(false); 
+    if (updatedBook) {
+      updateSingleBookInList(updatedBook);
+    }
   };
 
   const sortedAiBooks = useMemo(() => {

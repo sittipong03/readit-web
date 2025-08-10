@@ -49,6 +49,7 @@ export function NormalSearchTab() {
     setKeyword,
     replaceSelectedTags,
     updateSingleBookInList,
+    normalSearchStatus,
   } = useBookManageStore();
 
   const [localKeyword, setLocalKeyword] = useState(keyword);
@@ -84,6 +85,7 @@ export function NormalSearchTab() {
     const formattedKeyword = formatIsbnForSearch(localKeyword);
     setKeyword(formattedKeyword);
     fetchNormalBooks();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRateClick = (bookToRate) => {
@@ -105,7 +107,7 @@ export function NormalSearchTab() {
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
 
   return (
-    <div className="flex flex-col gap-10 px-6 pt-10 md:flex-row">
+    <div className="flex flex-col gap-10 px-6 md:flex-row">
       {/* Sidebar for Filters */}
       <aside className="sticky w-full md:top-38 md:h-fit md:w-72">
         <div className="sticky flex flex-col gap-4">
@@ -154,24 +156,53 @@ export function NormalSearchTab() {
 
       {/* Main Content */}
       <main className="min-h-screen flex-1">
-        <div className="book-flex-container mt-[-64px] flex flex-row flex-wrap gap-5">
-          {normalBooks.map((book, index) => (
-            <BookMainCard
-              key={book.id}
-              book={book}
-              onRateClick={handleRateClick}
-              innerRef={
-                normalBooks.length === index + 1 ? lastBookElementRef : null
-              }
-            />
-          ))}
-        </div>
+        <div>
+          {/* กรณี: กำลังโหลดข้อมูลครั้งแรก */}
+          {normalSearchStatus === "loading" && (
+            <div className="flex h-full min-h-[50vh] items-center justify-center ">
+              <LoaderCircle
+                className="text-text-secondary animate-spin"
+                size={48}
+              />
+            </div>
+          )}
+          {/* กรณี: ค้นหาแล้วแต่ไม่เจอ */}
+          {normalSearchStatus === "empty" && (
+            <div className="text-text-disabled flex h-full min-h-[50vh] flex-col items-center justify-center text-center">
+              <h3 className="text-xl font-semibold">No Books Found</h3>
+              <p className="mt-2">
+                Try adjusting your search or filter criteria.
+              </p>
+            </div>
+          )}
+          {/* กรณี: ค้นหาเจอ */}
+          {normalSearchStatus === "success" && (
+            <>
+              <div className="book-flex-container mt-[-64px] flex flex-row flex-wrap gap-5">
+                {normalBooks.map((book, index) => (
+                  <BookMainCard
+                    key={book.id}
+                    book={book}
+                    onRateClick={handleRateClick}
+                    innerRef={
+                      normalBooks.length === index + 1
+                        ? lastBookElementRef
+                        : null
+                    }
+                  />
+                ))}
+              </div>
 
-        {/* ... Loading & End of results ... */}
-        <div className="flex w-full justify-center pt-40">
-          {isFetchingNormal && <LoaderCircle className="animate-spin" />}
-          {!isFetchingNormal && !hasNextPage && normalBooks.length > 0 && (
-            <p className="text-text-disabled">End of results.</p>
+              {/* Infinite scroll loader / End of results message */}
+              <div className="flex w-full justify-center py-8">
+                {isFetchingNormal && <LoaderCircle className="animate-spin mt-20" />}
+                {!isFetchingNormal &&
+                  !hasNextPage &&
+                  normalBooks.length > 0 && (
+                    <p className="text-text-disabled">End of results.</p>
+                  )}
+              </div>
+            </>
           )}
         </div>
       </main>

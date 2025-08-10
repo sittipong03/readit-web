@@ -33,10 +33,12 @@ const bookManageStore = create((set, get) => ({
   selectedTagIds: [],
   allTags: [],
   keyword: "",
+  normalSearchStatus: "loading",
 
   // --- State สำหรับ AI Search (Frontend-driven) ---
   aiBooks: [],
   isFetchingAi: false,
+  aiSearchStatus: "idle",
 
   // --- ACTIONS ---
   getBookById: async (id) => {
@@ -154,7 +156,12 @@ const bookManageStore = create((set, get) => ({
   // == Actions for Normal Search Tab ==
   fetchNormalBooks: async () => {
     const { sortBy, selectedTagIds, keyword } = get();
-    set({ isFetchingNormal: true, normalBooks: [], page: 1 });
+    set({
+      isFetchingNormal: true,
+      normalSearchStatus: "loading",
+      normalBooks: [],
+      page: 1,
+    });
     try {
       const response = await fetchBooks({
         sortBy,
@@ -162,12 +169,24 @@ const bookManageStore = create((set, get) => ({
         tagIds: selectedTagIds,
         keyword,
       });
-      set({
-        normalBooks: response.data.books || [],
-        hasNextPage: response.data.pagination?.hasNextPage ?? false,
-      });
+      const books = response.data.books || [];
+
+      if (books.length > 0) {
+        set({
+          normalBooks: books,
+          hasNextPage: response.data.pagination?.hasNextPage ?? false,
+          normalSearchStatus: "success",
+        });
+      } else {
+        set({
+          normalBooks: [],
+          hasNextPage: false,
+          normalSearchStatus: "empty", // ค้นหาแล้วแต่ไม่เจอ
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch normal books:", error);
+      set({ normalSearchStatus: "error" });
     } finally {
       set({ isFetchingNormal: false });
     }
@@ -236,15 +255,26 @@ const bookManageStore = create((set, get) => ({
 
   // == Actions for AI Search Tab ==
   fetchAiBooks: async (query) => {
-    set({ isFetchingAi: true, aiBooks: [] });
+    set({ isFetchingAi: true, aiSearchStatus: "loading" });
     try {
       const response = await fetchBookByAI({ books: query });
-      set({ aiBooks: response.data.books || [] });
+      const books = response.data.books || [];
+
+      if (books.length > 0) {
+        set({ aiBooks: books, aiSearchStatus: "success" });
+      } else {
+        set({ aiBooks: [], aiSearchStatus: "empty" }); // ค้นหาแล้วแต่ไม่เจอ
+      }
     } catch (error) {
       console.error("Failed to fetch AI books:", error);
+      set({ aiBooks: [], aiSearchStatus: "error" });
     } finally {
       set({ isFetchingAi: false });
     }
+  },
+
+  clearAiBooks: () => {
+    set({ aiBooks: [], aiSearchStatus: "idle" });
   },
 
   updateSingleBookInList: (updatedBook) => {

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { addRate } from "../api/rateApi";
 import { toast } from "sonner";
 
-export const StarRating = ({ bookId, onRatingSubmitted, rated = 0 }) => {
+export const StarRating = ({ bookId, onRatingSubmitted, rated = 0, size = 32 }) => {
   const [rating, setRating] = useState(rated);
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +65,7 @@ export const StarRating = ({ bookId, onRatingSubmitted, rated = 0 }) => {
             onMouseEnter={() => setHoverRating(starValue)}
             onMouseLeave={() => setHoverRating(0)}
             onClick={() => setRating(starValue)}
-            size={32}
+            size={size}
             strokeWidth={1}
           />
         ))}

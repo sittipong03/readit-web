@@ -1,10 +1,11 @@
-// src/components/AiSearchTab.jsx
-import React, { useState, useMemo, useEffect } from "react"; // 1. เพิ่ม useEffect
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
 import useBookManageStore from "../stores/booksManageStore";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { LoaderCircle, Search } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import {
   SelectStyled,
   SelectContent,
@@ -21,48 +22,69 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { LoaderCircle } from "lucide-react";
+import { InputX } from "@/components/ui/inputX";
+import { Button } from "@/components/ui/button";
+import { MultiSelectStyled } from "@/components/ui/multi-select";
 import { StarRating } from "./StarRating";
 import { BookMainCard } from "./BookMainCard";
-import { SparklesIcon } from "./icons/sparkles-icon";
-import useUserStore from "../stores/userStore";
-import { useNavigate } from "react-router-dom";
+import { formatIsbnForSearch } from "../utils/formatIsbnForSearch";
 
-const suggestionPrompts = [
-  {
-    prompt: "Fantasy novel with a non-magical protagonist.",
-    icon: "fa-solid fa-dragon",
-  },
-  {
-    prompt: "Books about starting a small business.",
-    icon: "fa-solid fa-briefcase",
-  },
-  {
-    prompt: "A gripping thriller with a shocking twist ending.",
-    icon: "fa-solid fa-bolt",
-  },
-  {
-    prompt: "A sci-fi novel about time travel paradoxes.",
-    icon: "fa-solid fa-clock-rotate-left",
-  },
-];
+export function NormalSearchTab() {
+  const {
+    normalBooks,
+    hasNextPage,
+    isFetchingNormal,
+    sortBy,
+    selectedTagIds,
+    allTags,
+    fetchNormalBooks,
+    fetchMoreNormalBooks,
+    setSortBy,
+    setSelectedTags,
+    fetchAllTags,
+    keyword,
+    setKeyword,
+    replaceSelectedTags,
+    updateSingleBookInList,
+    normalSearchStatus,
+  } = useBookManageStore();
 
-export function AiSearchTab({ initialPrompt }) {
-  const { aiBooks, isFetchingAi, fetchAiBooks, clearAiBooks, aiSearchStatus } = useBookManageStore();
-  const { userName } = useUserStore();
-  const [prompt, setPrompt] = useState(initialPrompt || "");
-  const [aiSortBy, setAiSortBy] = useState("relevance");
+  const [localKeyword, setLocalKeyword] = useState(keyword);
 
+  // --- Initial Fetch ---
   useEffect(() => {
-    if (initialPrompt) {
-      setPrompt(initialPrompt);
-      fetchAiBooks(initialPrompt);
-    }
-  }, [initialPrompt, fetchAiBooks]);
+    fetchAllTags();
+    fetchNormalBooks();
+  }, []);
+
+  const tagOptions = useMemo(
+    () => allTags.map((tag) => ({ value: tag.id, label: tag.name })),
+    [allTags],
+  );
+
+  // --- Infinite Scroll Logic ---
+  const observer = useRef();
+  const lastBookElementRef = useCallback(
+    (node) => {
+      if (isFetchingNormal) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchMoreNormalBooks();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isFetchingNormal, hasNextPage, fetchMoreNormalBooks],
+  );
 
   const handleSearch = () => {
-    if (prompt.trim()) {
-      fetchAiBooks(prompt);
-    }
+    const formattedKeyword = formatIsbnForSearch(localKeyword);
+    setKeyword(formattedKeyword);
+    fetchNormalBooks();
   };
 
   const handleRateClick = (bookToRate) => {
@@ -70,192 +92,90 @@ export function AiSearchTab({ initialPrompt }) {
     setIsRatingDialogOpen(true);
   };
 
-  const clearSearch = (bookToRate) => {
-    setSelectedBookForRating(bookToRate);
-    setIsRatingDialogOpen(true);
-  };
-
-  const handleRatingSubmitted = () => {
+  const handleRatingSubmitted = (updatedBook) => {
     setIsRatingDialogOpen(false);
-    // อาจจะมีการ fetch ข้อมูลใหม่ที่นี่
+    if (updatedBook) {
+      updateSingleBookInList(updatedBook);
+    }
   };
 
-  const sortedAiBooks = useMemo(() => {
-    const newBooks = [...aiBooks];
-    switch (aiSortBy) {
-      case "rating":
-        return newBooks.sort((a, b) => b.averageRating - a.averageRating);
-      case "popularity":
-        return newBooks.sort((a, b) => b.ratingCount - a.ratingCount);
-      case "title_asc":
-        return newBooks.sort((a, b) => a.title.localeCompare(b.title));
-      case "title_desc":
-        return newBooks.sort((a, b) => b.title.localeCompare(a.title));
-      case "relevance":
-      default:
-        return newBooks;
-    }
-  }, [aiBooks, aiSortBy]);
+  console.log("allTags");
+  console.log(allTags);
 
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
 
-  const handlePromptClick = (promptText) => {
-    setPrompt(promptText);
-    fetchAiBooks(promptText);
-  };
-
-  const renderMainContent = () => {
-    switch (aiSearchStatus) {
-      case 'loading':
-        return (
-          <div className="flex flex-1 items-center justify-center pt-10">
-            <LoaderCircle className="animate-spin text-text-secondary" size={48} />
-          </div>
-        );
-
-      case 'success':
-        return (
-          <div className="mt-[-100px] flex flex-1 flex-col gap-4 pt-6">
-            <div className="w-full max-w-xs">
-              {/* ... Sort Dropdown ... */}
-            </div>
-            <div className="book-flex-container flex flex-row flex-wrap gap-5">
-              {sortedAiBooks.map((book) => (
-                <BookMainCard
-                  key={book.id}
-                  book={book}
-                  onRateClick={handleRateClick}
-                />
-              ))}
-            </div>
-          </div>
-        );
-      
-      case 'empty':
-        return (
-          <div className="text-text-secondary mt-[-88px] flex h-full flex-1 flex-col items-center justify-center pt-10 text-center">
-            <div className="display-3 text-text-disabled">No Results Found</div>
-            <p className="mt-2">Librarian couldn't find a match. Please try a different or more detailed prompt.</p>
-          </div>
-        );
-
-      case 'idle':
-      default:
-        return (
-          <div className="text-text-secondary mt-[-88px] flex h-full flex-1 flex-col items-center justify-center pt-10">
-            <div className="display-3">Hello, {userName}</div>
-            <div className="display-3 text-text-disabled">What can we help you find?</div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {/* ... Suggestion Prompts ... */}
-            </div>
-          </div>
-        );
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
   return (
-    <div className="flex h-full flex-col gap-10 px-6 md:flex-row">
+    <div className="flex flex-col gap-10 px-6 md:flex-row">
       {/* Sidebar for Filters */}
-      <aside className="sticky w-full md:top-40 md:h-fit md:w-72">
-        <div className="flex h-fit flex-col gap-2">
-          <Label htmlFor="ai-prompt">Describe your ideal book</Label>
-          <Textarea
-            id="ai-prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            className="h-32"
-            placeholder="e.g., A funny sci-fi story about a sentient teapot on a quest to find the meaning of life..."
-          />
-          <Button
-            onClick={handleSearch}
+      <aside className="sticky w-full md:top-38 md:h-fit md:w-72">
+        <div className="sticky flex flex-col gap-4">
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <InputX
+              label="Search"
+              id="SearchBook"
+              placeholder="Title, Author, or ISBN..."
+              className="rounded-md"
+              value={localKeyword}
+              onChange={(e) => setLocalKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              leadingComponent={<i className="fa-solid fa-book-open-cover"></i>}
+            />
+          </div>
+          <SelectStyled
+            label="Sort by:"
             variant="outlined"
-            color="secondary"
-            size="large"
-            disabled={isFetchingAi}
-            className="mt-2"
+            triggerClassName="rounded-md"
+            defaultValue="popularity"
+            value={sortBy}
+            onValueChange={setSortBy}
           >
-            Clear
-          </Button>
-          <Button
-            onClick={clearSearch}
-            color="tertiary"
-            size="large"
-            disabled={isFetchingAi}
-            className="mt-2"
-          >
-            {isFetchingAi ? (
-              <LoaderCircle className="mr-2 animate-spin" />
-            ) : (
-              <SparklesIcon className="mr-2 h-4 w-4" />
-            )}
-            Ask Librarian
+            <SelectContent>
+              <SelectItem value="popularity">Popularity</SelectItem>
+              <SelectItem value="rating">Average Rating</SelectItem>
+              <SelectItem value="title_asc">Title (A-Z)</SelectItem>
+              <SelectItem value="title_desc">Title (Z-A)</SelectItem>
+            </SelectContent>
+          </SelectStyled>
+
+          <div>
+            <MultiSelectStyled
+              label="Genres"
+              options={tagOptions}
+              onValueChange={replaceSelectedTags}
+              placeholder="Select genres..."
+              maxCount={5}
+            />
+          </div>
+          <Button onClick={handleSearch} size="large">
+            Search
           </Button>
         </div>
       </aside>
 
       {/* Main Content */}
-      {isFetchingAi ? (
-        <div className="flex items-center justify-center pt-10">
-          <LoaderCircle className="animate-spin" />
+      <main className="min-h-screen flex-1">
+        <div className="book-flex-container mt-[-64px] flex flex-row flex-wrap gap-5">
+          {normalBooks.map((book, index) => (
+            <BookMainCard
+              key={book.id}
+              book={book}
+              onRateClick={handleRateClick}
+              innerRef={
+                normalBooks.length === index + 1 ? lastBookElementRef : null
+              }
+            />
+          ))}
         </div>
-      ) : aiBooks.length > 0 ? (
-        <div className="mt-[-100px] flex flex-1 flex-col gap-4 pt-6">
-          <div className="w-full max-w-xs">
-            {/* 2. ปรับปรุง UI ของ Select ให้สอดคล้องกับ Label */}
-            <SelectStyled
-              label="Sort results by:"
-              variant="outlined"
-              className="w-45"
-              size="small"
-              defaultValue="relevance"
-              value={aiSortBy}
-              onValueChange={setAiSortBy}
-            >
-              <SelectContent>
-                <SelectItem value="relevance">Relevance</SelectItem>
-                <SelectItem value="popularity">Popularity</SelectItem>
-                <SelectItem value="title_asc">Title (A-Z)</SelectItem>
-                <SelectItem value="title_desc">Title (Z-A)</SelectItem>
-              </SelectContent>
-            </SelectStyled>
-          </div>
-          <div className="book-flex-container flex flex-row flex-wrap gap-5">
-            {sortedAiBooks.map((book) => (
-              <BookMainCard
-                key={book.id}
-                book={book}
-                onRateClick={handleRateClick}
-              />
-            ))}
-          </div>
+
+        {/* ... Loading & End of results ... */}
+        <div className="flex w-full justify-center pt-40">
+          {isFetchingNormal && <LoaderCircle className="animate-spin" />}
+          {!isFetchingNormal && !hasNextPage && normalBooks.length > 0 && (
+            <p className="text-text-disabled">End of results.</p>
+          )}
         </div>
-      ) : (
-        <div className="text-text-secondary mt-[-88px] flex h-full flex-1 flex-col items-center justify-center pt-10">
-          <div className="display-3">Hello, {userName}</div>
-          <div className="display-3 text-text-disabled">
-            What can we help you.
-          </div>
-          <div className="mt-8 flex flex-wrap gap-3">
-            {suggestionPrompts.map((item, index) => (
-              <div
-                key={index}
-                className="hover:bg-action-active/30 bg-action-active/20 subtitle-3 font-regular flex h-50 w-50 cursor-pointer flex-col items-end rounded-md p-4 transition-all"
-                onClick={() => handlePromptClick(item.prompt)}
-              >
-                <div className="w-full flex-1">{item.prompt}</div>
-                <div className="bg-action-active/20 rounded-pill flex h-10 w-10 items-center justify-center pb-1">
-                  <i className={item.icon}></i>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      </main>
 
       {/* Rating Dialog จะถูกควบคุมโดย State ของหน้านี้ */}
       <Dialog open={isRatingDialogOpen} onOpenChange={setIsRatingDialogOpen}>

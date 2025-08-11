@@ -471,7 +471,7 @@ function Shelf() {
                 <div className="border-white-hover text-text-primary flex items-center border-b-2 pb-2">
                   <p className="subtitle-2 text-text-primary">Wishlists</p>
                 </div>
-                <div className="flex min-h-[100px] items-center sm:min-h-[128px]">
+                <div className="flex min-h-[100px] justify-center sm:min-h-[287px]">
                   {userWishlist.length === 0 ? (
                     <div className="flex w-full items-center justify-center">
                       <div className="text-center">

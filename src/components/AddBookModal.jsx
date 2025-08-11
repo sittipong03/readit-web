@@ -236,8 +236,8 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
 
               {filteredBooks.length === 0 && searchQuery && (
                 <div className="py-12 text-center">
-                  <Book className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-                  <p className="text-gray-500">
+                  <Book className="text-text-disabled mx-auto mb-4 h-12 w-12" />
+                  <p className="text-text-disabled">
                     No books found matching "{searchQuery}"
                   </p>
                 </div>

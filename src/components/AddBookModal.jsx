@@ -159,7 +159,7 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
           <div className="flex w-full items-center justify-between gap-3">
             <div className="relative flex w-full items-center justify-between gap-4">
               <div className="absolute top-1/2 left-5 -translate-y-1/2 transform">
-                <i className="fa-solid fa-book-open-cover text-text-action-disabled"></i>
+                <i className="fa-solid fa-book-open-cover text-text-disabled"></i>
               </div>
               <Input
                 type="text"

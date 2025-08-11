@@ -41,14 +41,6 @@ function Book() {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [switchDoYouKnow, setSwitchDoYouKnow] = useState(0);
-  const {
-    aiBooks,
-    isFetchingAi,
-    fetchAiBooks,
-    clearAiBooks,
-    aiSearchStatus,
-    updateSingleBookInList,
-  } = useBookManageStore();
 
   const { bookId } = useParams();
 
@@ -64,6 +56,14 @@ function Book() {
   const { userId, token } = useUserStore();
   const { product } = productManageStore(); // สมมติว่ายังต้องใช้ product
   const { addToCart } = cartManageStore();
+  const {
+    aiBooks,
+    isFetchingAi,
+    fetchAiBooks,
+    clearAiBooks,
+    aiSearchStatus,
+    updateSingleBookInList,
+  } = useBookManageStore();
 
   const latestEdition = book?.edition?.find((e) => e.isLatest === true);
   const latestIsbn = latestEdition?.isbn;
@@ -99,7 +99,7 @@ function Book() {
   // --- Event Handlers ---
   const hdlPostReview = async () => {
     console.log("token", token);
-    if (rating === 0) {
+    if (book?.rating === 0) {
       return toast.error("กรุณาให้คะแนนดาวก่อนโพสต์");
     }
     if (!reviewContent.trim()) {
@@ -112,7 +112,6 @@ function Book() {
         bookId: book.id,
         title: "Review for " + book.title,
         content: reviewContent,
-        reviewPoint: rating,
       };
       await addReview(book.id, sendData, token);
       toast.success("โพสต์รีวิวสำเร็จ!");
@@ -315,7 +314,7 @@ function Book() {
                   <Badge
                     variant="secondary"
                     className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3"
-                    key={tag.id}
+                    key={tag.tag?.id || tag.id}
                   >
                     {tag.tag?.name}
                   </Badge>
@@ -392,14 +391,14 @@ function Book() {
                     />
                   )}
                   <div className="flex gap-10">
-                    <div className="flex flex-col w-40 gap-1">
+                    <div className="flex w-40 flex-col gap-1">
                       <div className="text-text-disabled body-2">
                         Rate this book:
                       </div>
                       <InstantStarRating
                         bookId={book?.id}
                         onRatingSubmitted={handleRatingSubmitted}
-                        rated={book?.rating}
+                        rated={book?.rating || 0}
                         size={18}
                       />
                     </div>
@@ -443,7 +442,7 @@ function Book() {
                         <Avatar className="size-10">
                           <AvatarImage src={r.user.avatarUrl} alt="@shadcn" />
                           <AvatarFallback className="bg-action-disabled/50">
-                            <i class="fa-solid fa-user"></i>
+                            <i className="fa-solid fa-user"></i>
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
@@ -483,7 +482,7 @@ function Book() {
                             size="small"
                             className="[&_svg]:pb-0.5"
                           >
-                            <i class="fa-regular fa-thumbs-up"></i>
+                            <i className="fa-regular fa-thumbs-up"></i>
                             {r._count.likes}
                           </Button>
                           <Button
@@ -492,7 +491,7 @@ function Book() {
                             size="small"
                             className="[&_svg]:pb-0.5"
                           >
-                            <i class="fa-regular fa-comment"></i>
+                            <i className="fa-regular fa-comment"></i>
                             {r._count.comments}
                           </Button>
                           <Button
@@ -501,7 +500,7 @@ function Book() {
                             size="icon"
                             className="h-7 w-7"
                           >
-                            <i class="fa-solid fa-ellipsis"></i>
+                            <i className="fa-solid fa-ellipsis"></i>
                           </Button>
                         </div>
                       </div>

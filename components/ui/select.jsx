@@ -85,6 +85,7 @@ const SelectStyled = React.forwardRef(
   (
     {
       className,
+      triggerClassName,
       label,
       id,
       variant,
@@ -125,6 +126,7 @@ const SelectStyled = React.forwardRef(
             size={size}
             disabled={disabled}
             aria-invalid={ariaInvalid}
+            className={triggerClassName}
           >
             <SelectValue placeholder="Select an option" />
           </SelectTriggerStyled>

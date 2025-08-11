@@ -22,8 +22,8 @@ const inputVariants = cva(
         error: "",
       },
       size: {
-        small: "h-9 body-2 gap-2", // Height, text size, and gap for small inputs
-        medium: "h-11 gap-2", // Height, text size, and gap for medium inputs
+        small: "min-h-9 body-2 gap-2", // Height, text size, and gap for small inputs
+        medium: "min-h-11 gap-2", // Height, text size, and gap for medium inputs
       },
       disabled: {
         true: "pointer-events-none cursor-not-allowed opacity-50", // General disabled styles

@@ -9,11 +9,28 @@ export const fetchBookById = (id) => api.get(`/book/${id}`);
 export const fetchAiSuggestion = (id) => api.get(`/book/${id}/ai-suggestion`);
 export const fetchBookByAI = (body) => api.post("/book/searchAI", body);
 export const fetchBookByTag = (body) => api.post("/book/searchTagAI", body);
-export const fetchBooks = ({ sortBy = "popularity", page = 1, limit = 24 }) => {
-  const params = new URLSearchParams({
+export const fetchBooks = ({
+  sortBy = "popularity",
+  page = 1,
+  limit = 24,
+  tagIds = [],
+  keyword = "",
+}) => {
+  const params = {
     sortBy,
     page,
     limit,
-  });
-  return api.get(`/book?${params.toString()}`);
+  };
+
+  // เพิ่ม parameter เข้าไปเฉพาะเมื่อมีค่าเท่านั้น
+  if (tagIds.length > 0) {
+    params.tags = tagIds.join(","); // แปลง array เป็น string "id1,id2"
+  }
+  if (keyword.trim() !== "") {
+    params.keyword = keyword;
+  }
+
+  const queryString = new URLSearchParams(params).toString();
+
+  return api.get(`/book?${queryString}`);
 };

@@ -20,6 +20,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import nothingPic from "../assets/nothing-pic.png";
 import productManageStore from "../stores/productManageStore";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import useBookManageStore from "../stores/booksManageStore";
+import { StarRating } from "../components/StarRating";
+import { InstantStarRating } from "../components/InstantStarRating";
 
 function Book() {
   // --- States ---
@@ -29,10 +40,24 @@ function Book() {
   const [reviewContent, setReviewContent] = useState(""); // State สำหรับ Textarea
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [switchDoYouKnow, setSwitchDoYouKnow] = useState(0)
-  
+  const [switchDoYouKnow, setSwitchDoYouKnow] = useState(0);
+  const {
+    aiBooks,
+    isFetchingAi,
+    fetchAiBooks,
+    clearAiBooks,
+    aiSearchStatus,
+    updateSingleBookInList,
+  } = useBookManageStore();
+
   const { bookId } = useParams();
-  
+
+  const handleRatingSubmitted = (updatedBook) => {
+    if (updatedBook) {
+      updateSingleBookInList(updatedBook);
+    }
+  };
+
   // --- Zustand Stores ---
   const { book, getBookById, getAiSuggestion } = bookManageStore();
   const { getAllReview, addReview } = reviewManageStore();
@@ -49,10 +74,10 @@ function Book() {
   useEffect(() => {
     const loadData = async () => {
       if (!bookId) return;
-      
+
       setLoading(true);
       setLoadingAI(true);
-      
+
       // เรียกข้อมูลหลักก่อน
       const fetchedBook = await getBookById(bookId);
       await getAllReview(bookId);
@@ -62,18 +87,18 @@ function Book() {
       await getAiSuggestion(bookId);
       setLoadingAI(false);
     };
-    
+
     loadData();
   }, [bookId, getBookById, getAllReview, getAiSuggestion]);
-  
+
   const hdlReview = () => {
     setShowReview(!showReview);
   };
 
-  console.log('bookdddddd', book)
+  console.log("bookdddddd", book);
   // --- Event Handlers ---
   const hdlPostReview = async () => {
-    console.log('token', token)
+    console.log("token", token);
     if (rating === 0) {
       return toast.error("กรุณาให้คะแนนดาวก่อนโพสต์");
     }
@@ -120,10 +145,10 @@ function Book() {
   };
 
   // Function for shuffle do you know
-  const listOfDoYouKnow = book?.aiSuggestion?.split("|")
+  const listOfDoYouKnow = book?.aiSuggestion?.split("|");
   const shuffleDoYouKnow = () => {
-    setSwitchDoYouKnow(Math.floor(Math.random() * 9))
-  }
+    setSwitchDoYouKnow(Math.floor(Math.random() * 9));
+  };
 
   // --- Render ---
   if (loading) {
@@ -148,16 +173,16 @@ function Book() {
       <div className="w-full max-w-lg pb-20">
         <div className="relative flex items-start gap-10 p-10">
           {/* Left Column */}
-          <div className="flex w-full max-w-[480px] flex-col gap-6 sticky top-20">
+          <div className="sticky top-20 flex w-full max-w-[480px] flex-col gap-6">
             <div className="flex gap-6">
               <div className="bg-secondary-lighter shadow-book-lighting h-[264px] w-[174px] flex-shrink-0">
                 <img
                   src={
-                    book?.edition[0]?.coverImage  ||
+                    book?.edition[0]?.coverImage ||
                     "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721918653l/198902277.jpg"
                   }
                   alt={book.title}
-                  className="object-cover w-full h-full"
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -207,31 +232,80 @@ function Book() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 p-6 rounded-lg text-text-secondary shadow-card-3d bg-paper-elevation-8">
-              <div className="mb-1 subtitle-2">Description :</div>
-              <div className="body-2">{book.description || "No description available."}</div>
+            <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-3 rounded-lg p-6">
+              <div className="subtitle-2 mb-1">Description :</div>
+              <div className="body-2">
+                {book.description || "No description available."}
+              </div>
               {latestIsbn ? (
-                <div className="flex gap-4 body-2">
+                <div className="body-2 flex gap-4">
                   <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
                   <div className="w-full">{latestIsbn}</div>
                 </div>
               ) : (
-                <div className="flex gap-4 body-2">
+                <div className="body-2 flex gap-4">
                   <div className="w-[148px] flex-shrink-0 font-bold">ISBN</div>
-                  <div className="w-full text-text-disabled">Not available</div>
+                  <div className="text-text-disabled w-full">Not available</div>
                 </div>
               )}
               {latestPages ? (
-                <div className="flex gap-4 body-2">
+                <div className="body-2 flex gap-4">
                   <div className="w-[148px] flex-shrink-0 font-bold">Pages</div>
                   <div className="w-full">{latestPages}</div>
                 </div>
               ) : (
-                <div className="flex gap-4 body-2">
+                <div className="body-2 flex gap-4">
                   <div className="w-[148px] flex-shrink-0 font-bold">Pages</div>
-                  <div className="w-full text-text-disabled">Not available</div>
+                  <div className="text-text-disabled w-full">Not available</div>
                 </div>
               )}
+            </div>
+
+            <div className="text-text-secondary shadow-card-3d bg-paper-elevation-8 flex flex-col gap-4 rounded-lg p-6">
+              <div className="flex flex-col">
+                <div className="subtitle-2 mb-1">More editions :</div>
+                <div className="body-2 text-text-disabled">
+                  {book?.edition?.length > 1
+                    ? `There're ${book?.edition?.length}.`
+                    : "There's only 1 edition."}
+                </div>
+              </div>
+              <Carousel className="flex w-full flex-col gap-9">
+                <div className="-mt-16 flex w-full justify-end gap-2">
+                  <CarouselPrevious className="relative top-0 -left-0 translate-y-0" />
+                  <CarouselNext className="relative top-0 -left-0 translate-y-0" />
+                </div>
+                <CarouselContent className="-ml-1">
+                  {book?.edition?.map((_, index) => (
+                    <CarouselItem
+                      key={index}
+                      className="pl-1 md:basis-1/2 lg:basis-[96px]"
+                    >
+                      <div className="p-0">
+                        {book?.edition?.[index]?.coverImage ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="bg-secondary-lighter/20 shadow-book-lighting h-[128px] w-[84px] gap-2">
+                              <img
+                                src={book?.edition?.[index]?.coverImage || ""}
+                                alt={book.title}
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            <div className="body-3 text-text-disabled">
+                              (
+                              {book?.edition?.[index]?.publishedYear ||
+                                "unknown"}
+                              )
+                            </div>
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
             </div>
 
             <div className="flex flex-col gap-3">
@@ -240,7 +314,7 @@ function Book() {
                 {book.bookTag?.map((tag) => (
                   <Badge
                     variant="secondary"
-                    className="h-8 px-3 text-secondary-lighter subtitle-4 rounded-pill"
+                    className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3"
                     key={tag.id}
                   >
                     {tag.tag?.name}
@@ -251,9 +325,9 @@ function Book() {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col w-full gap-6">
-            <div className="p-6 border rounded-lg text-tertiary-darker border-tertiary-outlinedBorder bg-tertiary-selected">
-              <div className="flex gap-4 mb-4">
+          <div className="flex w-full flex-col gap-6">
+            <div className="text-tertiary-darker border-tertiary-outlinedBorder bg-tertiary-selected rounded-lg border p-6">
+              <div className="mb-4 flex gap-4">
                 <div className="subtitle-1 text-tertiary-main">
                   Do you know?
                 </div>
@@ -273,19 +347,21 @@ function Book() {
                 )}
               </div>
               {loadingAI ? (
-                <div className="flex items-center gap-2 body-2">
+                <div className="body-2 flex items-center gap-2">
                   <LoaderCircle size={16} className="animate-spin" />
                   AI is thinking...
                 </div>
               ) : (
                 <div className="body-2">
-                  {listOfDoYouKnow?.length > 0 ? listOfDoYouKnow[switchDoYouKnow] : "AI suggestion is not available."}
+                  {listOfDoYouKnow?.length > 0
+                    ? listOfDoYouKnow[switchDoYouKnow]
+                    : "AI suggestion is not available."}
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="w-full subtitle-1">Reviews</div>
+              <div className="subtitle-1 w-full">Reviews</div>
               <div className="w-[200px]">
                 <SelectStyled
                   variant="outlined"
@@ -303,10 +379,10 @@ function Book() {
               </div>
             </div>
 
-            <div className="p-6 rounded-lg bg-paper-elevation-8 shadow-card-3d">
+            <div className="bg-paper-elevation-8 shadow-card-3d rounded-lg p-6">
               <div className="flex flex-col gap-5">
                 {/* Review Form */}
-                <div className="flex flex-col gap-4 p-6 rounded-lg shadow-card-3d bg-paper-elevation-6">
+                <div className="shadow-card-3d bg-paper-elevation-6 flex flex-col gap-4 rounded-lg p-6">
                   {showReview && (
                     <Textarea
                       placeholder="Write a review..."
@@ -316,37 +392,16 @@ function Book() {
                     />
                   )}
                   <div className="flex gap-10">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-40 gap-1">
                       <div className="text-text-disabled body-2">
                         Rate this book:
                       </div>
-                      <div className="flex gap-0">
-                        {[1, 2, 3, 4, 5].map((starValue) => (
-                          <Button
-                            key={starValue}
-                            type="button"
-                            variant="text"
-                            size="icon"
-                            color="info"
-                            onClick={() => setRating(starValue)}
-                            onMouseEnter={() => setHoverRating(starValue)}
-                            onMouseLeave={() => setHoverRating(0)}
-                            className={
-                              starValue <= (hoverRating || rating)
-                                ? "text-info-main h-6 w-6"
-                                : "text-text-disabled h-6 w-6"
-                            }
-                          >
-                            <i
-                              className={
-                                starValue <= (hoverRating || rating)
-                                  ? "fa-solid fa-star"
-                                  : "fa-regular fa-star"
-                              }
-                            ></i>
-                          </Button>
-                        ))}
-                      </div>
+                      <InstantStarRating
+                        bookId={book?.id}
+                        onRatingSubmitted={handleRatingSubmitted}
+                        rated={book?.rating}
+                        size={18}
+                      />
                     </div>
                     <Button
                       variant={showReview ? "contained" : "mixed"}
@@ -357,7 +412,7 @@ function Book() {
                         showReview ? hdlPostReview : () => setShowReview(true)
                       }
                     >
-                      <i className="mr-2 fa-solid fa-edit"></i>
+                      <i className="fa-solid fa-edit mr-2"></i>
                       {showReview ? "Post" : "Write a review"}
                     </Button>
                   </div>
@@ -381,7 +436,7 @@ function Book() {
                 ) : (
                   book.review?.map((r) => (
                     <div
-                      className="flex flex-row gap-4 p-6 rounded-lg bg-paper-elevation-6 shadow-card-3d"
+                      className="bg-paper-elevation-6 shadow-card-3d flex flex-row gap-4 rounded-lg p-6"
                       key={r.id}
                     >
                       <div className="flex w-[200px] flex-col gap-2">
@@ -409,7 +464,7 @@ function Book() {
                           Follow
                         </Button>
                       </div>
-                      <div className="flex flex-col w-full gap-3">
+                      <div className="flex w-full flex-col gap-3">
                         <StaticRating
                           rating={r.reviewPoint}
                           showNumber={false}
@@ -418,7 +473,7 @@ function Book() {
                         <div className="body-2 text-text-secondary">
                           {r.content}
                         </div>
-                        <div className="w-full pt-3 border-t body-3 text-text-disabled border-divider">
+                        <div className="body-3 text-text-disabled border-divider w-full border-t pt-3">
                           Was this review helpful?
                         </div>
                         <div className="flex gap-2">
@@ -444,7 +499,7 @@ function Book() {
                             variant="text"
                             color="secondary"
                             size="icon"
-                            className="w-7 h-7"
+                            className="h-7 w-7"
                           >
                             <i class="fa-solid fa-ellipsis"></i>
                           </Button>

@@ -34,6 +34,7 @@ function LandingPage() {
               name="ISBN"
               placeholder="e.g., Epic fantasy book with ancient evil, unlikely heroes, and magical journey"
               className="h-16 w-full"
+              onKeyDown={(e) => e.key === 'Enter' && sendShimmer()}
               trailingComponent={
                 <Button color="tertiary" variant="contained" onClick={() => sendShimmer()}>
                   <WandSparklesIcon />

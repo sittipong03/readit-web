@@ -1,10 +1,8 @@
-import { SparklesIcon } from "../components/icons/sparkles-icon";
 import { Button } from "../../components/ui/button";
 import { LoaderCircle, WandSparklesIcon } from "lucide-react";
 import { InputX } from "@/components/ui/inputX";
 import homepagePic from "../assets/homepage-pic.png";
 import { useNavigate } from "react-router";
-import { cn } from "@/lib/utils";
 import { LavaLampBackground } from "../components/MovingGradientBackground";
 
 function HomePage() {
@@ -38,6 +36,7 @@ function HomePage() {
                 name="ISBN"
                 placeholder="e.g., Epic fantasy book with ancient evil, unlikely heroes, and magical journey"
                 className="h-16 w-full pl-8"
+                onKeyDown={(e) => e.key === "Enter" && sendShimmer()}
                 trailingComponent={
                   <Button
                     color="tertiary"

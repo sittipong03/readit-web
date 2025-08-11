@@ -1,4 +1,11 @@
-import * as React from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  forwardRef,
+  useId,
+  useRef,
+} from "react";
 import { cva } from "class-variance-authority";
 import { CheckIcon, XCircle, ChevronDown, XIcon } from "lucide-react";
 
@@ -43,6 +50,7 @@ const MultiSelectStyled = React.forwardRef(
     {
       options,
       onValueChange,
+      value,
       variant,
       color,
       size,
@@ -60,35 +68,33 @@ const MultiSelectStyled = React.forwardRef(
     },
     ref,
   ) => {
-    const [selectedValues, setSelectedValues] = React.useState(defaultValue);
+    const [selectedValues, setSelectedValues] = useState(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const triggerRef = React.useRef(null);
 
-    const handleValueChange = React.useCallback(
-      (newSelectedValues) => {
-        setSelectedValues(newSelectedValues);
-        if (onValueChange) {
-          onValueChange(newSelectedValues);
-        }
-      },
-      [onValueChange],
-    );
+    useEffect(() => {
+      // ถ้ามีการส่ง prop 'value' เข้ามา (Controlled mode) ให้บังคับ state ภายในอัปเดตตามเสมอ
+      if (value !== undefined) {
+        setSelectedValues(value);
+      }
+    }, [value]); 
 
-    const toggleOption = React.useCallback(
-      (optionValue) => {
-        setSelectedValues((currentSelectedValues) => {
-          const newValues = currentSelectedValues.includes(optionValue)
-            ? currentSelectedValues.filter((v) => v !== optionValue)
-            : [...currentSelectedValues, optionValue];
+    const handleValueChange = (newValues) => {
+      if (value === undefined) {
+        setSelectedValues(newValues);
+      }
+      if (onValueChange) {
+        onValueChange(newValues);
+      }
+    };
 
-          if (onValueChange) {
-            onValueChange(newValues);
-          }
-          return newValues;
-        });
-      },
-      [onValueChange],
-    );
+    const toggleOption = (optionValue) => {
+      const currentValues = value !== undefined ? value : selectedValues;
+      const newValues = currentValues.includes(optionValue)
+        ? currentValues.filter((v) => v !== optionValue)
+        : [...currentValues, optionValue];
+      handleValueChange(newValues);
+    };
 
     const generatedId = React.useId();
     const selectId = id || generatedId;
@@ -100,8 +106,8 @@ const MultiSelectStyled = React.forwardRef(
     });
 
     const selectedOptions = React.useMemo(
-      () => options.filter((opt) => selectedValues.includes(opt.value)),
-      [options, selectedValues],
+      () => options.filter((opt) => value.includes(opt.value)),
+      [options, value],
     );
 
     const displayedOptions = selectedOptions.slice(0, maxCount);
@@ -124,12 +130,12 @@ const MultiSelectStyled = React.forwardRef(
               className={cn(
                 inputVariants({ variant, color, size, className, disabled }),
                 "w-full justify-between rounded-lg",
-                selectedValues.length > 0 ? "pr-1 pl-1" : "px-2",
+                selectedValues.length > 0 ? "py-1 pr-1 pl-1" : "px-2",
               )}
               {...props}
             >
               {selectedValues.length > 0 ? (
-                <div className="flex w-full items-center justify-between h-full">
+                <div className="flex h-full w-full items-center justify-between">
                   <div className="flex flex-wrap items-center gap-1">
                     {displayedOptions.map((option) => (
                       <Badge
@@ -142,7 +148,7 @@ const MultiSelectStyled = React.forwardRef(
                       >
                         {option.label}
                         <XCircle
-                          className="ml-2 cursor-pointer w-4"
+                          className="ml-2 w-4 cursor-pointer"
                           onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -155,12 +161,15 @@ const MultiSelectStyled = React.forwardRef(
                       </Badge>
                     ))}
                     {remainingCount > 0 && (
-                      <Badge variant="outlined" className="m-0.5 text-bodyMedium h-7">
+                      <Badge
+                        variant="outlined"
+                        className="text-bodyMedium m-0.5 h-7"
+                      >
                         +{remainingCount} more
                       </Badge>
                     )}
                   </div>
-                  <div className="flex items-center h-7 ">
+                  <div className="flex h-7 items-center">
                     <XIcon
                       className="text-muted-foreground mx-2 h-4 cursor-pointer"
                       onMouseDown={(e) => {
@@ -172,7 +181,10 @@ const MultiSelectStyled = React.forwardRef(
                         handleValueChange([]);
                       }}
                     />
-                    <Separator orientation="vertical" className="h-full w-[20px]" />
+                    <Separator
+                      orientation="vertical"
+                      className="h-full w-[20px]"
+                    />
                     <ChevronDown className="text-action-active-icon mx-2 h-4" />
                   </div>
                 </div>

@@ -1,14 +1,14 @@
 /* Lava Lamp Effect */
 .lava-lamp-background {
-  --color-1: hsl(318, 85%, 13%);
-  --color-2: #5c0c81;
-  --color-3: #22044F;
-  --color-bg: #111827; 
+  --color-1: var(--Tertiary-800);
+  --color-2: var(--Primary-800); 
+  --color-3: var(--Tertiary-800);
+  --color-bg: var(--Tertiary-950);
 
   position: relative;
   overflow: hidden;
   background-color: var(--color-bg);
-  z-index: 5; 
+  z-index: 5;
 }
 
 /* สร้าง pseudo-element เพื่อเป็น Layer ของ Gradient */
@@ -23,15 +23,39 @@
 
   /* สร้าง "เซลล์" ด้วย radial-gradient หลายๆ อัน */
   background-image:
-    radial-gradient(circle at 20% 25%, var(--color-1), transparent 25%),
-    radial-gradient(circle at 80% 15%, var(--color-2), transparent 25%),
+    radial-gradient(circle at 20% 25%, var(--color-1), transparent 40%),
+    radial-gradient(circle at 10% 0%, var(--color-3), transparent 20%),
+    radial-gradient(circle at 50% 80%, var(--color-2), transparent 8%),
     radial-gradient(circle at 40% 80%, var(--color-3), transparent 25%);
 
   /* ทำให้เซลล์เบลอและฟุ้ง */
-  filter: blur(80px);
+  filter: blur(96px);
 
   /* กำหนด Animation */
   animation: lava-animation 20s ease-in-out infinite alternate;
+}
+
+.lava-lamp-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1; /* ส่งไปอยู่ข้างหลังสุด */
+
+  /* สร้าง "เซลล์" ด้วย radial-gradient หลายๆ อัน */
+  background-image:
+    radial-gradient(circle at 20% 25%, var(--color-1), transparent 15%),
+    radial-gradient(circle at 10% 0%, var(--color-3), transparent 15%),
+    radial-gradient(circle at 50% 80%, var(--color-2), transparent 15%),
+    radial-gradient(circle at 40% 80%, var(--color-3), transparent 25%);
+
+  /* ทำให้เซลล์เบลอและฟุ้ง */
+  filter: blur(120px);
+
+  /* กำหนด Animation */
+  animation: lava-animation-2 56s ease-in-out infinite alternate;
 }
 
 /* สร้างการเคลื่อนไหว */
@@ -44,5 +68,42 @@
   }
   100% {
     transform: scale(1) translate(0, 0) rotate(360deg);
+  }
+}
+
+@keyframes lava-animation-2 {
+  0% {
+    transform: scale(1.5) translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: scale(3) translate(80px, -120px) rotate(180deg);
+  }
+  100% {
+    transform: scale(1.5) translate(0, 0) rotate(360deg);
+  }
+}
+
+
+.book-flex-container {
+  display: flex;
+  flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่ */
+  gap: 1rem;
+}
+.book-card-wrapper {
+  /* Mobile (Default): 2 คอลัมน์ */
+  /* 100% / 2 = 50% แล้วลบด้วยครึ่งหนึ่งของ gap */
+  width: calc(50% - 0.5rem); 
+}
+
+@media (min-width: 1024px) {
+  .book-card-wrapper {
+    /* 4 คอลัมน์: 100% / 4 = 25% */
+    width: calc(25% - 0.75rem); /* การคำนวณ gap จะซับซ้อนขึ้นเล็กน้อย */
+  }
+}
+
+@media (min-width: 1440px) { /* หรือขนาดที่ต้องการ */
+  .book-card-wrapper {
+    width: calc(12.5% - 0.875rem);
   }
 }

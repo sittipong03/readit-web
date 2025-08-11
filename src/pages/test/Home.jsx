@@ -98,9 +98,9 @@ function Home() {
   console.log("books:", books);
 
   return (
-    <div className="bg-paper-elevation-6 text-text-primary flex justify-center gap-4 pt-8 pb-24">
+    <div className="bg-paper-elevation-6 text-text-primary flex justify-center gap-4 pt-10 pb-24">
       <div className="flex w-fit flex-col gap-4 p-4">
-        <div className="from-secondary-lighter to-paper-elevation-6 sticky top-20 flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
+        <div className="sticky flex min-h-[480px] w-[296px] transform flex-col gap-4 rounded-md bg-linear-to-b/hsl px-4 py-6">
           <div className="grid w-full max-w-sm items-center gap-2">
             <InputX
               label="Search"

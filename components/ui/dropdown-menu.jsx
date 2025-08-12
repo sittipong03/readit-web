@@ -52,7 +52,7 @@ function DropdownMenuItem({ className, inset, variant = "default", ...props }) {
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:bg-primary-hover focus:text-primary-main focus:font-subtitle data-[variant=error]:text-error-main data-[variant=error]:focus:bg-error-main/10 data-[variant=error]:focus:text-error-main data-[variant=error]:*:[svg]:!text-error-main [&_svg:not([class*='text-'])]:text-action-active-icon text-[16px] relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:text-text-disabled data-[disabled]:opacity-80 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "focus:bg-primary-hover focus:text-primary-main focus:font-subtitle data-[variant=error]:text-error-main  data-[variant=error]:focus:bg-error-main/10 data-[variant=error]:focus:text-error-main data-[variant=error]:*:[svg]:!text-error-main  data-[disabled]:text-text-disabled relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-[16px] outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-80 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
@@ -116,7 +116,7 @@ function DropdownMenuLabel({ className, inset, ...props }) {
       data-slot="dropdown-menu-label"
       data-inset={inset}
       className={cn(
-        "text-[14px] font-subtitle text-text-secondary px-2 py-1.5 data-[inset]:pl-8",
+        "font-subtitle text-text-secondary px-2 py-1.5 text-[14px] data-[inset]:pl-8",
         className,
       )}
       {...props}
@@ -173,7 +173,7 @@ function DropdownMenuSubContent({ className, ...props }) {
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        "bg-paper-elevation-6 text-text-primary data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border border-divider p-1 shadow-lg",
+        "bg-paper-elevation-6 text-text-primary data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 border-divider z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg",
         className,
       )}
       {...props}

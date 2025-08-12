@@ -1,8 +1,15 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ChevronLeft, LoaderCircle, SquarePen } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
+import {
+  ChevronLeft,
+  EllipsisVertical,
+  LoaderCircle,
+  Pencil,
+  SquarePen,
+  Trash,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Import stores and components
 import bookManageStore from "../stores/booksManageStore";
@@ -28,9 +35,24 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import useBookManageStore from "../stores/booksManageStore";
 import { InstantStarRating } from "../components/InstantStarRating";
 import TimeAgo from "../components/TimeAgo";
+import { useTypewriter } from "../hooks/useTypewriter";
 
 function Book() {
   // --- States ---
@@ -154,6 +176,13 @@ function Book() {
     setSwitchDoYouKnow(Math.floor(Math.random() * 9));
   };
 
+  const fullText =
+    listOfDoYouKnow?.length > 0
+      ? listOfDoYouKnow[switchDoYouKnow]
+      : "AI suggestion is not available.";
+
+  const typedText = useTypewriter(fullText, 20);
+
   // --- Logic การจัดการรีวิว (ส่วนสำคัญ) ---
   const { hasUserReviewed, sortedReviews } = useMemo(() => {
     const reviews = book?.review || [];
@@ -190,11 +219,11 @@ function Book() {
 
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex min-h-[700px] justify-center">
-      <Button 
-        variant="outlined" 
-        color = "secondary"
+      <Button
+        variant="outlined"
+        color="secondary"
         onClick={() => navigate(-1)}
-        className="mb-4 absolute top-24 left-6"
+        className="absolute top-24 left-6 mb-4"
       >
         <ChevronLeft className="h-4 w-4" />
         Back
@@ -379,9 +408,8 @@ function Book() {
                 </div>
               ) : (
                 <div className="body-2">
-                  {listOfDoYouKnow?.length > 0
-                    ? listOfDoYouKnow[switchDoYouKnow]
-                    : "AI suggestion is not available."}
+                  {typedText}
+                  <span className="blinking-cursor">|</span>
                 </div>
               )}
             </div>
@@ -566,14 +594,35 @@ function Book() {
                                 <i className="fa-regular fa-comment"></i>
                                 {r._count.comments}
                               </Button>
-                              <Button
-                                variant="text"
-                                color="secondary"
-                                size="icon"
-                                className="h-7 w-7"
-                              >
-                                <i className="fa-solid fa-ellipsis"></i>
-                              </Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    size="icon"
+                                    className="size-7"
+                                  >
+                                    <EllipsisVertical size={16} />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  className="w-40"
+                                  align="start"
+                                >
+                                  <DropdownMenuItem disabled>
+                                    Edit
+                                    <DropdownMenuShortcut>
+                                      <Pencil size={16} />
+                                    </DropdownMenuShortcut>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem variant="error">
+                                    Delete
+                                    <DropdownMenuShortcut className="text-error-light">
+                                      <Trash size={16} />
+                                    </DropdownMenuShortcut>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </div>
                         </div>

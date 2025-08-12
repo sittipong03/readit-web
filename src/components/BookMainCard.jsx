@@ -20,7 +20,8 @@ import useUserStore from "../stores/userStore";
 export const BookMainCard = ({ book, onRateClick, innerRef }) => {
   const { userId } = useUserStore();
 
-  console.log("BookMainCard Book:", book);
+  console.log("book :");
+  console.log(book);
 
   return (
     <div
@@ -69,10 +70,10 @@ export const BookMainCard = ({ book, onRateClick, innerRef }) => {
                 onClick={() => onRateClick(book)}
                 className="body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 transition-all"
               >
-                {book.rating?.length > 0 ? (
+                {book.rating > 0 ? (
                   <>
                     <Star className="fill-info-main text-info-main" size={14} />
-                    <p className="text-info-main">{book.rating[0].rating}</p>
+                    <p className="text-info-main">{book.rating}</p>
                   </>
                 ) : (
                   <>

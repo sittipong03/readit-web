@@ -45,11 +45,11 @@ const bookManageStore = create((set, get) => ({
   setActiveHomeTab: (tabName) => {
     set({ activeHomeTab: tabName });
   },
-  
+
   getBookById: async (id) => {
     const result = await fetchBookById(id);
     set({ book: result.data });
-    console.log("fetchBookById :",result);
+    console.log("fetchBookById :", result);
     return result.data;
   },
 
@@ -76,10 +76,7 @@ const bookManageStore = create((set, get) => ({
   },
   getAiSuggestion: async (id) => {
     try {
-      const result = await fetchAiSuggestion(id);
-      console.log("id", id);
-      console.log("result fetchedAiSuggestion:", result);
-      console.log("result fetchedAiSuggestion result.data.book.aiSuggestion:", result.data.book.aiSuggestion);
+      const result = await fetchAiSuggestion(id);      
       set((state) => ({
         book: {
           ...state.book,
@@ -285,22 +282,21 @@ const bookManageStore = create((set, get) => ({
 
   updateSingleBookInList: (updatedBookData) => {
     set((state) => {
+
+      console.log("updatedBookData :")
+      console.log(updatedBookData)
       const mergeBookData = (originalBook) => {
-        if (originalBook.id === updatedBookData.id) {
-          // คัดลอกข้อมูลเดิมทั้งหมด แล้วเอาข้อมูลใหม่มาทับเฉพาะ field ที่มี
+        // ตรวจสอบให้แน่ใจว่า originalBook ไม่ใช่ null หรือ undefined ก่อนเข้าถึง id
+        if (originalBook && originalBook.id === updatedBookData.id) {
           return { ...originalBook, ...updatedBookData };
         }
         return originalBook;
       };
 
       return {
-        // 1. อัปเดต State ของหนังสือที่กำลังดูอยู่ (สำหรับ BookPage)
-        book:
-          state.book?.id === updatedBookData.id
-            ? mergeBookData(state.book)
-            : state.book,
+        // ตรวจสอบว่า state.book มีค่าหรือไม่ ก่อนที่จะทำการเปรียบเทียบ
+        book: state.book ? mergeBookData(state.book) : null,
 
-        // 2. อัปเดต State ของรายการหนังสือ (สำหรับหน้า Home/Search)
         normalBooks: state.normalBooks.map(mergeBookData),
         aiBooks: state.aiBooks.map(mergeBookData),
       };

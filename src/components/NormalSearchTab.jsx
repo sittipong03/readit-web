@@ -101,13 +101,10 @@ export function NormalSearchTab() {
   const handleRatingSubmitted = (updatedBook) => {
     setIsRatingDialogOpen(false);
     if (updatedBook) {
-      updateSingleBookInList(updatedBook.data);
+      updateSingleBookInList(updatedBook);
     }
-    setBookToRate(null);
+    setSelectedBookForRating(null);
   };
-
-  console.log("allTags");
-  console.log(allTags);
 
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
@@ -288,7 +285,7 @@ export function NormalSearchTab() {
             <StarRating
               bookId={selectedBookForRating?.id}
               onRatingSubmitted={handleRatingSubmitted}
-              rated={selectedBookForRating?.rating?.[0]?.rating}
+              rated={selectedBookForRating?.rating || 0}
             />
           </div>
         </DialogContent>

@@ -65,6 +65,9 @@ export function NormalSearchTab() {
     }
   }, []);
 
+  console.log("normalBooks :")
+  console.log(normalBooks)
+
   const tagOptions = useMemo(
     () => allTags.map((tag) => ({ value: tag.id, label: tag.name })),
     [allTags],

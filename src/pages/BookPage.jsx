@@ -49,7 +49,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useBookManageStore from "../stores/booksManageStore";
 import { InstantStarRating } from "../components/InstantStarRating";
 import TimeAgo from "../components/TimeAgo";
 import { useTypewriter } from "../hooks/useTypewriter";
@@ -64,19 +63,11 @@ function Book() {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   // --- Zustand Stores ---
-  const { book, getBookById, getAiSuggestion } = bookManageStore();
-  const { getAllReview, addReview } = reviewManageStore();
+  const { book, getBookById, getAiSuggestion, updateSingleBookInList } = bookManageStore();
+  const { getAllReview, addReview, deleteReview } = reviewManageStore();
   const { userId, token } = useUserStore();
   const { product } = productManageStore(); // สมมติว่ายังต้องใช้ product
   const { addToCart } = cartManageStore();
-  const {
-    aiBooks,
-    isFetchingAi,
-    fetchAiBooks,
-    clearAiBooks,
-    aiSearchStatus,
-    updateSingleBookInList,
-  } = useBookManageStore();
 
   const { bookId } = useParams();
   const navigate = useNavigate();
@@ -133,7 +124,6 @@ function Book() {
 
       // Reload reviews
       await getBookById(bookId);
-      await getAllReview(bookId);
 
       // Reset form
       setShowReview(false);
@@ -168,7 +158,18 @@ function Book() {
       console.error(error);
       toast.error("เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า");
     }
-  }, [book, userId, token, reviewContent, addReview, getAllReview]);
+  }, [userId, product, token, addToCart]);
+
+  const hdlDeleteReview = async (reviewId) => {
+    const success = await deleteReview(reviewId);
+    
+    if (success) {
+      toast.success("Review deleted successfully!");
+      getBookById(bookId);
+    } else {
+      toast.error("Failed to delete review. You may not be the owner.");
+    }
+  };
 
   // Function for shuffle do you know
   const listOfDoYouKnow = book?.aiSuggestion?.split("|");
@@ -594,6 +595,7 @@ function Book() {
                                 <i className="fa-regular fa-comment"></i>
                                 {r._count.comments}
                               </Button>
+                              {isCurrentUserReview && (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button
@@ -615,7 +617,7 @@ function Book() {
                                       <Pencil size={16} />
                                     </DropdownMenuShortcut>
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem variant="error">
+                                  <DropdownMenuItem variant="error" onClick={() => hdlDeleteReview(r.id)}>
                                     Delete
                                     <DropdownMenuShortcut className="text-error-light">
                                       <Trash size={16} />
@@ -623,6 +625,7 @@ function Book() {
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
+                              )}
                             </div>
                           </div>
                         </div>

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createReview, getAllReview } from "../api/reviewApi";
+import { createReview, getAllReview, deleteReview as deleteReviewApi } from "../api/reviewApi";
 
 const reviewManageStore = create((set, get) => ({
   reviews: [],
@@ -13,6 +13,18 @@ const reviewManageStore = create((set, get) => ({
     const result = await createReview(id, body); 
     console.log("review result:", result);
     return result;
+  },
+  deleteReview: async (reviewId) => {
+    try {
+      await deleteReviewApi(reviewId);   
+      set((state) => ({
+        reviews: state.reviews.filter((review) => review.id !== reviewId),
+      }));
+      return true; 
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      return false; 
+    }
   },
 }));
 

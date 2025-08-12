@@ -20,13 +20,16 @@ import useUserStore from "../stores/userStore";
 export const BookMainCard = ({ book, onRateClick, innerRef }) => {
   const { userId } = useUserStore();
 
-  console.log("book :");
+  console.log("book BookMainCard :");
   console.log(book);
 
   // ตรวจสอบรีวิวของผู้ใช้โดยเฉพาะ
   const hasUserReviewed = useMemo(() => {
-    return book.review?.some((r) => r.user?.id === userId);
-  }, [book.review, userId]);
+    return book?.review?.length > 0;
+  }, [book?.review]);
+
+  console.log("hasUserReviewed :");
+  console.log(hasUserReviewed);
 
   return (
     <div

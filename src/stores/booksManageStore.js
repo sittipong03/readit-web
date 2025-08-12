@@ -48,8 +48,13 @@ const bookManageStore = create((set, get) => ({
 
   getBookById: async (id) => {
     const result = await fetchBookById(id);
-    set({ book: result.data });
-    console.log("fetchBookById :", result);
+    const updatedBook = result.data;
+
+    set({ book: updatedBook });
+
+    get().updateSingleBookInList(updatedBook);
+
+    console.log("getBookById updatedBook :", updatedBook);
     return result.data;
   },
 

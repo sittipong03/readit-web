@@ -77,7 +77,7 @@ const MultiSelectStyled = React.forwardRef(
       if (value !== undefined) {
         setSelectedValues(value);
       }
-    }, [value]); 
+    }, [value]);
 
     const handleValueChange = (newValues) => {
       if (value === undefined) {
@@ -106,8 +106,8 @@ const MultiSelectStyled = React.forwardRef(
     });
 
     const selectedOptions = React.useMemo(
-      () => options.filter((opt) => value.includes(opt.value)),
-      [options, value],
+      () => options.filter((opt) => selectedValues.includes(opt.value)),
+      [options, selectedValues], // เปลี่ยน dependency จาก value เป็น selectedValues
     );
 
     const displayedOptions = selectedOptions.slice(0, maxCount);

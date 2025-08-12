@@ -7,6 +7,7 @@ import {
   CircleCheckIcon,
   CircleHelpIcon,
   CircleIcon,
+  EllipsisVertical,
 } from "lucide-react";
 import { SparklesIcon } from "@/src/components/icons/sparkles-icon";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { MultiSelectStyled } from "@/components/ui/multi-select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const components = [
   {
@@ -87,19 +102,19 @@ function ButtonTest() {
   const [selectedGenres, setSelectedGenres] = React.useState([]);
 
   const genreOptions = [
-  { value: "drama", label: "Drama" },
-  { value: "horror", label: "Horror" },
-  { value: "comedy", label: "Comedy" },
-  { value: "sci-fi", label: "Sci-Fi" },
-  { value: "romance", label: "Romance" },
-  { value: "action", label: "Action" },
-  { value: "thriller", label: "Thriller" },
-  { value: "fantasy", label: "Fantasy" },
-  { value: "animation", label: "Animation" },
-  { value: "documentary", label: "Documentary" },
-  { value: "mystery", label: "Mystery" },
-  { value: "musical", label: "Musical" },
-];
+    { value: "drama", label: "Drama" },
+    { value: "horror", label: "Horror" },
+    { value: "comedy", label: "Comedy" },
+    { value: "sci-fi", label: "Sci-Fi" },
+    { value: "romance", label: "Romance" },
+    { value: "action", label: "Action" },
+    { value: "thriller", label: "Thriller" },
+    { value: "fantasy", label: "Fantasy" },
+    { value: "animation", label: "Animation" },
+    { value: "documentary", label: "Documentary" },
+    { value: "mystery", label: "Mystery" },
+    { value: "musical", label: "Musical" },
+  ];
 
   return (
     <div className="dark w-full">
@@ -677,15 +692,70 @@ function ButtonTest() {
           </form>
         </Dialog>
         <div className="h6 text-text-secondary">Multi Select</div>
-        <div className="max-w-lg space-y-6 p-8 w-full">
+        <div className="w-full max-w-lg space-y-6 p-8">
           <MultiSelectStyled
             label="Genres"
             options={genreOptions}
             onValueChange={(values) => console.log(values)}
             defaultValue={["drama", "horror", "comedy", "sci-fi"]}
-            maxDisplay={3} 
+            maxDisplay={3}
           />
         </div>
+        <div className="h6 text-text-secondary">DropdownMenu</div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outlined" size="icon" className="size-10"><EllipsisVertical size={20}/></Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                Profile
+                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Billing
+                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Settings
+                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Keyboard shortcuts
+                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>Email</DropdownMenuItem>
+                    <DropdownMenuItem>Message</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>More...</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuItem>
+                New Team
+                <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>GitHub</DropdownMenuItem>
+            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem disabled>API</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              Log out
+              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

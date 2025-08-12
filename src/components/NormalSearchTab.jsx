@@ -57,9 +57,16 @@ export function NormalSearchTab() {
 
   // --- Initial Fetch ---
   useEffect(() => {
-    fetchAllTags();
-    fetchNormalBooks();
+    if (allTags.length === 0) {
+      fetchAllTags();
+    }
+    if (normalBooks.length === 0) {
+      fetchNormalBooks();
+    }
   }, []);
+
+  console.log("normalBooks :")
+  console.log(normalBooks)
 
   const tagOptions = useMemo(
     () => allTags.map((tag) => ({ value: tag.id, label: tag.name })),
@@ -99,10 +106,8 @@ export function NormalSearchTab() {
     if (updatedBook) {
       updateSingleBookInList(updatedBook);
     }
+    setSelectedBookForRating(null);
   };
-
-  console.log("allTags");
-  console.log(allTags);
 
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [selectedBookForRating, setSelectedBookForRating] = useState(null);
@@ -283,7 +288,7 @@ export function NormalSearchTab() {
             <StarRating
               bookId={selectedBookForRating?.id}
               onRatingSubmitted={handleRatingSubmitted}
-              rated={selectedBookForRating?.rating?.[0]?.rating}
+              rated={selectedBookForRating?.rating || 0}
             />
           </div>
         </DialogContent>

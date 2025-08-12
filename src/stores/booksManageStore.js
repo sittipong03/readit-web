@@ -23,6 +23,7 @@ const bookManageStore = create((set, get) => ({
   isFetching: false,
   currentSearchType: "normal", // 'normal', 'ai', 'tag'
   currentSearchQuery: "",
+  activeHomeTab: "normal",
 
   // State สำหรับ Normal Search (Backend-driven)
   normalBooks: [],
@@ -41,11 +42,20 @@ const bookManageStore = create((set, get) => ({
   aiSearchStatus: "idle",
 
   // --- ACTIONS ---
+  setActiveHomeTab: (tabName) => {
+    set({ activeHomeTab: tabName });
+  },
+
   getBookById: async (id) => {
     const result = await fetchBookById(id);
-    set({ book: result.data });
-    // console.log(result);
-    return result;
+    const updatedBook = result.data;
+
+    set({ book: updatedBook });
+
+    get().updateSingleBookInList(updatedBook);
+
+    console.log("getBookById updatedBook :", updatedBook);
+    return result.data;
   },
 
   getUserWishlist: async () => {
@@ -71,15 +81,13 @@ const bookManageStore = create((set, get) => ({
   },
   getAiSuggestion: async (id) => {
     try {
-      const result = await fetchAiSuggestion(id);
-      console.log("id", id);
+      const result = await fetchAiSuggestion(id);      
       set((state) => ({
         book: {
           ...state.book,
-          aiSuggestion: result.data.suggestion,
+          aiSuggestion: result.data.book.aiSuggestion,
         },
       }));
-      get().getBookById(id);
       return result;
     } catch (error) {
       console.error("Failed to fetch AI suggestion:", error);
@@ -277,15 +285,27 @@ const bookManageStore = create((set, get) => ({
     set({ aiBooks: [], aiSearchStatus: "idle" });
   },
 
-  updateSingleBookInList: (updatedBook) => {
-    set((state) => ({
-      normalBooks: state.normalBooks.map((book) =>
-        book.id === updatedBook.id ? updatedBook : book,
-      ),
-      aiBooks: state.aiBooks.map((book) =>
-        book.id === updatedBook.id ? updatedBook : book,
-      ),
-    }));
+  updateSingleBookInList: (updatedBookData) => {
+    set((state) => {
+
+      console.log("updatedBookData :")
+      console.log(updatedBookData)
+      const mergeBookData = (originalBook) => {
+        // ตรวจสอบให้แน่ใจว่า originalBook ไม่ใช่ null หรือ undefined ก่อนเข้าถึง id
+        if (originalBook && originalBook.id === updatedBookData.id) {
+          return { ...originalBook, ...updatedBookData };
+        }
+        return originalBook;
+      };
+
+      return {
+        // ตรวจสอบว่า state.book มีค่าหรือไม่ ก่อนที่จะทำการเปรียบเทียบ
+        book: state.book ? mergeBookData(state.book) : null,
+
+        normalBooks: state.normalBooks.map(mergeBookData),
+        aiBooks: state.aiBooks.map(mergeBookData),
+      };
+    });
   },
 
   clearNormalFilters: () => {

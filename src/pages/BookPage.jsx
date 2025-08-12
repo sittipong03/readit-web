@@ -1,7 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+import {
+  ChevronLeft,
+  EllipsisVertical,
+  LoaderCircle,
+  Pencil,
+  SquarePen,
+  Trash,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Import stores and components
 import bookManageStore from "../stores/booksManageStore";
@@ -27,10 +35,23 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-import useBookManageStore from "../stores/booksManageStore";
-import { StarRating } from "../components/StarRating";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { InstantStarRating } from "../components/InstantStarRating";
+import TimeAgo from "../components/TimeAgo";
+import { useTypewriter } from "../hooks/useTypewriter";
 
 function Book() {
   // --- States ---
@@ -38,32 +59,18 @@ function Book() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [reviewContent, setReviewContent] = useState(""); // State สำหรับ Textarea
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
   const [switchDoYouKnow, setSwitchDoYouKnow] = useState(0);
-  const {
-    aiBooks,
-    isFetchingAi,
-    fetchAiBooks,
-    clearAiBooks,
-    aiSearchStatus,
-    updateSingleBookInList,
-  } = useBookManageStore();
-
-  const { bookId } = useParams();
-
-  const handleRatingSubmitted = (updatedBook) => {
-    if (updatedBook) {
-      updateSingleBookInList(updatedBook);
-    }
-  };
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   // --- Zustand Stores ---
-  const { book, getBookById, getAiSuggestion } = bookManageStore();
-  const { getAllReview, addReview } = reviewManageStore();
+  const { book, getBookById, getAiSuggestion, updateSingleBookInList } = bookManageStore();
+  const { getAllReview, addReview, deleteReview } = reviewManageStore();
   const { userId, token } = useUserStore();
   const { product } = productManageStore(); // สมมติว่ายังต้องใช้ product
   const { addToCart } = cartManageStore();
+
+  const { bookId } = useParams();
+  const navigate = useNavigate();
 
   const latestEdition = book?.edition?.find((e) => e.isLatest === true);
   const latestIsbn = latestEdition?.isbn;
@@ -72,65 +79,74 @@ function Book() {
 
   // --- Data Fetching Effect ---
   useEffect(() => {
+    console.log("fetchedBook UseFX........");
     const loadData = async () => {
       if (!bookId) return;
-
+      console.log("has bookId........");
       setLoading(true);
       setLoadingAI(true);
 
       // เรียกข้อมูลหลักก่อน
       const fetchedBook = await getBookById(bookId);
+      console.log("fetchedBook UseFX:", fetchedBook);
+      console.log("fetchedBook aiSuggestion:", fetchedBook.aiSuggestion);
       await getAllReview(bookId);
       setLoading(false);
-      console.log(fetchedBook);
       // เรียกข้อมูล AI แยกต่างหาก
-      await getAiSuggestion(bookId);
+      if (!fetchedBook.aiSuggestion) await getAiSuggestion(bookId);
       setLoadingAI(false);
     };
 
     loadData();
   }, [bookId, getBookById, getAllReview, getAiSuggestion]);
 
-  const hdlReview = () => {
-    setShowReview(!showReview);
-  };
+  console.log("Book log:", book);
 
-  console.log("bookdddddd", book);
   // --- Event Handlers ---
-  const hdlPostReview = async () => {
-    console.log("token", token);
-    if (rating === 0) {
-      return toast.error("กรุณาให้คะแนนดาวก่อนโพสต์");
+  const hdlPostReview = useCallback(async () => {
+    console.log("Token Reiviewer:", token);
+    if (!book?.rating || book.rating === 0) {
+      return toast.error("กรุณาให้คะแนนดาวก่อนโพสต์รีวิว");
     }
     if (!reviewContent.trim()) {
       return toast.error("กรุณาเขียนรีวิวก่อนโพสต์");
     }
 
+    setIsSubmittingReview(true);
+
     try {
       const sendData = {
-        userId: userId,
-        bookId: book.id,
         title: "Review for " + book.title,
         content: reviewContent,
-        reviewPoint: rating,
       };
       await addReview(book.id, sendData, token);
       toast.success("โพสต์รีวิวสำเร็จ!");
 
+      // Reload reviews
+      await getBookById(bookId);
+
       // Reset form
       setShowReview(false);
       setReviewContent("");
-      setRating(0);
-
-      // Reload reviews
-      getAllReview(bookId);
     } catch (error) {
       console.error(error);
-      toast.error("ไม่สามารถโพสต์รีวิวได้");
+      toast.error(error.response.data.message || "ไม่สามารถโพสต์รีวิวได้");
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  }, [book, userId, token, reviewContent, addReview, getAllReview]);
+
+  const hdlReview = () => {
+    setShowReview(!showReview);
+  };
+
+  const handleRatingSubmitted = (updatedBook) => {
+    if (updatedBook) {
+      updateSingleBookInList(updatedBook);
     }
   };
 
-  const hdlAddToCart = async () => {
+  const hdlAddToCart = useCallback(async () => {
     if (!product?.id) {
       return toast.error("ไม่พบข้อมูลสินค้า ไม่สามารถเพิ่มลงตะกร้าได้");
     }
@@ -142,6 +158,17 @@ function Book() {
       console.error(error);
       toast.error("เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า");
     }
+  }, [userId, product, token, addToCart]);
+
+  const hdlDeleteReview = async (reviewId) => {
+    const success = await deleteReview(reviewId);
+    
+    if (success) {
+      toast.success("Review deleted successfully!");
+      getBookById(bookId);
+    } else {
+      toast.error("Failed to delete review. You may not be the owner.");
+    }
   };
 
   // Function for shuffle do you know
@@ -149,6 +176,29 @@ function Book() {
   const shuffleDoYouKnow = () => {
     setSwitchDoYouKnow(Math.floor(Math.random() * 9));
   };
+
+  const fullText =
+    listOfDoYouKnow?.length > 0
+      ? listOfDoYouKnow[switchDoYouKnow]
+      : "AI suggestion is not available.";
+
+  const typedText = useTypewriter(fullText, 20);
+
+  // --- Logic การจัดการรีวิว (ส่วนสำคัญ) ---
+  const { hasUserReviewed, sortedReviews } = useMemo(() => {
+    const reviews = book?.review || [];
+
+    const userReview = reviews.find((r) => r.user?.id === userId);
+    const hasUserReviewed = !!userReview;
+
+    const sorted = [...reviews].sort((a, b) => {
+      if (a.user?.id === userId) return -1;
+      if (b.user?.id === userId) return 1;
+      return 0;
+    });
+
+    return { hasUserReviewed, sortedReviews: sorted };
+  }, [book?.review, userId]);
 
   // --- Render ---
   if (loading) {
@@ -170,6 +220,15 @@ function Book() {
 
   return (
     <div className="bg-paper-elevation-6 text-text-primary flex min-h-[700px] justify-center">
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => navigate(-1)}
+        className="absolute top-24 left-6 mb-4"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        Back
+      </Button>
       <div className="w-full max-w-lg pb-20">
         <div className="relative flex items-start gap-10 p-10">
           {/* Left Column */}
@@ -276,9 +335,9 @@ function Book() {
                   <CarouselNext className="relative top-0 -left-0 translate-y-0" />
                 </div>
                 <CarouselContent className="-ml-1">
-                  {book?.edition?.map((_, index) => (
+                  {book?.edition?.map((edition, index) => (
                     <CarouselItem
-                      key={index}
+                      key={edition.id || index}
                       className="pl-1 md:basis-1/2 lg:basis-[96px]"
                     >
                       <div className="p-0">
@@ -286,16 +345,13 @@ function Book() {
                           <div className="flex flex-col items-center gap-2">
                             <div className="bg-secondary-lighter/20 shadow-book-lighting h-[128px] w-[84px] gap-2">
                               <img
-                                src={book?.edition?.[index]?.coverImage || ""}
+                                src={edition.coverImage || ""}
                                 alt={book.title}
                                 className="h-full w-full object-cover"
                               />
                             </div>
                             <div className="body-3 text-text-disabled">
-                              (
-                              {book?.edition?.[index]?.publishedYear ||
-                                "unknown"}
-                              )
+                              ({edition.publishedYear || "unknown"})
                             </div>
                           </div>
                         ) : (
@@ -315,7 +371,7 @@ function Book() {
                   <Badge
                     variant="secondary"
                     className="text-secondary-lighter subtitle-4 rounded-pill h-8 px-3"
-                    key={tag.id}
+                    key={tag.tag?.id || tag.id}
                   >
                     {tag.tag?.name}
                   </Badge>
@@ -353,9 +409,8 @@ function Book() {
                 </div>
               ) : (
                 <div className="body-2">
-                  {listOfDoYouKnow?.length > 0
-                    ? listOfDoYouKnow[switchDoYouKnow]
-                    : "AI suggestion is not available."}
+                  {typedText}
+                  <span className="blinking-cursor">|</span>
                 </div>
               )}
             </div>
@@ -380,46 +435,58 @@ function Book() {
             </div>
 
             <div className="bg-paper-elevation-8 shadow-card-3d rounded-lg p-6">
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {/* Review Form */}
-                <div className="shadow-card-3d bg-paper-elevation-6 flex flex-col gap-4 rounded-lg p-6">
-                  {showReview && (
-                    <Textarea
-                      placeholder="Write a review..."
-                      className="w-full"
-                      value={reviewContent}
-                      onChange={(e) => setReviewContent(e.target.value)}
-                    />
-                  )}
-                  <div className="flex gap-10">
-                    <div className="flex flex-col w-40 gap-1">
-                      <div className="text-text-disabled body-2">
-                        Rate this book:
-                      </div>
-                      <InstantStarRating
-                        bookId={book?.id}
-                        onRatingSubmitted={handleRatingSubmitted}
-                        rated={book?.rating}
-                        size={18}
+                {!hasUserReviewed && (
+                  <div className="shadow-card-3d bg-paper-elevation-6 flex flex-col gap-4 rounded-lg p-6">
+                    {showReview && (
+                      <Textarea
+                        placeholder="Write a review..."
+                        className="w-full"
+                        value={reviewContent}
+                        onChange={(e) => setReviewContent(e.target.value)}
+                        disabled={isSubmittingReview}
                       />
+                    )}
+                    <div className="flex gap-10">
+                      <div className="flex w-40 flex-col gap-1">
+                        <div className="text-text-disabled body-2">
+                          Rate this book:
+                        </div>
+                        <InstantStarRating
+                          bookId={book?.id}
+                          onRatingSubmitted={handleRatingSubmitted}
+                          rated={book?.rating || 0}
+                          size={18}
+                        />
+                      </div>
+                      <Button
+                        variant={showReview ? "contained" : "mixed"}
+                        color="primary"
+                        size="large"
+                        className="w-full"
+                        onClick={
+                          showReview ? hdlPostReview : () => setShowReview(true)
+                        }
+                        disabled={isSubmittingReview}
+                      >
+                        {isSubmittingReview ? (
+                          <LoaderCircle className="mr-2 animate-spin" />
+                        ) : (
+                          <SquarePen className="mr-2" />
+                        )}
+                        {isSubmittingReview
+                          ? "Posting..."
+                          : showReview
+                            ? "Post"
+                            : "Write a review"}
+                      </Button>
                     </div>
-                    <Button
-                      variant={showReview ? "contained" : "mixed"}
-                      color="primary"
-                      size="large"
-                      className="w-full"
-                      onClick={
-                        showReview ? hdlPostReview : () => setShowReview(true)
-                      }
-                    >
-                      <i className="fa-solid fa-edit mr-2"></i>
-                      {showReview ? "Post" : "Write a review"}
-                    </Button>
                   </div>
-                </div>
+                )}
 
                 {/* Review List */}
-                {book.review?.length === 0 ? (
+                {sortedReviews?.length === 0 ? (
                   <div className="flex flex-col items-center gap-4 p-4">
                     <img
                       src={nothingPic}
@@ -434,79 +501,137 @@ function Book() {
                     </div>
                   </div>
                 ) : (
-                  book.review?.map((r) => (
-                    <div
-                      className="bg-paper-elevation-6 shadow-card-3d flex flex-row gap-4 rounded-lg p-6"
-                      key={r.id}
-                    >
-                      <div className="flex w-[200px] flex-col gap-2">
-                        <Avatar className="size-10">
-                          <AvatarImage src={r.user.avatarUrl} alt="@shadcn" />
-                          <AvatarFallback className="bg-action-disabled/50">
-                            <i class="fa-solid fa-user"></i>
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <div className="subtitle-4">{r.user?.name}</div>
-                          <div className="body-3 text-text-disabled">
-                            {r.user?.reviewCount || 0} reviews
+                  sortedReviews.map((r, index) => {
+                    const isCurrentUserReview = r.user?.id === userId;
+
+                    return (
+                      <div key={r.id}>
+                        {isCurrentUserReview && index === 0 && (
+                          <div className="subtitle-3 text-text-disabled mb-3">
+                            Your review
                           </div>
-                          <div className="body-3 text-text-disabled">
-                            {r.user?.followerCount || 0} followers
+                        )}
+                        {!isCurrentUserReview &&
+                          index === (hasUserReviewed ? 1 : 0) && (
+                            <div className="subtitle-3 text-text-disabled mt-3 mb-3">
+                              Community review
+                            </div>
+                          )}
+                        <div className="bg-paper-elevation-6 shadow-card-3d flex flex-row gap-4 rounded-lg p-6">
+                          <div className="flex w-[200px] flex-col gap-2">
+                            <Avatar className="size-10">
+                              <AvatarImage
+                                src={r.user.avatarUrl}
+                                alt="@shadcn"
+                              />
+                              <AvatarFallback className="bg-action-disabled/50">
+                                <i className="fa-solid fa-user"></i>
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col">
+                              <div className="subtitle-4">{r.user?.name}</div>
+                              <div className="body-3 text-text-disabled">
+                                {r.user?.reviewCount || 0} reviews
+                              </div>
+                              <div className="body-3 text-text-disabled">
+                                {r.user?.followerCount || 0} followers
+                              </div>
+                            </div>
+                            {!isCurrentUserReview && (
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                size="small"
+                                className="w-25"
+                              >
+                                Follow
+                              </Button>
+                            )}
+                          </div>
+                          <div className="flex w-full flex-col gap-3">
+                            <div className="flex">
+                              <div className="flex flex-1 align-middle">
+                                {isCurrentUserReview ? (
+                                  <InstantStarRating
+                                    bookId={book?.id}
+                                    onRatingSubmitted={handleRatingSubmitted}
+                                    rated={book?.rating || 0}
+                                    size={16}
+                                  />
+                                ) : (
+                                  <StaticRating
+                                    rating={r?.rating}
+                                    showNumber={false}
+                                    size={16}
+                                  />
+                                )}
+                              </div>
+                              <div className="body-3 text-text-disabled">
+                                <TimeAgo isoDateString={r.createdAt} />
+                              </div>
+                            </div>
+                            <div className="body-2 text-text-secondary">
+                              {r.content}
+                            </div>
+                            <div className="body-3 text-text-disabled border-divider w-full border-t pt-3">
+                              Was this review helpful?
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                size="small"
+                                className="[&_svg]:pb-0.5"
+                              >
+                                <i className="fa-regular fa-thumbs-up"></i>
+                                {r._count.likes}
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                size="small"
+                                className="[&_svg]:pb-0.5"
+                              >
+                                <i className="fa-regular fa-comment"></i>
+                                {r._count.comments}
+                              </Button>
+                              {isCurrentUserReview && (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    size="icon"
+                                    className="size-7"
+                                  >
+                                    <EllipsisVertical size={16} />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  className="w-40"
+                                  align="start"
+                                >
+                                  <DropdownMenuItem disabled>
+                                    Edit
+                                    <DropdownMenuShortcut>
+                                      <Pencil size={16} />
+                                    </DropdownMenuShortcut>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem variant="error" onClick={() => hdlDeleteReview(r.id)}>
+                                    Delete
+                                    <DropdownMenuShortcut className="text-error-light">
+                                      <Trash size={16} />
+                                    </DropdownMenuShortcut>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size="small"
-                          className="w-25"
-                        >
-                          Follow
-                        </Button>
                       </div>
-                      <div className="flex w-full flex-col gap-3">
-                        <StaticRating
-                          rating={r.reviewPoint}
-                          showNumber={false}
-                          size="16px"
-                        />
-                        <div className="body-2 text-text-secondary">
-                          {r.content}
-                        </div>
-                        <div className="body-3 text-text-disabled border-divider w-full border-t pt-3">
-                          Was this review helpful?
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            size="small"
-                            className="[&_svg]:pb-0.5"
-                          >
-                            <i class="fa-regular fa-thumbs-up"></i>
-                            {r._count.likes}
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            size="small"
-                            className="[&_svg]:pb-0.5"
-                          >
-                            <i class="fa-regular fa-comment"></i>
-                            {r._count.comments}
-                          </Button>
-                          <Button
-                            variant="text"
-                            color="secondary"
-                            size="icon"
-                            className="h-7 w-7"
-                          >
-                            <i class="fa-solid fa-ellipsis"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

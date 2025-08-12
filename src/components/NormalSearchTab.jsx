@@ -57,8 +57,12 @@ export function NormalSearchTab() {
 
   // --- Initial Fetch ---
   useEffect(() => {
-    fetchAllTags();
-    fetchNormalBooks();
+    if (allTags.length === 0) {
+      fetchAllTags();
+    }
+    if (normalBooks.length === 0) {
+      fetchNormalBooks();
+    }
   }, []);
 
   const tagOptions = useMemo(
@@ -97,8 +101,9 @@ export function NormalSearchTab() {
   const handleRatingSubmitted = (updatedBook) => {
     setIsRatingDialogOpen(false);
     if (updatedBook) {
-      updateSingleBookInList(updatedBook);
+      updateSingleBookInList(updatedBook.data);
     }
+    setBookToRate(null);
   };
 
   console.log("allTags");

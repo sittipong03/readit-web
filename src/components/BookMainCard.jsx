@@ -15,18 +15,20 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "../utils/NumberConverter";
 import { StarRating } from "../components/StarRating";
-import useUserStore from '../stores/userStore';
+import useUserStore from "../stores/userStore";
 
 export const BookMainCard = ({ book, onRateClick, innerRef }) => {
-   const { userId } = useUserStore();
+  const { userId } = useUserStore();
+
+  console.log("BookMainCard Book:", book);
 
   return (
     <div
       ref={innerRef}
-      className="bg-secondary-lighter border-divider relative book-card-wrapper overflow-hidden rounded-md border pb-1 transition-all hover:scale-105"
+      className="bg-secondary-lighter border-secondary-light/20 book-card-wrapper relative overflow-hidden rounded-md border pb-1 transition-all hover:scale-105"
     >
       <Link to={`/book/${book.id}`}>
-        <div className="bg-secondary-hover flex h-[172px] items-center justify-center">
+        <div className="bg-paper-elevation-24/20 flex h-[172px] items-center justify-center">
           <div className="bg-secondary-lighter shadow-book-lighting h-[128px] w-[84px]">
             <img
               src={
@@ -49,7 +51,7 @@ export const BookMainCard = ({ book, onRateClick, innerRef }) => {
 
         {/* ส่วนท้ายของการ์ด */}
         <div className="mt-1 pt-2">
-          <div className="flex items-center gap-0 justify-between">
+          <div className="flex items-center justify-between gap-0">
             <Badge className="text-warning-main body-2 rounded-sm bg-transparent px-1">
               <Star
                 className="fill-warning-main text-warning-main mr-0"
@@ -62,34 +64,47 @@ export const BookMainCard = ({ book, onRateClick, innerRef }) => {
                 ({formatNumber(book.ratingCount)})
               </div>
             </Badge>
-            {userId && (<Badge
-              onClick={() => onRateClick(book)}
-              className="body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 transition-all"
-            >
-              {book.rating?.length > 0 ? (
-                <>
-                  <Star className="fill-info-main text-info-main" size={14} />
-                  <p className="text-info-main">{book.rating[0].rating}</p>
-                </>
-              ) : (
-                <>
-                  <Star className="text-info-main" size={14} strokeWidth={2} />
-                  <p className="text-text-disabled">Rate</p>
-                </>
-              )}
-            </Badge>)}
+            {userId && (
+              <Badge
+                onClick={() => onRateClick(book)}
+                className="body-2 hover:bg-info-hover h-5 min-w-5 cursor-pointer rounded-sm bg-transparent px-1 transition-all"
+              >
+                {book.rating?.length > 0 ? (
+                  <>
+                    <Star className="fill-info-main text-info-main" size={14} />
+                    <p className="text-info-main">{book.rating[0].rating}</p>
+                  </>
+                ) : (
+                  <>
+                    <Star
+                      className="text-info-main"
+                      size={14}
+                      strokeWidth={2}
+                    />
+                    <p className="text-text-disabled">Rate</p>
+                  </>
+                )}
+              </Badge>
+            )}
           </div>
           <Button
             asChild
             variant="ghost"
             size="small"
-            color="secondary"
+            color={book?.review?.length > 0 ? "success" : "secondary"}
             className="mt-1 w-full rounded-sm"
           >
-            <Link to={`/book/${book.id}`}>
-              <i className="fa-solid fa-pen-to-square mr-2"></i>
-              Write a review
-            </Link>
+            {book?.review?.length > 0 ? (
+              <Link to={`/book/${book.id}`}>
+                <i className="fa-solid fa-badge-check pb-0.5"></i>
+                Reviwed
+              </Link>
+            ) : (
+              <Link to={`/book/${book.id}`}>
+                <i className="fa-solid fa-pen-to-square pb-0.5"></i>
+                Write a review
+              </Link>
+            )}
           </Button>
         </div>
       </div>

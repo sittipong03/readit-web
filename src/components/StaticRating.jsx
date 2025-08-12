@@ -1,24 +1,44 @@
-const StaticRating = ({ rating = 0, showNumber = true, size = "18px" }) => {
+import { Star, StarHalf, StarHalfIcon } from "lucide-react";
+
+const StaticRating = ({ rating = 0, showNumber = true, size = 18 }) => {
   const stars = [];
 
   for (let i = 1; i <= 5; i++) {
     if (i <= rating) {
       // ดาวเต็มดวง
       stars.push(
-        <i key={i} className="fa-solid fa-star text-warning-main"></i>,
+        <Star
+          key={i}
+          className="fill-warning-main text-warning-main scale-110"
+          size={size}
+          strokeWidth={1}
+        />,
       );
     } else if (i - 0.5 <= rating) {
       // ดาวครึ่งดวง
       stars.push(
-        <i
-          key={i}
-          className="fa-solid fa-star-half-stroke text-warning-main"
-        ></i>,
+        <div key={i} className="relative">
+          <StarHalf
+            className="fill-warning-main text-text-disabled scale-110"
+            size={size}
+            strokeWidth={1}
+          />
+          <Star
+            className="text-text-disabled absolute top-0 scale-110 fill-transparent"
+            size={size}
+            strokeWidth={1}
+          />
+        </div>,
       );
     } else {
       // ดาวโปร่ง
       stars.push(
-        <i key={i} className="fa-regular fa-star text-text-disabled"></i>,
+        <Star
+          key={i}
+          className="fill-action-disabled/60 text-text-disabled"
+          size={size}
+          strokeWidth={1}
+        />,
       );
     }
   }

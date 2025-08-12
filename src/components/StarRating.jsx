@@ -1,11 +1,16 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { addRate } from "../api/rateApi";
 import { toast } from "sonner";
 
-export const StarRating = ({ bookId, onRatingSubmitted, rated = 0, size = 32 }) => {
+export const StarRating = ({
+  bookId,
+  onRatingSubmitted,
+  rated = 0,
+  size = 32,
+}) => {
   const [rating, setRating] = useState(rated);
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,7 +36,7 @@ export const StarRating = ({ bookId, onRatingSubmitted, rated = 0, size = 32 }) 
       toast.success("Thank you for your rating!");
 
       // Notify the parent component that the rating was submitted
-       if (onRatingSubmitted) {
+      if (onRatingSubmitted) {
         onRatingSubmitted(updatedBook);
       }
 
@@ -56,15 +61,29 @@ export const StarRating = ({ bookId, onRatingSubmitted, rated = 0, size = 32 }) 
             key={starValue}
             className={cn(
               "cursor-pointer transition-all duration-150 ease-in-out",
-              starValue <= (hoverRating || rating)
-                ? "fill-info-main text-info-main scale-110"
-                : starValue <= rating
-                  ? "fill-info-main/20 text-info-main"
-                  : "fill-action-disabled/60 text-text-disabled",
+              isSubmitting && "animate-pulse",
+
+              // 1. เช็คกรณี "ลดดาว" (สีแดง)
+              hoverRating > 0 &&
+                hoverRating < rating &&
+                starValue > hoverRating &&
+                starValue <= rating
+                ? "fill-error-main/40 text-error-main"
+                : // 2. เช็คกรณี "เพิ่มดาว" (สีเขียว)
+                  hoverRating > 0 &&
+                    hoverRating > rating &&
+                    starValue > rating &&
+                    starValue <= hoverRating
+                  ? "fill-success-main/40 text-success-main scale-110"
+                  : // 3. เงื่อนไขหลักสำหรับดาวที่ Active (สีน้ำเงิน)
+                    starValue <= (hoverRating || rating)
+                    ? "fill-info-main text-info-main scale-110"
+                    : // 4. ดาวว่าง (สีเทา)
+                      "fill-action-disabled/60 text-text-disabled",
             )}
-            onMouseEnter={() => setHoverRating(starValue)}
+            onMouseEnter={() => !isSubmitting && setHoverRating(starValue)}
             onMouseLeave={() => setHoverRating(0)}
-            onClick={() => setRating(starValue)}
+            onClick={() => handleStarClick(starValue)}
             size={size}
             strokeWidth={1}
           />

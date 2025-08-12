@@ -74,8 +74,9 @@ export function AiSearchTab({ initialPrompt }) {
   const handleRatingSubmitted = (updatedBook) => {
     setIsRatingDialogOpen(false); 
     if (updatedBook) {
-      updateSingleBookInList(updatedBook);
+      updateSingleBookInList(updatedBook.data);
     }
+    setBookToRate(null);
   };
 
   const sortedAiBooks = useMemo(() => {

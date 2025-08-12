@@ -23,6 +23,7 @@ const bookManageStore = create((set, get) => ({
   isFetching: false,
   currentSearchType: "normal", // 'normal', 'ai', 'tag'
   currentSearchQuery: "",
+  activeHomeTab: "normal",
 
   // State สำหรับ Normal Search (Backend-driven)
   normalBooks: [],
@@ -41,11 +42,15 @@ const bookManageStore = create((set, get) => ({
   aiSearchStatus: "idle",
 
   // --- ACTIONS ---
+  setActiveHomeTab: (tabName) => {
+    set({ activeHomeTab: tabName });
+  },
+  
   getBookById: async (id) => {
     const result = await fetchBookById(id);
     set({ book: result.data });
-    // console.log(result);
-    return result;
+    console.log("fetchBookById :",result);
+    return result.data;
   },
 
   getUserWishlist: async () => {
@@ -73,13 +78,14 @@ const bookManageStore = create((set, get) => ({
     try {
       const result = await fetchAiSuggestion(id);
       console.log("id", id);
+      console.log("result fetchedAiSuggestion:", result);
+      console.log("result fetchedAiSuggestion result.data.book.aiSuggestion:", result.data.book.aiSuggestion);
       set((state) => ({
         book: {
           ...state.book,
-          aiSuggestion: result.data.suggestion,
+          aiSuggestion: result.data.book.aiSuggestion,
         },
       }));
-      get().getBookById(id);
       return result;
     } catch (error) {
       console.error("Failed to fetch AI suggestion:", error);
@@ -277,15 +283,28 @@ const bookManageStore = create((set, get) => ({
     set({ aiBooks: [], aiSearchStatus: "idle" });
   },
 
-  updateSingleBookInList: (updatedBook) => {
-    set((state) => ({
-      normalBooks: state.normalBooks.map((book) =>
-        book.id === updatedBook.id ? updatedBook : book,
-      ),
-      aiBooks: state.aiBooks.map((book) =>
-        book.id === updatedBook.id ? updatedBook : book,
-      ),
-    }));
+  updateSingleBookInList: (updatedBookData) => {
+    set((state) => {
+      const mergeBookData = (originalBook) => {
+        if (originalBook.id === updatedBookData.id) {
+          // คัดลอกข้อมูลเดิมทั้งหมด แล้วเอาข้อมูลใหม่มาทับเฉพาะ field ที่มี
+          return { ...originalBook, ...updatedBookData };
+        }
+        return originalBook;
+      };
+
+      return {
+        // 1. อัปเดต State ของหนังสือที่กำลังดูอยู่ (สำหรับ BookPage)
+        book:
+          state.book?.id === updatedBookData.id
+            ? mergeBookData(state.book)
+            : state.book,
+
+        // 2. อัปเดต State ของรายการหนังสือ (สำหรับหน้า Home/Search)
+        normalBooks: state.normalBooks.map(mergeBookData),
+        aiBooks: state.aiBooks.map(mergeBookData),
+      };
+    });
   },
 
   clearNormalFilters: () => {

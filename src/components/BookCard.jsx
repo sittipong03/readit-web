@@ -54,7 +54,7 @@ const BookCard = ({ book, onBookClick, onToggleFavorite, isFavorite }) => {
           </button>
         )}
         <div
-          className="bg-book-cover h-[128px] w-[84px] rounded bg-cover bg-center bg-no-repeat"
+          className="bg-book-cover h-[128px] w-[84px] bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url(${book.coverImage})`,
           }}

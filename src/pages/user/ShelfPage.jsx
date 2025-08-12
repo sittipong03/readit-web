@@ -397,7 +397,7 @@ function Shelf() {
     switch (activeTab) {
       case "readlist":
         return (
-          <div className="flex h-full w-[900px] flex-col justify-between">
+          <div className="flex h-full w-full max-w-[900px] flex-col justify-between">
             <div className="flex h-[36px] w-full items-center justify-between">
               <div className="text-text-secondary">
                 <p className="subtitle-1 text-text-primary">Readlist</p>
@@ -408,32 +408,33 @@ function Shelf() {
                 size="medium"
                 fontWeight="Button"
                 onClick={() => setIsAddBookModalOpen(true)}
+                className="hidden sm:flex"
               >
                 <i className="fa-solid fa-plus"></i>
                 Add Book
               </Button>
             </div>
-            <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
-              <div className="flex h-[360px] flex-col items-center justify-between">
+            <div className="shadow-card-3d mt-6 flex min-h-[400px] flex-1 justify-center rounded-lg p-3 sm:h-[608px] sm:p-6">
+              <div className="flex w-full max-w-[852px] flex-col justify-between">
                 {/* Reading Section */}
-                <div className="border-white-hover text-text-primary flex h-[44px] w-[852px] items-center border-b-2 pb-2">
+                <div className="border-white-hover text-text-primary flex items-center border-b-2 pb-2">
                   <p className="subtitle-2 text-text-primary">
                     Reading ({readingBooks.length}/3)
                   </p>
                 </div>
-                <div className="flex h-[128px] w-[852px] items-center">
+                <div className="flex min-h-[100px] items-center sm:min-h-[128px]">
                   {readingBooks.length === 0 ? (
                     <div className="flex w-full items-center justify-center">
-                      <p className="text-text-disabled">
+                      <p className="text-text-disabled text-center text-sm sm:text-base">
                         No books currently reading
                       </p>
                     </div>
                   ) : (
-                    <div className="flex w-full gap-4 overflow-x-auto">
+                    <div className="flex w-full gap-2 overflow-x-auto sm:gap-4">
                       {readingBooks.slice(0, 3).map((book) => (
                         <div key={book.id} className="flex-shrink-0">
                           <div
-                            className="h-28 w-20 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                            className="h-20 w-16 cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg sm:h-28 sm:w-20"
                             onClick={() => hdlBookClick(book)}
                           >
                             {book.book?.edition?.[0]?.coverImage ? (
@@ -455,10 +456,10 @@ function Shelf() {
                           </div>
                         </div>
                       ))}
-                      {readingBooks.length > 3 && (
-                        <div className="flex h-28 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200">
-                          <span className="text-sm text-gray-600">
-                            +{readingBooks.length - 3}
+                      {readingBooks.length > 8 && (
+                        <div className="text-text-disabled flex h-20 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200 sm:h-28 sm:w-20">
+                          <span className="text-text-disabled text-xs">
+                            +{readingBooks.length - 8}
                           </span>
                         </div>
                       )}
@@ -467,14 +468,14 @@ function Shelf() {
                 </div>
 
                 {/* Wishlist Section */}
-                <div className="border-white-hover text-text-primary flex h-[44px] w-[852px] items-center border-b-2 pb-2">
+                <div className="border-white-hover text-text-primary flex items-center border-b-2 pb-2">
                   <p className="subtitle-2 text-text-primary">Wishlists</p>
                 </div>
-                <div className="flex h-[128px] w-[852px] items-center">
+                <div className="flex min-h-[100px] justify-center sm:min-h-[287px]">
                   {userWishlist.length === 0 ? (
                     <div className="flex w-full items-center justify-center">
                       <div className="text-center">
-                        <p className="text-text-disabled mb-2">
+                        <p className="text-text-disabled mb-2 text-sm sm:text-base">
                           No books in wishlist yet
                         </p>
                         <Button
@@ -482,14 +483,18 @@ function Shelf() {
                           color="primary"
                           size="medium"
                           onClick={() => setIsAddBookModalOpen(true)}
+                          className="sm:size-medium"
                         >
                           <i className="fa-solid fa-plus"></i>
-                          Add your first book
+                          <span className="hidden sm:inline">
+                            Add your first book
+                          </span>
+                          <span className="sm:hidden">Add book</span>
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex w-full gap-4 overflow-x-auto">
+                    <div className="flex w-full gap-2 overflow-x-auto sm:gap-4">
                       {userWishlist
                         .filter((item) => item.userId === currentUserId)
                         .slice(0, 6)
@@ -499,7 +504,7 @@ function Shelf() {
                             className="flex-shrink-0"
                           >
                             <div
-                              className="h-28 w-20 cursor-pointer overflow-hidden transition-shadow"
+                              className="h-20 w-16 cursor-pointer overflow-hidden transition-shadow sm:h-28 sm:w-20"
                               onClick={() => hdlBookClick(item)}
                             >
                               {item.book?.edition?.[0]?.coverImage ||
@@ -525,9 +530,9 @@ function Shelf() {
                       {userWishlist.length > 6 && (
                         <div
                           key={"extra-books"}
-                          className="flex h-28 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200"
+                          className="flex h-20 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200 sm:h-28 sm:w-20"
                         >
-                          <span className="text-sm text-gray-600">
+                          <span className="text-text-disabled text-xs">
                             +{userWishlist.length - 6}
                           </span>
                         </div>
@@ -542,12 +547,12 @@ function Shelf() {
 
       case "read":
         return (
-          <div className="flex h-full w-[900px] flex-col justify-between">
-            <div className="flex h-[36px] w-full items-center justify-between">
+          <div className="flex h-full w-full max-w-[900px] flex-col justify-evenly">
+            <div className="flex h-auto w-full flex-col gap-2 sm:h-[36px] sm:flex-row sm:items-center sm:justify-between">
               <div className="text-text-secondary">
                 <p className="subtitle-1 text-text-primary">Read</p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outlined"
                   color="primary"
@@ -579,9 +584,9 @@ function Shelf() {
                 </Button>
               </div>
             </div>
-            <div className="shadow-card-3d flex h-[608px] justify-center rounded-lg p-6">
+            <div className="shadow-card-3d mt-6 flex flex-1 justify-center rounded-lg p-3 sm:h-[608px] sm:p-6">
               <div
-                className="scrollbar-hide grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                className="scrollbar-hide grid w-full grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-4"
                 style={{
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
@@ -600,10 +605,10 @@ function Shelf() {
               {readBooks.length === 0 && (
                 <div className="flex h-full flex-col items-center justify-center">
                   <div className="text-center">
-                    <p className="text-text-disabled mb-2 text-lg">
+                    <p className="text-text-disabled mb-2 text-base sm:text-lg">
                       No books read yet
                     </p>
-                    <p className="text-text-secondary text-sm">
+                    <p className="text-text-secondary text-xs sm:text-sm">
                       Start adding books you've finished reading!
                     </p>
                   </div>
@@ -615,30 +620,30 @@ function Shelf() {
 
       case "favorites":
         return (
-          <div className="flex h-full w-[900px] flex-col justify-between gap-2">
-            <div className="flex h-[64px] w-full items-center justify-between">
+          <div className="flex h-full w-full max-w-[900px] flex-col justify-between gap-2">
+            <div className="flex h-auto w-full items-start justify-between sm:h-[64px]">
               <div className="text-text-secondary line-height-bodyLarge flex flex-col gap-2">
                 <p className="subtitle-1 text-text-primary">Favorites</p>
-                <p className="body-1 text-text-secondary">
+                <p className="body-1 text-text-secondary text-sm sm:text-base">
                   Only books that have been reviewed can be marked as favorites.
                 </p>
               </div>
             </div>
-            <div className="shadow-card-3d mt-4 flex h-[608px] justify-center rounded-lg p-6">
+            <div className="shadow-card-3d mt-2 flex flex-1 justify-center rounded-lg p-3 sm:mt-4 sm:h-[608px] sm:p-6">
               {favoriteBooks.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center">
                   <div className="text-center">
-                    <p className="text-text-disabled mb-2 text-lg">
+                    <p className="text-text-disabled mb-2 text-base sm:text-lg">
                       No favorite books yet
                     </p>
-                    <p className="text-text-secondary text-sm">
+                    <p className="text-text-secondary text-xs sm:text-sm">
                       Star your favorite books from the Read section!
                     </p>
                   </div>
                 </div>
               ) : (
                 <div
-                  className="scrollbar-hide grid w-full grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+                  className="scrollbar-hide grid w-full grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3 sm:gap-4 md:grid-cols-4 xl:grid-cols-4"
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
@@ -665,11 +670,11 @@ function Shelf() {
   };
 
   return (
-    <div className="flex h-[888px] w-full flex-col items-center justify-center">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center px-4 py-4 sm:h-[888px] sm:px-0 sm:py-0">
       <div className="bg-paper-elevation-6 flex h-full w-full justify-center">
-        <div className="border-action-active flex h-[824px] w-[1280px] items-center justify-center">
-          <div className="flex h-[740px] w-[1180px] flex-col justify-between">
-            <div className="flex h-[36px] w-full items-center justify-between">
+        <div className="border-action-active flex w-full max-w-[1280px] items-center justify-center px-4 py-8 sm:h-[824px] sm:px-0 sm:py-0">
+          <div className="flex h-full w-full max-w-[1180px] flex-col justify-evenly">
+            <div className="flex h-auto w-full flex-col gap-2 sm:h-[36px] sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="h6 text-text-primary">Your Shelves</p>
               </div>
@@ -684,11 +689,11 @@ function Shelf() {
                 </Button>
               </div>
             </div>
-            <div className="flex h-[668px] w-full justify-between">
-              <aside className="h-40 w-64">
+            <div className="flex h-full w-full flex-col gap-4 sm:h-[668px] sm:flex-row sm:justify-between">
+              <aside className="w-full sm:h-40 sm:w-64">
                 <div>
                   <nav>
-                    <ul className="space-y-2">
+                    <ul className="hidden space-y-2 sm:block">
                       <li>
                         <button
                           onClick={() => setActiveTab("readlist")}
@@ -729,7 +734,7 @@ function Shelf() {
                   </nav>
                 </div>
               </aside>
-              <div>{renderContent()}</div>
+              <div className="flex-1">{renderContent()}</div>
             </div>
           </div>
         </div>

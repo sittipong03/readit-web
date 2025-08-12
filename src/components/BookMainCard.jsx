@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Star } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "../utils/NumberConverter";
 import { StarRating } from "../components/StarRating";
@@ -22,6 +22,11 @@ export const BookMainCard = ({ book, onRateClick, innerRef }) => {
 
   console.log("book :");
   console.log(book);
+
+  // ตรวจสอบรีวิวของผู้ใช้โดยเฉพาะ
+  const hasUserReviewed = useMemo(() => {
+    return book.review?.some((r) => r.user?.id === userId);
+  }, [book.review, userId]);
 
   return (
     <div
@@ -92,13 +97,13 @@ export const BookMainCard = ({ book, onRateClick, innerRef }) => {
             asChild
             variant="ghost"
             size="small"
-            color={book?.review?.length > 0 ? "success" : "secondary"}
+            color={hasUserReviewed ? "success" : "secondary"}
             className="mt-1 w-full rounded-sm"
           >
-            {book?.review?.length > 0 ? (
+            {hasUserReviewed ? (
               <Link to={`/book/${book.id}`}>
                 <i className="fa-solid fa-badge-check pb-0.5"></i>
-                Reviwed
+                Reviewed
               </Link>
             ) : (
               <Link to={`/book/${book.id}`}>

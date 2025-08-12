@@ -159,7 +159,7 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
           <div className="flex w-full items-center justify-between gap-3">
             <div className="relative flex w-full items-center justify-between gap-4">
               <div className="absolute top-1/2 left-5 -translate-y-1/2 transform">
-                <i className="fa-solid fa-book-open-cover text-text-action-disabled"></i>
+                <i className="fa-solid fa-book-open-cover text-text-disabled"></i>
               </div>
               <Input
                 type="text"
@@ -236,8 +236,8 @@ const BookSearchModal = ({ isOpen, onClose, onBookSelect }) => {
 
               {filteredBooks.length === 0 && searchQuery && (
                 <div className="py-12 text-center">
-                  <Book className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-                  <p className="text-gray-500">
+                  <Book className="text-text-disabled mx-auto mb-4 h-12 w-12" />
+                  <p className="text-text-disabled">
                     No books found matching "{searchQuery}"
                   </p>
                 </div>

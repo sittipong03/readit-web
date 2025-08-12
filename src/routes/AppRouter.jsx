@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import { Children, lazy, Suspense } from "react";
+import ScrollToTop from "../components/ScrollToTop";
 
 //store section
 import useUserStore from "../stores/userStore";
@@ -34,6 +35,7 @@ import BookCard from "../components/BookCard";
 import GoogleAuthCallback from "../pages/auth/GoogleAuthCallBack";
 import UserProfile from "../pages/UserProfile";
 import Interest from "../pages/Interest";
+
 
 const routerGuest = createBrowserRouter([
   {

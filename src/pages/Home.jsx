@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NormalSearchTab } from "../components/NormalSearchTab";
@@ -16,14 +16,18 @@ function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const defaultTab = landingPageQuery ? "ai" : activeHomeTab;
+  useEffect(() => {
+    if (landingPageQuery) {
+      setActiveHomeTab('ai');
+    }
+  }, []); 
 
   return (
     <div className="bg-paper-elevation-6 text-text-primary relative mt-[-60px] flex h-full min-h-screen justify-center gap-4 pb-10">
       <div className="min-h-screen w-full pt-20">
         {/* ถ้ามี query ส่งมา ให้เปิดแท็บ AI เป็น default */}
         <Tabs
-          value={defaultTab}
+          value={activeHomeTab}
           onValueChange={(newTab) => {
             setActiveHomeTab(newTab);
           }}

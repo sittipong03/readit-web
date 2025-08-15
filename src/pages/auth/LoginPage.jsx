@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 
 // import from inside project stuff
 import * as authApi from "../../api/authApi.js";
+import * as userApi from "../../api/userApi.js";
+
 
 // import component
 import { WarningIcon, HidePasswordIcon } from "@/src/icons/Index";
@@ -18,6 +20,8 @@ function Login() {
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+    const [isProcessingLogin, setIsProcessingLogin] = useState(false);
+
 
   const {
     handleSubmit,
@@ -26,23 +30,36 @@ function Login() {
     reset,
   } = useForm();
 
-  const handleLoginClick = async (data) => {
+const handleLoginClick = async (data) => {
+    setIsProcessingLogin(true);
+    setIsError(false);
     try {
-      const user = await login(data);
-      setIsError(false);
-      setIsSuccess(true);
+      await login(data);
+      const checkpref = await userApi.getMyFullProfile();
+      console.log('check pref', checkpref.data?.result.bookTagPreference);
+
+      if (checkpref && checkpref.data?.result.bookTagPreference.length <= 0) {
+        console.log("No preferences found, navigating to /interest");
+        navigate("/interest");
+        setIsProcessingLogin(false)
+      } else {
+        console.log("Preferences found, navigating to /userproflie");
+        navigate("/userproflie", { replace: true });
+      }
     } catch (error) {
-      console.log("error: ", error);
+      console.log("Login error: ", error);
       setIsError(true);
-    }
+    } 
   };
 
-  useEffect(() => {
-    if (token) {
-      navigate("/userproflie", { replace: true });
-    }
-  }, [token, navigate]);
-  
+
+
+  // useEffect(() => {
+  //   if (token && !isProcessingLogin) {
+  //     console.log("User is already logged in, redirecting...");
+  //     navigate("/userproflie", { replace: true });
+  //   }
+  // }, [token, isProcessingLogin, navigate]);
 
   // if (isSuccess) {
   //   return <Navigate to="/home" replace />;
@@ -63,7 +80,7 @@ function Login() {
               </span>
               <Link
                 to="/register"
-                className="subtitle-4 text-primary-main underline"
+                className="underline subtitle-4 text-primary-main"
               >
                 {" "}
                 Create account
@@ -104,14 +121,14 @@ function Login() {
                   placeholder="Password..."
                   {...register("password")}
                 />
-                <HidePasswordIcon className="text-text-disabled w-5" />
+                <HidePasswordIcon className="w-5 text-text-disabled" />
               </div>
             </div>
 
             {isError && (
               <div>
                 <div className="bg-error-selected flex h-[28px] w-full items-center gap-0.5 rounded-sm px-1 py-0.5">
-                  <WarningIcon className="text-error-main w-4" />
+                  <WarningIcon className="w-4 text-error-main" />
                   <div className="text-error-main text-[12px]">
                     Email or password invalid
                   </div>
@@ -119,7 +136,7 @@ function Login() {
               </div>
             )}
 
-            <label className="flex cursor-pointer gap-2">
+            <label className="flex gap-2 cursor-pointer">
               <input type="checkbox" className="" {...register("rememberMe")} />
               <div className="body-2 text-text-secondary">Remember me</div>
             </label>
@@ -149,8 +166,8 @@ function Login() {
           </div>
 
           <div>
-            <div className="text-primary-main flex items-center justify-center">
-              <a className="subtitle-4 underline">Forget your password?</a>
+            <div className="flex items-center justify-center text-primary-main">
+              <a className="underline subtitle-4">Forget your password?</a>
             </div>
           </div>
         </div>

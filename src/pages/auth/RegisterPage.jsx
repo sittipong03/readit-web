@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { WarningIcon, HidePasswordIcon } from "@/src/icons/Index"
 import { useState } from "react"
 import { useForm } from "react-hook-form";
@@ -10,6 +10,9 @@ function Register() {
   const [isError, setIsError] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const navigate = useNavigate();
+
+
   const { handleSubmit, register, formState: { errors, isSubmitting }, reset } = useForm()
 
   const handleRegisterClick = async (data) => {
@@ -20,6 +23,7 @@ function Register() {
       console.log(result)
       setIsError(false)
       setIsSuccess(true)
+      navigate("/", { replace: true })
     } catch (error) {
       setIsError(true)
     }

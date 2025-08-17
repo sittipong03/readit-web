@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import { Children, lazy, Suspense } from "react";
+import ScrollToTop from "../components/ScrollToTop";
 
 //store section
 import useUserStore from "../stores/userStore";

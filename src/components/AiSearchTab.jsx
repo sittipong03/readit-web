@@ -79,6 +79,7 @@ export function AiSearchTab({ initialPrompt }) {
     if (updatedBook) {
       updateSingleBookInList(updatedBook);
     }
+    setSelectedBookForRating(null);
   };
 
   const sortedAiBooks = useMemo(() => {
@@ -250,7 +251,7 @@ export function AiSearchTab({ initialPrompt }) {
             <StarRating
               bookId={selectedBookForRating?.id}
               onRatingSubmitted={handleRatingSubmitted}
-              rated={selectedBookForRating?.rating?.[0]?.rating}
+              rated={selectedBookForRating?.rating || 0}
             />
           </div>
         </DialogContent>

@@ -107,3 +107,17 @@
     width: calc(12.5% - 0.875rem);
   }
 }
+
+.blinking-cursor {
+  font-weight: bold;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: inherit; /* ใช้สีตาม text-tertiary-darker */
+  }
+}

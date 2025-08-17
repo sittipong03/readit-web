@@ -47,15 +47,18 @@ const suggestionPrompts = [
 ];
 
 export function AiSearchTab({ initialPrompt }) {
-  const { aiBooks, isFetchingAi, fetchAiBooks, clearAiBooks, aiSearchStatus, updateSingleBookInList  } =
+  const { aiBooks, isFetchingAi, fetchAiBooks, clearAiBooks, aiSearchStatus, updateSingleBookInList } =
     useBookManageStore();
   const { userName } = useUserStore();
-  const [prompt, setPrompt] = useState(initialPrompt || "");
+  const [prompt, setPrompt] = useState(
+    Array.isArray(initialPrompt) ? "" : initialPrompt || ""
+  );
   const [aiSortBy, setAiSortBy] = useState("relevance");
 
   useEffect(() => {
     if (initialPrompt) {
-      setPrompt(initialPrompt);
+      const newPromptValue = Array.isArray(initialPrompt) ? "" : initialPrompt;
+      setPrompt(newPromptValue);
       fetchAiBooks(initialPrompt);
     }
   }, [initialPrompt, fetchAiBooks]);
@@ -72,7 +75,7 @@ export function AiSearchTab({ initialPrompt }) {
   };
 
   const handleRatingSubmitted = (updatedBook) => {
-    setIsRatingDialogOpen(false); 
+    setIsRatingDialogOpen(false);
     if (updatedBook) {
       updateSingleBookInList(updatedBook);
     }
@@ -108,7 +111,7 @@ export function AiSearchTab({ initialPrompt }) {
     switch (aiSearchStatus) {
       case "loading":
         return (
-          <div className="flex flex-1 items-center justify-center pt-10">
+          <div className="flex items-center justify-center flex-1 pt-10">
             <LoaderCircle
               className="text-text-secondary animate-spin"
               size={48}
@@ -138,7 +141,7 @@ export function AiSearchTab({ initialPrompt }) {
                 </SelectContent>
               </SelectStyled>
             </div>
-            <div className="book-flex-container flex flex-row flex-wrap gap-5">
+            <div className="flex flex-row flex-wrap gap-5 book-flex-container">
               {sortedAiBooks.map((book) => (
                 <BookMainCard
                   key={book.id}
@@ -169,15 +172,15 @@ export function AiSearchTab({ initialPrompt }) {
             <div className="display-3 text-text-disabled">
               What can we help you.
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mt-8">
               {suggestionPrompts.map((item, index) => (
                 <div
                   key={index}
-                  className="hover:bg-action-active/30 bg-action-active/20 subtitle-3 font-regular flex h-50 w-50 cursor-pointer flex-col items-end rounded-md p-4 transition-all"
+                  className="flex flex-col items-end p-4 transition-all rounded-md cursor-pointer hover:bg-action-active/30 bg-action-active/20 subtitle-3 font-regular h-50 w-50"
                   onClick={() => handlePromptClick(item.prompt)}
                 >
-                  <div className="w-full flex-1">{item.prompt}</div>
-                  <div className="bg-action-active/20 rounded-pill flex h-10 w-10 items-center justify-center pb-1">
+                  <div className="flex-1 w-full">{item.prompt}</div>
+                  <div className="flex items-center justify-center w-10 h-10 pb-1 bg-action-active/20 rounded-pill">
                     <i className={item.icon}></i>
                   </div>
                 </div>
@@ -193,10 +196,10 @@ export function AiSearchTab({ initialPrompt }) {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <div className="flex h-full flex-col gap-10 px-6 md:flex-row">
+    <div className="flex flex-col h-full gap-10 px-6 md:flex-row">
       {/* Sidebar for Filters */}
       <aside className="sticky w-full md:top-40 md:h-fit md:w-72">
-        <div className="flex h-fit flex-col gap-2">
+        <div className="flex flex-col gap-2 h-fit">
           <Label htmlFor="ai-prompt">Describe your ideal book</Label>
           <Textarea
             id="ai-prompt"
@@ -225,7 +228,7 @@ export function AiSearchTab({ initialPrompt }) {
             {isFetchingAi ? (
               <LoaderCircle className="mr-2 animate-spin" />
             ) : (
-              <SparklesIcon className="mr-2 h-4 w-4" />
+              <SparklesIcon className="w-4 h-4 mr-2" />
             )}
             Ask Librarian
           </Button>

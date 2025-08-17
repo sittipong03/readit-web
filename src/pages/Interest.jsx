@@ -7,6 +7,8 @@ import { toast, Toaster } from "sonner";
 import { Check, ChevronRight } from "lucide-react";
 import bookManageStore from "../stores/booksManageStore";
 import { Navigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+
 
 
 function Interest() {
@@ -14,19 +16,21 @@ function Interest() {
   const [selectedTagIds, setSelectedTagIds] = useState([]);
   const [selectedTagNames, setSelectedTagNames] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  
+
+  const navigate = useNavigate();
+
+
   console.log('selectedTagNames', selectedTagNames)
 
   useEffect(() => {
-     getAllTags().then((response) => {
-        if (Array.isArray(response)) {
-          setTags(response);
-        } else if (response && Array.isArray(response.data)) {
-          setTags(response.data);
-        }
-      });
-    
+    getAllTags().then((response) => {
+      if (Array.isArray(response)) {
+        setTags(response);
+      } else if (response && Array.isArray(response.data)) {
+        setTags(response.data);
+      }
+    });
+
   }, [isSubmitting]);
 
 
@@ -48,7 +52,7 @@ function Interest() {
   };
 
   const handleNextClick = async () => {
-    
+
     // กันการกดปุ่มซ้ำ
     if (selectedTagIds.length < 5) {
       toast.error("Please select at least 5 genres.");
@@ -60,7 +64,7 @@ function Interest() {
       await updateUserPreferences(selectedTagIds);
       // await getBookByTag(selectedTagNames)
       toast.success("Preferences saved successfully!");
-      Navigate('/home');
+      navigate('/home');
       // window.location.href = "/home";
     } catch (error) {
       toast.error("Failed to save preferences. Please try again.");
@@ -73,15 +77,15 @@ function Interest() {
   return (
     <div className="dark">
       <div className="bg-paper-elevation-6 flex min-h-[calc(100dvh-(60px))] flex-col items-center justify-center gap-10 p-30">
-        <div className="flex w-full max-w-lg flex-col items-center gap-4">
-          <div className="display-3 text-text-primary text-center">
+        <div className="flex flex-col items-center w-full max-w-lg gap-4">
+          <div className="text-center display-3 text-text-primary">
             What are you interested?
           </div>
-          <div className="body-1 text-text-disabled w-140 text-center">
+          <div className="text-center body-1 text-text-disabled w-140">
             Select at least 5 genres. ({selectedTagIds.length}/8)
           </div>
-          <div className="mt-4 w-full max-w-lg"></div>
-          <div className="mb-8 flex w-full flex-wrap justify-center gap-2">
+          <div className="w-full max-w-lg mt-4"></div>
+          <div className="flex flex-wrap justify-center w-full gap-2 mb-8">
             {tags.map((tag) => {
               // เช็คว่า tag ปัจจุบันใน loop ถูกเลือกหรือไม่
               const isSelected = selectedTagIds.includes(tag.id);
@@ -118,7 +122,7 @@ function Interest() {
           >
             {isSubmitting ? "Saving..." : "Next"}
             {!isSubmitting && (
-            //   <i className="fa-solid fa-chevron-right ml-2"></i>
+              //   <i className="ml-2 fa-solid fa-chevron-right"></i>
               <ChevronRight className="mr-0 !size-4" strokeWidth={3} />
             )}
           </Button>
